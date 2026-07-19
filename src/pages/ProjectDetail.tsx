@@ -1,4 +1,4 @@
-import { useEffect, useRef, Suspense, lazy } from 'react';
+import { useEffect, useRef, Suspense, lazy, createContext, useContext } from 'react';
 import { MDXProvider } from '@mdx-js/react';
 import { allArticles } from 'content-collections';
 import { useParams, useNavigate } from 'react-router-dom';
@@ -9,7 +9,22 @@ import rehypeRaw from 'rehype-raw';
 import { projectsFullMarkdown, projects } from '../data/projectsData';
 import { useTheme } from '../context/ThemeContext';
 import mermaid from 'mermaid';
+import { MermaidBlock } from '../components/MermaidBlock';
 
+const PreContext = createContext(false);
+
+const extractText = (children: any): string => {
+  if (typeof children === 'string' || typeof children === 'number') {
+    return String(children);
+  }
+  if (Array.isArray(children)) {
+    return children.map(extractText).join('');
+  }
+  if (children && children.props && children.props.children) {
+    return extractText(children.props.children);
+  }
+  return '';
+};
 const slugify = (text: string) => {
   return text
     .toString()
@@ -48,7 +63,7 @@ export const ProjectDetail = () => {
   }
 
   // Extract headings for TOC (only for string markdown projects)
-  const headings: { id: string, text: string, level: number }[] = [];
+  let headings: { id: string, text: string, level: number }[] = [];
   if (markdownContent) {
     const headingRegex = /^(#{2,4})\s+(.+)$/gm;
     let m;
@@ -60,6 +75,8 @@ export const ProjectDetail = () => {
         level: m[1].length
       });
     }
+  } else if (articleItem && (articleItem as any).headings) {
+    headings = (articleItem as any).headings;
   }
 
   // Force re-initialization of Mermaid on theme change
@@ -76,13 +93,15 @@ export const ProjectDetail = () => {
   }, [markdownContent, theme, MdxComponent]);
 
   const components = {
-    pre: ({ children }: any) => <>{children}</>,
+    pre: ({ children }: any) => <PreContext.Provider value={true}>{children}</PreContext.Provider>,
     code: ({ node, inline, className, children, ...props }: any) => {
+      const isInsidePre = useContext(PreContext);
+      const isBlock = isInsidePre || inline === false;
       const match = /language-(\w+)/.exec(className || '');
-      if (!inline && match && match[1] === 'mermaid') {
-        return <div className="mermaid" style={{ display: 'flex', justifyContent: 'center', margin: '3rem 0' }}>{String(children).replace(/\n$/, '')}</div>;
+      if (isBlock && match && match[1] === 'mermaid') {
+        return <MermaidBlock chartStr={extractText(children).replace(/\n$/, '')} />;
       }
-      return !inline ? (
+      return isBlock ? (
         <pre style={{ backgroundColor: 'var(--surface-color)', padding: '1.5rem', borderRadius: '16px', overflowX: 'auto', border: '1px solid var(--border-color)', margin: '2.5rem 0' }}>
           <code className={className} {...props} style={{ color: 'var(--text-primary)', fontSize: '0.95rem', fontFamily: '"Fira Code", monospace' }}>
             {children}
@@ -121,11 +140,11 @@ export const ProjectDetail = () => {
       );
     },
     h1: ({ children }: any) => {
-      const id = slugify(String(children).replace(/^\d+\.\s*/, ''));
+      const id = slugify(extractText(children).replace(/^\d+\.\s*/, ''));
       return <h1 id={id} style={{ fontSize: '2.75rem', fontWeight: 700, letterSpacing: '-0.04em', margin: '3.5rem 0 1.5rem', color: 'var(--text-primary)', scrollMarginTop: '100px' }}>{children}</h1>;
     },
     h2: ({ children }: any) => {
-      const id = slugify(String(children).replace(/^\d+\.\s*/, ''));
+      const id = slugify(extractText(children).replace(/^\d+\.\s*/, ''));
       return <h2 id={id} style={{ fontSize: '1.75rem', fontWeight: 600, letterSpacing: '-0.03em', margin: '3rem 0 1rem', color: 'var(--text-primary)', scrollMarginTop: '100px', paddingBottom: '0.5rem', borderBottom: '1px solid var(--border-color)' }}>{children}</h2>;
     },
     h3: ({ children }: any) => <h3 style={{ fontSize: '1.35rem', fontWeight: 600, letterSpacing: '-0.02em', margin: '2rem 0 1rem', color: 'var(--text-primary)' }}>{children}</h3>,
@@ -215,7 +234,7 @@ export const ProjectDetail = () => {
             {MdxComponent ? (
               <Suspense fallback={<AppleFallback />}>
                 <MDXProvider components={components}>
-                  <MdxComponent />
+                  <MdxComponent components={components} />
                 </MDXProvider>
               </Suspense>
             ) : (
