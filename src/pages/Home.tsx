@@ -3,13 +3,14 @@ import { ArrowUpRight, PanelLeftClose, PanelLeftOpen, FileText } from 'lucide-re
 import { useNavigate } from 'react-router-dom';
 import { LeftSidebar } from '../components/LeftSidebar';
 import { useLanguage } from '../context/LanguageContext';
-import { blogList, projects } from '../data/projectsData';
+import { projects } from '../data/projectsData';
+import { allArticles } from 'content-collections';
 
 export const Home = () => {
   const { language } = useLanguage();
   const navigate = useNavigate();
   const isKr = language === 'KR';
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   return (
     <div style={{ width: '100%', backgroundColor: 'var(--bg-color)' }}>
@@ -160,11 +161,17 @@ export const Home = () => {
               gap: '1.5rem',
               width: '100%'
             }}>
-              {blogList.map((blog: any) => {
+              {allArticles.map((blog: any) => {
                 return (
                   <div
-                    key={blog.id}
-                    onClick={() => navigate(`/projects/${blog.id}`)}
+                    key={blog._meta.path}
+                    onClick={() => {
+                      if (blog.title.includes('기사 생산성')) {
+                        navigate('/projects/tms');
+                      } else {
+                        navigate(`/projects/${blog._meta.path}`);
+                      }
+                    }}
                     className="project-card"
                     style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', height: '100%' }}
                   >
@@ -183,13 +190,13 @@ export const Home = () => {
                       </span>
                     </div>
                     <h3 style={{ fontSize: '1rem', fontWeight: 600, color: 'var(--text-primary)', marginBottom: '0.5rem', lineHeight: 1.35 }}>
-                      {isKr ? blog.title.KR : blog.title.EN}
+                      {blog.title}
                     </h3>
                     <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', lineHeight: 1.55, flex: 1 }}>
-                      {isKr ? blog.description.KR : blog.description.EN}
+                      {blog.description}
                     </p>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '1rem', paddingTop: '0.75rem', borderTop: '1px solid var(--border-color)' }}>
-                      <span style={{ fontSize: '0.7rem', color: 'var(--text-tertiary)', fontWeight: 500 }}>{blog.period}</span>
+                      <span style={{ fontSize: '0.7rem', color: 'var(--text-tertiary)', fontWeight: 500 }}>{blog.date}</span>
                       <ArrowUpRight size={14} style={{ color: 'var(--text-tertiary)' }} />
                     </div>
                   </div>

@@ -1,10 +1,12 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, Suspense, lazy } from 'react';
+import { MDXProvider } from '@mdx-js/react';
+import { allArticles } from 'content-collections';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw';
-import { projectsFullMarkdown, blogFullMarkdown, projects, blogList } from '../data/projectsData';
+import { projectsFullMarkdown, projects } from '../data/projectsData';
 import { useTheme } from '../context/ThemeContext';
 import mermaid from 'mermaid';
 
@@ -24,29 +26,40 @@ export const ProjectDetail = () => {
   const { theme } = useTheme();
   const contentRef = useRef<HTMLDivElement>(null);
   
-  let markdownContent = id && (projectsFullMarkdown[id] || blogFullMarkdown[id])
-    ? (projectsFullMarkdown[id] || blogFullMarkdown[id])
-    : '# Not Found\n\nSorry, the requested project could not be found.';
+  let markdownContent = id && projectsFullMarkdown[id]
+    ? projectsFullMarkdown[id]
+    : '';
 
   // Extract Main Title from metadata, fallback to 'Project Details'
-  const projectItem = projects.find(p => p.id === id) || blogList.find((p: any) => p.id === id);
-  const mainTitle = projectItem ? (typeof projectItem.title === 'string' ? projectItem.title : projectItem.title.KR) : 'Project Details';
+  const projectItem = projects.find(p => p.id === id);
+  const articleItem = allArticles.find(a => a._meta.path === id);
   
-  // Remove the first H1 from the body (which is usually the Notion title export)
-  markdownContent = markdownContent.replace(/^#\s+(.+)$/m, () => {
-    return '';
-  });
+  
+  const mainTitle = projectItem ? (typeof projectItem.title === 'string' ? projectItem.title : projectItem.title.KR) : (articleItem ? articleItem.title : 'Project Details');
+  const mdxModules = import.meta.glob('../content/articles/*.mdx');
+  const importFn = mdxModules[`../content/articles/${id}.mdx`];
+  const MdxComponent = importFn ? lazy(importFn as any) : null;
 
-  // Extract headings for TOC
-  const headings: { id: string, text: string, level: number }[] = [];
-  const headingRegex = /^(#{2,4})\s+(.+)$/gm;
-  let m;
-  while ((m = headingRegex.exec(markdownContent)) !== null) {
-    headings.push({
-      id: slugify(m[2].replace(/^\d+\.\s*/, '')),
-      text: m[2],
-      level: m[1].length
+  // For non-MDX projects, process the string content
+  if (markdownContent) {
+    markdownContent = markdownContent.replace(/^#\s+(.+)$/m, () => {
+      return '';
     });
+  }
+
+  // Extract headings for TOC (only for string markdown projects)
+  const headings: { id: string, text: string, level: number }[] = [];
+  if (markdownContent) {
+    const headingRegex = /^(#{2,4})\s+(.+)$/gm;
+    let m;
+    while ((m = headingRegex.exec(markdownContent)) !== null) {
+      const rawText = m[2].replace(/\*\*/g, '').trim();
+      headings.push({
+        id: slugify(rawText.replace(/^\d+\.\s*/, '')),
+        text: rawText,
+        level: m[1].length
+      });
+    }
   }
 
   // Force re-initialization of Mermaid on theme change
@@ -60,44 +73,45 @@ export const ProjectDetail = () => {
     mermaid.run({
       querySelector: '.mermaid',
     }).catch(e => console.error(e));
-  }, [markdownContent, theme]);
+  }, [markdownContent, theme, MdxComponent]);
 
   const components = {
     pre: ({ children }: any) => <>{children}</>,
     code: ({ node, inline, className, children, ...props }: any) => {
       const match = /language-(\w+)/.exec(className || '');
       if (!inline && match && match[1] === 'mermaid') {
-        return <div className="mermaid" style={{ display: 'flex', justifyContent: 'center', margin: '2rem 0' }}>{String(children).replace(/\n$/, '')}</div>;
+        return <div className="mermaid" style={{ display: 'flex', justifyContent: 'center', margin: '3rem 0' }}>{String(children).replace(/\n$/, '')}</div>;
       }
       return !inline ? (
-        <pre style={{ backgroundColor: 'var(--surface-color)', padding: '1.5rem', borderRadius: '12px', overflowX: 'auto', border: '1px solid var(--border-color)', margin: '1.5rem 0' }}>
-          <code className={className} {...props} style={{ color: 'var(--text-primary)', fontSize: '0.9rem', fontFamily: '"Fira Code", monospace' }}>
+        <pre style={{ backgroundColor: 'var(--surface-color)', padding: '1.5rem', borderRadius: '16px', overflowX: 'auto', border: '1px solid var(--border-color)', margin: '2.5rem 0' }}>
+          <code className={className} {...props} style={{ color: 'var(--text-primary)', fontSize: '0.95rem', fontFamily: '"Fira Code", monospace' }}>
             {children}
           </code>
         </pre>
       ) : (
-        <code className={className} {...props} style={{ backgroundColor: 'var(--surface-color)', padding: '0.2rem 0.4rem', borderRadius: '4px', fontSize: '0.9em', color: 'var(--primary-color)' }}>
+        <code className={className} {...props} style={{ backgroundColor: 'var(--surface-color)', padding: '0.2rem 0.4rem', borderRadius: '4px', fontSize: '0.9em', color: 'var(--text-primary)' }}>
           {children}
         </code>
       );
     },
     table: ({ children }: any) => (
-      <div style={{ overflowX: 'auto', margin: '2rem 0', borderRadius: '12px', border: '1px solid var(--border-color)' }}>
+      <div style={{ overflowX: 'auto', margin: '2.5rem 0', borderRadius: '12px', border: '1px solid var(--border-color)' }}>
         <table style={{ width: '100%', borderCollapse: 'collapse', backgroundColor: 'var(--bg-color)' }}>{children}</table>
       </div>
     ),
-    th: ({ children }: any) => <th style={{ padding: '1rem', textAlign: 'left', borderBottom: '1px solid var(--border-color)', backgroundColor: 'var(--surface-color)', color: 'var(--text-secondary)', fontWeight: 600, fontSize: '0.85rem' }}>{children}</th>,
-    td: ({ children }: any) => <td style={{ padding: '1rem', borderBottom: '1px solid var(--border-color)', color: 'var(--text-primary)', fontSize: '0.9rem' }}>{children}</td>,
-    img: ({ src, alt }: any) => <img src={src} alt={alt} style={{ maxWidth: '100%', borderRadius: '12px', margin: '2rem 0', border: '1px solid var(--border-color)', boxShadow: '0 4px 12px rgba(0,0,0,0.05)' }} />,
+    th: ({ children }: any) => <th style={{ padding: '1.25rem 1rem', textAlign: 'left', borderBottom: '1px solid var(--border-color)', backgroundColor: 'var(--surface-color)', color: 'var(--text-secondary)', fontWeight: 600, fontSize: '0.9rem' }}>{children}</th>,
+    td: ({ children }: any) => <td style={{ padding: '1.25rem 1rem', borderBottom: '1px solid var(--border-color)', color: 'var(--text-primary)', fontSize: '1rem' }}>{children}</td>,
+    img: ({ src, alt }: any) => <img src={src} alt={alt} style={{ width: '100%', borderRadius: '16px', margin: '3rem 0', boxShadow: '0 10px 40px rgba(0,0,0,0.08)' }} />,
     blockquote: ({ children }: any) => {
       if (!children || (Array.isArray(children) && children.length === 0)) return null;
       return (
         <blockquote style={{ 
-          margin: '1.5rem 0', 
-          padding: '0.5rem 1.25rem', 
-          borderLeft: '3px solid var(--primary-color)',
+          margin: '2.5rem 0', 
+          padding: '0.5rem 1.5rem', 
+          borderLeft: '4px solid var(--border-color)',
           color: 'var(--text-secondary)', 
-          fontSize: '1.05rem',
+          fontSize: '1.25rem',
+          fontStyle: 'italic',
           display: 'flex',
           flexDirection: 'column',
           gap: '0.5rem'
@@ -108,22 +122,30 @@ export const ProjectDetail = () => {
     },
     h1: ({ children }: any) => {
       const id = slugify(String(children).replace(/^\d+\.\s*/, ''));
-      return <h1 id={id} style={{ fontSize: '2rem', fontWeight: 700, letterSpacing: '-0.03em', marginTop: '3rem', marginBottom: '1.5rem', color: 'var(--text-primary)', scrollMarginTop: '100px' }}>{children}</h1>;
+      return <h1 id={id} style={{ fontSize: '2.75rem', fontWeight: 700, letterSpacing: '-0.04em', margin: '3.5rem 0 1.5rem', color: 'var(--text-primary)', scrollMarginTop: '100px' }}>{children}</h1>;
     },
     h2: ({ children }: any) => {
       const id = slugify(String(children).replace(/^\d+\.\s*/, ''));
-      return <h2 id={id} style={{ fontSize: '1.5rem', fontWeight: 600, letterSpacing: '-0.02em', marginTop: '3rem', marginBottom: '1.25rem', color: 'var(--text-primary)', scrollMarginTop: '100px', paddingBottom: '0.5rem', borderBottom: '1px solid var(--border-color)' }}>{children}</h2>;
+      return <h2 id={id} style={{ fontSize: '1.75rem', fontWeight: 600, letterSpacing: '-0.03em', margin: '3rem 0 1rem', color: 'var(--text-primary)', scrollMarginTop: '100px', paddingBottom: '0.5rem', borderBottom: '1px solid var(--border-color)' }}>{children}</h2>;
     },
-    h3: ({ children }: any) => <h3 style={{ fontSize: '1.25rem', fontWeight: 600, letterSpacing: '-0.01em', marginTop: '2rem', marginBottom: '1rem', color: 'var(--text-primary)' }}>{children}</h3>,
-    p: ({ children }: any) => <p style={{ fontSize: '1.05rem', lineHeight: 1.75, color: 'var(--text-secondary)', marginBottom: '1.25rem' }}>{children}</p>,
-    ul: ({ children }: any) => <ul style={{ fontSize: '1.05rem', lineHeight: 1.7, color: 'var(--text-secondary)', marginBottom: '1.25rem', paddingLeft: '1.5rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>{children}</ul>,
-    ol: ({ children }: any) => <ol style={{ fontSize: '1.05rem', lineHeight: 1.7, color: 'var(--text-secondary)', marginBottom: '1.25rem', paddingLeft: '1.5rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>{children}</ol>,
+    h3: ({ children }: any) => <h3 style={{ fontSize: '1.35rem', fontWeight: 600, letterSpacing: '-0.02em', margin: '2rem 0 1rem', color: 'var(--text-primary)' }}>{children}</h3>,
+    p: ({ children }: any) => <p style={{ fontSize: '1.125rem', lineHeight: 1.75, color: 'var(--text-secondary)', marginBottom: '1.5rem' }}>{children}</p>,
+    ul: ({ children }: any) => <ul style={{ fontSize: '1.125rem', lineHeight: 1.75, color: 'var(--text-secondary)', marginBottom: '1.5rem', paddingLeft: '1.5rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>{children}</ul>,
+    ol: ({ children }: any) => <ol style={{ fontSize: '1.125rem', lineHeight: 1.75, color: 'var(--text-secondary)', marginBottom: '1.5rem', paddingLeft: '1.5rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>{children}</ol>,
     li: ({ children }: any) => <li style={{ paddingLeft: '0.5rem' }}>{children}</li>,
-    strong: ({ children }: any) => <strong style={{ color: 'var(--text-primary)', fontWeight: 600 }}>{children}</strong>,
+    strong: ({ children }: any) => <strong style={{ color: 'var(--accent-color)', fontWeight: 700 }}>{children}</strong>,
     a: ({ href, children }: any) => {
-      return <a href={href} target="_blank" rel="noreferrer" style={{ color: 'var(--primary-color)', textDecoration: 'none', borderBottom: '1px solid rgba(var(--primary-color-rgb), 0.3)', transition: 'border-color 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.borderBottomColor = 'var(--primary-color)'} onMouseLeave={(e) => e.currentTarget.style.borderBottomColor = 'rgba(var(--primary-color-rgb), 0.3)'}>{children}</a>;
+      return <a href={href} target="_blank" rel="noreferrer" style={{ color: 'var(--accent-color)', textDecoration: 'none', borderBottom: '1px solid var(--accent-color)', transition: 'all 0.2s' }} onMouseEnter={(e) => {e.currentTarget.style.opacity = '0.7';}} onMouseLeave={(e) => {e.currentTarget.style.opacity = '1';}}>{children}</a>;
     },
   };
+
+  const AppleFallback = () => (
+    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '400px', color: 'var(--text-secondary)' }}>
+      <span style={{ fontSize: '1.25rem', letterSpacing: '-0.02em', animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite' }}>
+        Loading...
+      </span>
+    </div>
+  );
 
   return (
     <div className="custom-scrollbar" style={{ display: 'flex', flexDirection: 'column', width: '100%', height: '100%', backgroundColor: 'var(--bg-color)', overflowY: 'auto' }}>
@@ -148,7 +170,7 @@ export const ProjectDetail = () => {
           position: 'relative'
         }}>
           <button 
-            onClick={() => navigate(-1)}
+            onClick={() => navigate('/')}
             style={{
               display: 'flex', alignItems: 'center', gap: '0.5rem',
               background: 'none', border: 'none', color: 'var(--text-tertiary)',
@@ -175,7 +197,7 @@ export const ProjectDetail = () => {
         </div>
       </div>
 
-      {/* MAIN CONTENT AREA (Velog Style Layout) */}
+      {/* MAIN CONTENT AREA (Apple / Velog Style Layout) */}
       <div style={{
         width: '100%',
         maxWidth: '1800px',
@@ -188,9 +210,16 @@ export const ProjectDetail = () => {
       }}>
         
         {/* Left Pane: Article Content */}
-        <div ref={contentRef} style={{ flex: 1, minWidth: 0 }}>
-          <div className="prose" style={{ maxWidth: '100%' }}>
-            <ReactMarkdown
+        <div ref={contentRef} style={{ flex: 1, minWidth: 0, display: 'flex', justifyContent: 'center' }}>
+          <div className="prose" style={{ width: '100%', maxWidth: '800px' }}>
+            {MdxComponent ? (
+              <Suspense fallback={<AppleFallback />}>
+                <MDXProvider components={components}>
+                  <MdxComponent />
+                </MDXProvider>
+              </Suspense>
+            ) : (
+              <ReactMarkdown
               key={`md-${theme}`} // Force remount on theme change for mermaid
               remarkPlugins={[remarkGfm]}
               rehypePlugins={[rehypeRaw]}
@@ -198,6 +227,7 @@ export const ProjectDetail = () => {
             >
               {markdownContent}
             </ReactMarkdown>
+            )}
           </div>
         </div>
 

@@ -1,4 +1,46 @@
-import { Truck, Lin# 관세청 전자상거래 통관플랫폼 연동 — 전사 공유 기획 보고서
+import { Truck, LineChart, ShieldCheck, Box } from 'lucide-react';
+
+export const projects = [
+  {
+    id: 'customs-api',
+    title: { KR: '관세청 전자상거래 통관플랫폼 연동', EN: 'Customs API Integration' },
+    description: { KR: '관세청 전자상거래 전용 REST API 연동 및 자동화 프로세스 기획', EN: 'Customs E-commerce REST API Integration & Automation Planning' },
+    tags: ['API Integration', 'Data Pipeline', 'Project Management'],
+    icon: ShieldCheck,
+    role: 'Project Manager',
+    period: '2026.04 - 2026.08'
+  },
+  {
+    id: 'scm-dashboard',
+    title: { KR: 'SCM 재고·발주 자동화 대시보드', EN: 'SCM Inventory & Order Automation Dashboard' },
+    description: { KR: '분산된 SCM 데이터를 통합하여 수요 예측 및 발주 자동화 모델 구축', EN: 'Built demand forecasting and order automation model by integrating distributed SCM data' },
+    tags: ['Dashboard', 'SCM', 'Data Analysis'],
+    icon: LineChart,
+    role: 'DX Planner',
+    period: '2025.10 - 2026.03'
+  },
+  {
+    id: 'b2b-mall',
+    title: { KR: 'B2B 전용 폐쇄몰 기획 및 론칭', EN: 'B2B Closed Mall Planning & Launch' },
+    description: { KR: 'B2B 물품 공급망 설계 및 자체 폐쇄몰(Nutricia B2B) 기획·운영 전담', EN: 'B2B supply chain design and exclusive closed mall planning & operation' },
+    tags: ['B2B', 'E-Commerce', 'Platform Planning'],
+    icon: Box,
+    role: 'Project Manager',
+    period: '2025.03 - 2025.09'
+  },
+  {
+    id: 'tms',
+    title: { KR: '배송 관리 시스템(TMS) 구축', EN: 'Transport Management System (TMS) Development' },
+    description: { KR: '분산된 운송 프로세스를 표준화하고 중앙 집중화하는 시스템 구축', EN: 'Developed a system to standardize and centralize distributed transport processes' },
+    tags: ['TMS', 'Logistics', 'System Architecture'],
+    icon: Truck,
+    role: 'Product Manager',
+    period: '2024.10 - 2025.02'
+  }
+];
+
+export const projectsFullMarkdown: Record<string, string> = {
+  'customs-api': `# 관세청 전자상거래 통관플랫폼 연동 — 전사 공유 기획 보고서
 
 > 📅 최종 업데이트: 2026-07-19 (D-27) | PM: 박종혁
 
@@ -852,18 +894,18 @@ graph TB
 
 ---
 
-<div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 2rem;">
-  <a href="https://github.com/park-jjong/TWLKRTMS-releaseRepository" target="_blank" style="display: inline-flex; align-items: center; gap: 0.5rem; background: var(--surface-color); padding: 0.5rem 1rem; border-radius: 8px; border: 1px solid var(--border-color); color: var(--text-primary); text-decoration: none; font-size: 0.9rem; font-weight: 500;">
-    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg>
-    Github Repository
+<div style="display: flex; flex-wrap: wrap; gap: 1rem; margin-bottom: 2rem;">
+  <a href="https://github.com/park-jjong/TWLKRTMS-releaseRepository" target="_blank" class="reference-link">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg>
+    <span>GitHub Repository</span>
   </a>
-  <a href="https://www.youtube.com/watch?v=uegOVSqd4lU" target="_blank" style="display: inline-flex; align-items: center; gap: 0.5rem; background: var(--surface-color); padding: 0.5rem 1rem; border-radius: 8px; border: 1px solid var(--border-color); color: var(--text-primary); text-decoration: none; font-size: 0.9rem; font-weight: 500;">
-    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 17a24.12 24.12 0 0 1 0-10 2 2 0 0 1 1.4-1.4 49.56 49.56 0 0 1 16.2 0A2 2 0 0 1 21.5 7a24.12 24.12 0 0 1 0 10 2 2 0 0 1-1.4 1.4 49.55 49.55 0 0 1-16.2 0A2 2 0 0 1 2.5 17"/><path d="m10 15 5-3-5-3z"/></svg>
-    System Video Reference
+  <a href="https://www.youtube.com/watch?v=uegOVSqd4lU" target="_blank" class="reference-link">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 17a24.12 24.12 0 0 1 0-10 2 2 0 0 1 1.4-1.4 49.56 49.56 0 0 1 16.2 0A2 2 0 0 1 21.5 7a24.12 24.12 0 0 1 0 10 2 2 0 0 1-1.4 1.4 49.55 49.55 0 0 1-16.2 0A2 2 0 0 1 2.5 17"/><path d="m10 15 5-3-5-3z"/></svg>
+    <span>System Video Reference</span>
   </a>
-  <a href="https://app.notion.com/p/4ce1c9d90f4983a4a65701c0b57084e5" target="_blank" style="display: inline-flex; align-items: center; gap: 0.5rem; background: var(--surface-color); padding: 0.5rem 1rem; border-radius: 8px; border: 1px solid var(--border-color); color: var(--text-primary); text-decoration: none; font-size: 0.9rem; font-weight: 500;">
-    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-    기사 생산성 분석 원리
+  <a href="https://app.notion.com/p/4ce1c9d90f4983a4a65701c0b57084e5" target="_blank" class="reference-link">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+    <span>기사 생산성 분석 원리</span>
   </a>
 </div>
 
@@ -874,7 +916,7 @@ graph TB
 - 개인 편의에 따른 인수인계 파편화로 정보 누락, 소통 오류, 업무 연속성 저해 발생.
 - 월별 긴급 배송 프로세스 중 오퍼레이션 담당의 실수로 인한 오배송 전체 3\~4% 발생
 ### **벤치마킹 및 아이디어 도출**
-- **“Detrack” **서비스 시스템을 벤치마킹하여 대시보드 형태의 테이블 기반 주문 관리 및 날짜별 조회, 엑셀 출력 기능의 효율성을 확인.
+- **“Detrack”** 서비스 시스템을 벤치마킹하여 대시보드 형태의 테이블 기반 주문 관리 및 날짜별 조회, 엑셀 출력 기능의 효율성을 확인.
 - TWLKR의 배송 운영을 시스템으로 표준화하고 중앙 집중화하는 아이디어를 구체화함.
 ### **프로젝트 목표**
 - TMS(운송관리시스템) 기획·개발을 통한 **전사적 운송 프로세스 혁신 및 운영 효율성 극대화**.
@@ -951,7 +993,7 @@ SSR (Server-Side Rendering) 및 CSR (Client-Side Rendering)을 동시 활용
 | Frontend | HTML/CSS/JavaScript, Bootstrap/Tailwind | Bootstrap/Tailwind 활용, 모듈형 JS 개발 |
 | Database | MySQL 8.0 on Cloud SQL | Cloud SQL 배포, Private IP 연결 |
 | Infrastructure | Google App Engine Flexible | Docker 컨테이너 기반 Custom |
-- **보안 **
+- **보안**
 	| 보안 영역 | 구현 내용 |
 | --- | --- |
 | 네트워크 보안 | • Cloud Armor를 통한 DDoS 및 웹 공격 방어<br/>• Cloud SQL에 Private IP 연결 사용<br/>• 방화벽 규칙을 통한 인가된 소스만 접근 허용 |
