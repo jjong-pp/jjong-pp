@@ -13,7 +13,7 @@ var articles = defineCollection({
   }),
   transform: async (document) => {
     const slugify = (text) => {
-      return text.toLowerCase().replace(/\s+/g, "-").replace(/[^\w\-]+/g, "").replace(/\-\-+/g, "-");
+      return text.toLowerCase().replace(/\s+/g, "-").replace(/[^\w\-\uac00-\ud7a3]+/g, "").replace(/\-\-+/g, "-");
     };
     const headingRegex = /^(#{2,4})\s+(.+)$/gm;
     const headings = [];

@@ -1,11 +1,398 @@
 
 export default [
   {
+    "title": "B2B 폐쇄몰 기획 및 런칭",
+    "description": "결제부터 출고까지, 수작업 제로를 향한 자동화 여정",
+    "date": "2026-07-21",
+    "role": "Project",
+    "content": "# 1. 문제 정의 및 기획 배경\n- --\n## 1. 프로젝트 개요\n### 문제점 인식\n- 전국 140여 개 산후조리원의 분유/물품 주문을 구글 폼 + 수기 엑셀로 운영. 주문·출고·정산 모든 프로세스가 수작업에 의존\n- 팀원 2명이 매일 30분씩 주문 확인 후 출고 처리, 매월 1~2일을 수기 정산에 사용\n- 수기 계좌이체 확인·매칭 후 출고: 담당자 판단으로 '먼저 출고하고 입금 받는' 등 기존 프로세스를 벗어나는 변수가 빈번. 담당자 피로도 높음\n- 거래명세서를 매일 사람이 수기로 작성하여 발송\n- 특수 고객(산후조리원)의 높은 CS 강도: 매일 전화로 송장번호, 출고/입고 일정, 상품 재고, 입금 확인 등 반복 문의\n- 공급가·매입가 마진 구조상 PG 결제 수수료율을 절대 감당할 수 없는 원가 구조\n- 데이터 파편화: 주문(구글 폼), 출고(WMS), 정산(엑셀)이 각각 별도 관리\n### 프로젝트 목표\n- PG 수수료를 원천 차단하면서도 결제-출고를 자동화하고, 담당자 재량에 의한 변수를 시스템 정책으로 통제\n- 파편화된 주문·출고·정산 데이터를 단일 시스템으로 통합하여 데이터 정합성을 확보하고, 국세청 신고용 정산 데이터를 자동 산출\n\n## 2. 진행 과정 및 역할\n- --\n### 플랫폼 아키텍처 설계\n- 고도몰5 Pro 멀티숍 구조 채택: 회원 DB 공유 구조로 별도 SSO 개발 비용 절감\n- PG 결제 수수료 원천 차단: 공급가·매입가 마진율 구조상 외부 PG를 의도적으로 배제. 현금성 포인트(물품) + 계좌이체(분유)로 결제 수단을 이원화하고, 계좌 스크래핑 API 기반 무통장 입금 자동 대조·승인 체계 설계\n### 결제-출고 정책 전환\n- 기존: 수기 입금 확인 → 담당자 판단으로 선출고/후입금 등 변수 허용 → 정산 불일치, 미수금 발생, 담당자 피로\n- 전환: '결제 매칭이 완료되지 않으면 주문도, 출고도 불가'라는 확고한 정책을 시스템으로 강제. 담당자 재량에 의한 예외를 원천 차단하여 데이터 정합성과 운영 안정성을 동시에 확보\n### 결제 및 발주 자동화 로직\n- 카테고리별 하이브리드 결제 라우팅: 장바구니 상품 속성에 따라 결제 수단 자동 분기 (물품: 포인트 100% / 분유: 무통장 자동 확인 / 특정 등급: 별도 정책)\n- 공급사 SCM 자동 발주 라우팅: 입금 확인 즉시 해당 공급사에만 주문이 자동 격리 노출. 수기 발주 원천 차단\n- 거래명세서 자동 발송: 기존 수기 작성·발송 → 24시간 실시간 자동 발송으로 전환\n- 국세청 연동: 현금영수증 자동 발행, 월말 세금계산서 일괄 전자 발행. 정산 데이터 정합성이 확보되어 월 1회 신고를 위한 데이터 추출이 즉시 가능\n### CS 부담 흡수 설계\n- 조리원 마이페이지에서 주문 이력·송장번호·배송 상태·포인트 잔액·입금 확인 여부를 실시간 조회 → 반복 전화 문의 대폭 감소\n- 알림톡 자동 발송(주문 확인, 출고 완료, 송장번호): LMS(건당 3.0P) → 알림톡(건당 0.6P), 비용 80% 절감\n### 운영 안정성 확보\n- CronJob 스케줄러 기반 월말 포인트 자동 소멸, 마이페이지 사업자번호/주소 임의 변경 방지 백엔드 보안 가드\n### 개발사 협업\n- 시스템 요건을 코드 레벨(DB 테이블·스킨 파일·컨트롤러)까지 명세하여 개발사 SOW 작성\n- 조리원의 오프라인 결제 관행과 당사 출하 로직 간의 간극을 조율하여 복잡한 비즈니스 흐름을 단일 시스템으로 통합\n\n## 3. 결과 및 성과\n- --\n\n-** 주문 확인·출고 업무  ** 83% 단축**  |  팀원 2명 × 일 30분 → 5분\n\n\n\n-** 월 정산  ** 100% 자동화**  |  월 1~2일 수기 → 0일. 정산, 분석 등 데이터 즉시 추출\n\n\n\n-** 결제-출고 정책 전환  ** 변수 원천 차단**  |  담당자 재량 → 시스템 강제. 미수금·정산 불일치 제거\n\n\n\n-** 거래명세서  ** 수기 → 실시간 자동 발송**  |  24시간 즉시 발송\n\n\n\n-** 메시징 비용  ** 80% 절감**  |  LMS 3.0P → 알림톡 0.6P\n\n\n\n-** PG 수수료  ** 0원**  |  마진 구조 보전을 위한 결제 체계 설계\n### \n\t\tpc\n\t\t![](https://prod-files-secure.s3.us-west-2.amazonaws.com/3361c9d9-0f49-81d8-a453-000300867bf8/04866e00-4253-45bc-adae-5c2777c0e922/image.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466TKOHGYXP%2F20260717%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260717T212502Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEJ3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIFUYAduEUa43wv1ZU4gMZdPUs%2Fg8NsO%2B2hRsHv4Alx8yAiEA9O02xFwZOo7meSlLvwJP5rj%2BdKjfMYN4FBbeJSOM%2Fckq%2FwMIZhAAGgw2Mzc0MjMxODM4MDUiDAN%2FbTonw5AHL5eDRyrcA8UW2lQ3QYMfW0pS3UWDJiajiDZFdgUcdabBeSEEOuAooROVUQN7HrfXUQyhbD%2BzftT0pAa40TUaiXCGnTNMDzXHu5dgR6WF4QVja86X%2F7cA8W4SmFx8VKsuZGuzdZfBrbQlcwnGZefH6MiBX%2F01v0PS%2BSe%2FH6Ya%2FXk74PBfzGtFQdSojwIK2JiZxpGVWGjMApl9Ib%2FsPtGxgzaYWkdWEJKefRul3EAsLOFptroqiQo3cGjVRXQMYB%2FVyWQb%2BDphCm490RNi%2B3wvp6jZPu34g4BrYPiTDrxZPECIR0Sk3tluQRD2Lsep0OeH38N6L8KSqKUnXE5Y2F9WbG1CNYqQJ4%2FQ%2F8Qae9EMd69GWpiK8rd7%2Bmwk%2FQ4puIkCFwcBajkDOTHO8o%2B4S0ma3oOBwwdraN%2Ff1W16gK%2FCaeo1eFNO4lMtAGORUn0qf7U%2FYf%2B3HpXYu5taQpdZfGocOINUl0xERNv8C5PNV0umRodou9lMrQGGwcnh2qR4EK8lj9xSngEgRjg%2FpcizUzbQfnUSvxeuzMjyA%2Bqdm6KWXwreJbx8blySjAkwRyxthUeYbTAc%2F%2BmvwhRvD54W3jonvZnDCGuTde%2Bxp9pKWpcLGfEI0LXwMD3oaeh0tcBnKCT7I%2B7zMMir6tIGOqUBrYBySjOffQZeIkenRhMevv89FOoxVeVMYVhP8lCoQepB%2B1Kfovu2Jzc1IV76jvAboQmUaG9CSSjVwgAlD2lUSb%2F7ANaagsolzkzwD09ErFkcpX4L6URvl6YeS%2BGpPdQmPq1J%2FC0IhaK6Bau5430j%2BgheCMZ5R7sXXuXrw4700vNsCpHo%2Fg7UGogp1l1Ne37AD0H9ApHaK8TiojiptNpzXBL2S8Pg&X-Amz-Signature=a01644e24928a6c441065c77b0f7fd20759165aa37229f3a0fa3d75e4762e102&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)\n\t\t![](https://prod-files-secure.s3.us-west-2.amazonaws.com/3361c9d9-0f49-81d8-a453-000300867bf8/f1776d04-a9aa-456a-ad16-21605694d248/image.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466TKOHGYXP%2F20260717%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260717T212502Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEJ3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIFUYAduEUa43wv1ZU4gMZdPUs%2Fg8NsO%2B2hRsHv4Alx8yAiEA9O02xFwZOo7meSlLvwJP5rj%2BdKjfMYN4FBbeJSOM%2Fckq%2FwMIZhAAGgw2Mzc0MjMxODM4MDUiDAN%2FbTonw5AHL5eDRyrcA8UW2lQ3QYMfW0pS3UWDJiajiDZFdgUcdabBeSEEOuAooROVUQN7HrfXUQyhbD%2BzftT0pAa40TUaiXCGnTNMDzXHu5dgR6WF4QVja86X%2F7cA8W4SmFx8VKsuZGuzdZfBrbQlcwnGZefH6MiBX%2F01v0PS%2BSe%2FH6Ya%2FXk74PBfzGtFQdSojwIK2JiZxpGVWGjMApl9Ib%2FsPtGxgzaYWkdWEJKefRul3EAsLOFptroqiQo3cGjVRXQMYB%2FVyWQb%2BDphCm490RNi%2B3wvp6jZPu34g4BrYPiTDrxZPECIR0Sk3tluQRD2Lsep0OeH38N6L8KSqKUnXE5Y2F9WbG1CNYqQJ4%2FQ%2F8Qae9EMd69GWpiK8rd7%2Bmwk%2FQ4puIkCFwcBajkDOTHO8o%2B4S0ma3oOBwwdraN%2Ff1W16gK%2FCaeo1eFNO4lMtAGORUn0qf7U%2FYf%2B3HpXYu5taQpdZfGocOINUl0xERNv8C5PNV0umRodou9lMrQGGwcnh2qR4EK8lj9xSngEgRjg%2FpcizUzbQfnUSvxeuzMjyA%2Bqdm6KWXwreJbx8blySjAkwRyxthUeYbTAc%2F%2BmvwhRvD54W3jonvZnDCGuTde%2Bxp9pKWpcLGfEI0LXwMD3oaeh0tcBnKCT7I%2B7zMMir6tIGOqUBrYBySjOffQZeIkenRhMevv89FOoxVeVMYVhP8lCoQepB%2B1Kfovu2Jzc1IV76jvAboQmUaG9CSSjVwgAlD2lUSb%2F7ANaagsolzkzwD09ErFkcpX4L6URvl6YeS%2BGpPdQmPq1J%2FC0IhaK6Bau5430j%2BgheCMZ5R7sXXuXrw4700vNsCpHo%2Fg7UGogp1l1Ne37AD0H9ApHaK8TiojiptNpzXBL2S8Pg&X-Amz-Signature=a16c44405a2e985a1d4743ed3882a604effa9f5c45bc310ad6c7768aed8a0d89&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)\n### \n\t\tmobile\n\t\t![](https://prod-files-secure.s3.us-west-2.amazonaws.com/3361c9d9-0f49-81d8-a453-000300867bf8/be5737ea-311a-4c26-b3b0-7d9134c5eba0/image.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466TKOHGYXP%2F20260717%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260717T212502Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEJ3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIFUYAduEUa43wv1ZU4gMZdPUs%2Fg8NsO%2B2hRsHv4Alx8yAiEA9O02xFwZOo7meSlLvwJP5rj%2BdKjfMYN4FBbeJSOM%2Fckq%2FwMIZhAAGgw2Mzc0MjMxODM4MDUiDAN%2FbTonw5AHL5eDRyrcA8UW2lQ3QYMfW0pS3UWDJiajiDZFdgUcdabBeSEEOuAooROVUQN7HrfXUQyhbD%2BzftT0pAa40TUaiXCGnTNMDzXHu5dgR6WF4QVja86X%2F7cA8W4SmFx8VKsuZGuzdZfBrbQlcwnGZefH6MiBX%2F01v0PS%2BSe%2FH6Ya%2FXk74PBfzGtFQdSojwIK2JiZxpGVWGjMApl9Ib%2FsPtGxgzaYWkdWEJKefRul3EAsLOFptroqiQo3cGjVRXQMYB%2FVyWQb%2BDphCm490RNi%2B3wvp6jZPu34g4BrYPiTDrxZPECIR0Sk3tluQRD2Lsep0OeH38N6L8KSqKUnXE5Y2F9WbG1CNYqQJ4%2FQ%2F8Qae9EMd69GWpiK8rd7%2Bmwk%2FQ4puIkCFwcBajkDOTHO8o%2B4S0ma3oOBwwdraN%2Ff1W16gK%2FCaeo1eFNO4lMtAGORUn0qf7U%2FYf%2B3HpXYu5taQpdZfGocOINUl0xERNv8C5PNV0umRodou9lMrQGGwcnh2qR4EK8lj9xSngEgRjg%2FpcizUzbQfnUSvxeuzMjyA%2Bqdm6KWXwreJbx8blySjAkwRyxthUeYbTAc%2F%2BmvwhRvD54W3jonvZnDCGuTde%2Bxp9pKWpcLGfEI0LXwMD3oaeh0tcBnKCT7I%2B7zMMir6tIGOqUBrYBySjOffQZeIkenRhMevv89FOoxVeVMYVhP8lCoQepB%2B1Kfovu2Jzc1IV76jvAboQmUaG9CSSjVwgAlD2lUSb%2F7ANaagsolzkzwD09ErFkcpX4L6URvl6YeS%2BGpPdQmPq1J%2FC0IhaK6Bau5430j%2BgheCMZ5R7sXXuXrw4700vNsCpHo%2Fg7UGogp1l1Ne37AD0H9ApHaK8TiojiptNpzXBL2S8Pg&X-Amz-Signature=119387b3e57140142ba65714982aef5ce15f06858bcff473b85d613cee91c8fc&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)\n\t\t![](https://prod-files-secure.s3.us-west-2.amazonaws.com/3361c9d9-0f49-81d8-a453-000300867bf8/f476a0c5-14f8-48a3-bc2f-9e3936a6eeee/image.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466TKOHGYXP%2F20260717%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260717T212502Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEJ3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIFUYAduEUa43wv1ZU4gMZdPUs%2Fg8NsO%2B2hRsHv4Alx8yAiEA9O02xFwZOo7meSlLvwJP5rj%2BdKjfMYN4FBbeJSOM%2Fckq%2FwMIZhAAGgw2Mzc0MjMxODM4MDUiDAN%2FbTonw5AHL5eDRyrcA8UW2lQ3QYMfW0pS3UWDJiajiDZFdgUcdabBeSEEOuAooROVUQN7HrfXUQyhbD%2BzftT0pAa40TUaiXCGnTNMDzXHu5dgR6WF4QVja86X%2F7cA8W4SmFx8VKsuZGuzdZfBrbQlcwnGZefH6MiBX%2F01v0PS%2BSe%2FH6Ya%2FXk74PBfzGtFQdSojwIK2JiZxpGVWGjMApl9Ib%2FsPtGxgzaYWkdWEJKefRul3EAsLOFptroqiQo3cGjVRXQMYB%2FVyWQb%2BDphCm490RNi%2B3wvp6jZPu34g4BrYPiTDrxZPECIR0Sk3tluQRD2Lsep0OeH38N6L8KSqKUnXE5Y2F9WbG1CNYqQJ4%2FQ%2F8Qae9EMd69GWpiK8rd7%2Bmwk%2FQ4puIkCFwcBajkDOTHO8o%2B4S0ma3oOBwwdraN%2Ff1W16gK%2FCaeo1eFNO4lMtAGORUn0qf7U%2FYf%2B3HpXYu5taQpdZfGocOINUl0xERNv8C5PNV0umRodou9lMrQGGwcnh2qR4EK8lj9xSngEgRjg%2FpcizUzbQfnUSvxeuzMjyA%2Bqdm6KWXwreJbx8blySjAkwRyxthUeYbTAc%2F%2BmvwhRvD54W3jonvZnDCGuTde%2Bxp9pKWpcLGfEI0LXwMD3oaeh0tcBnKCT7I%2B7zMMir6tIGOqUBrYBySjOffQZeIkenRhMevv89FOoxVeVMYVhP8lCoQepB%2B1Kfovu2Jzc1IV76jvAboQmUaG9CSSjVwgAlD2lUSb%2F7ANaagsolzkzwD09ErFkcpX4L6URvl6YeS%2BGpPdQmPq1J%2FC0IhaK6Bau5430j%2BgheCMZ5R7sXXuXrw4700vNsCpHo%2Fg7UGogp1l1Ne37AD0H9ApHaK8TiojiptNpzXBL2S8Pg&X-Amz-Signature=fc87422b05de4e463b73fd2cbe900372e37ca72a791a5842ecc47bbee53329e0&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)\n### 정성적 성과\n- 반복 CS 문의 대폭 감소: 조리원 담당자가 시스템에서 직접 정보 확인\n- 수기 업무 휴먼 에러 해결 및 팀원 부담 해소 \n- 파편화 데이터 → 단일 DB 통합: 발주 내역·결제·출고·정산의 데이터 정합성 확보\n## 4. 회고\n- --\n### 교훈\n- '수기'에 의존하던 프로세스를 '시스템 정책과 자동화'으로 전환하면, 운영 변수가 사라지고 데이터 정합성이 자동으로 확보됨\n- CS 문제는 단순히 응대 인력의 문제가 아니라 정보 접근성의 문제. 시스템으로 해결 가능한 영역이 존재\n- PG 수수료 차단은 단순 비용 절감이 아니라, 공급가·매입가 구조상 마진을 지키기 위한 비즈니스 필수 조건이었음\n### 개인 성장\n- B2B 결제·정산·발주 프로세스를 단일 시스템으로 통합 설계하는 경험\n- 오프라인 관행(선출고/후입금)과 시스템 정책 간의 간극을 조율하며 현업을 설득하는 PM 역량\n- 외부 개발사를 기술적으로 리드하며 프로젝트를 완수\n\n## 5. Reference\n- --\n## 주문 → 결제 라우팅 → 출고 플로우\n```mermaid\nflowchart TD\n    A[\"조리원 로그인\"] --> B[\"장바구니\"]\n    B --> C{\"상품 유형\"}\n    C -->|\"물품\"| D[\"포인트 100%\"]\n    C -->|\"분유\"| E[\"무통장 <br/> (스크래핑 자동확인)\"]\n    D --> F{\"결제 매칭<br/>완료?\"}\n    E --> F\n    F -->|\"Yes\"| G[\"공급사 자동 발주\"]\n    F -->|\"No\"| X[\"주문·출고 차단\"]\n    G --> H[\"거래명세서<br/>실시간 자동 발송\"]\n    H --> I[\"알림톡 (송장)\"]\n    I --> J[\"월말 자동 정산<br/>→ 회계/세무팀 공유\"]\n    style F fill:#fef3c7,stroke:#d97706\n    style X fill:#fee2e2,stroke:#dc2626\n    style G fill:#f0fdf4,stroke:#16a34a\n```\n\n## 시스템 아키텍처\n```mermaid\ngraph TB\n    subgraph Platform[\"고도몰5 Pro\"]\n        FRONT[\"주문 UI\"]\n        ADMIN[\"관리자\"]\n    end\n        subgraph Payment[\"고도몰5 Pro\"]\n        POLICY[\"결제-출고 정책<br/>(매칭 필수)\"]\n\t\t\t\tCATEGORY[\"카테고리 별 결제 구분<br/>(매칭 필수)\"]\n        end\n    subgraph Logic[\"비즈니스 로직\"]\n        SCRAPE[\"계좌 스크래핑 API\"]\n        AUTO[\"자동 발주\"]\n        INVOICE[\"거래명세서<br/>자동 발송\"]\n        CRON[\"포인트 소멸\"]\n    end\n    subgraph Ext[\"외부 연동\"]\n        NTS[\"월 정산<br/>(세금계산서)\"]\n        ALIM[\"알림톡\"]\n        WMS[\"WMS\"]\n    end\n    FRONT -->CATEGORY--> CRON --> INVOICE --> ALIM \n    FRONT -->POLICY --> SCRAPE --> INVOICE --> ALIM \n    POLICY --> AUTO --> WMS\n    AUTO --> INVOICE --> NTS\n    AUTO --> ALIM\n    CRON --> INVOICE\n    style Platform fill:#faf5ff, stroke:#7c3aed\n    style Logic fill:#fff7ed, stroke:#ea580c\n    style Ext fill:#eff6ff, stroke:#2563eb\n```\n\n## B2B 폐쇄몰 시연 화면\n![B2B PC 1](/assets/b2b-pc-1.png)\n![B2B PC 2](/assets/b2b-pc-2.png)\n<div style=\"display:flex; gap:1rem;\">\n  <img src=\"/assets/b2b-mobile-1.png\" style=\"width: 48%; border-radius: 8px;\" />\n  <img src=\"/assets/b2b-mobile-2.png\" style=\"width: 48%; border-radius: 8px;\" />\n</div>",
+    "_meta": {
+      "filePath": "b2b-mall.mdx",
+      "fileName": "b2b-mall.mdx",
+      "directory": ".",
+      "extension": "mdx",
+      "path": "b2b-mall"
+    },
+    "headings": [
+      {
+        "id": "프로젝트-개요",
+        "text": "1. 프로젝트 개요",
+        "level": 2
+      },
+      {
+        "id": "문제점-인식",
+        "text": "문제점 인식",
+        "level": 3
+      },
+      {
+        "id": "프로젝트-목표",
+        "text": "프로젝트 목표",
+        "level": 3
+      },
+      {
+        "id": "진행-과정-및-역할",
+        "text": "2. 진행 과정 및 역할",
+        "level": 2
+      },
+      {
+        "id": "플랫폼-아키텍처-설계",
+        "text": "플랫폼 아키텍처 설계",
+        "level": 3
+      },
+      {
+        "id": "결제-출고-정책-전환",
+        "text": "결제-출고 정책 전환",
+        "level": 3
+      },
+      {
+        "id": "결제-및-발주-자동화-로직",
+        "text": "결제 및 발주 자동화 로직",
+        "level": 3
+      },
+      {
+        "id": "cs-부담-흡수-설계",
+        "text": "CS 부담 흡수 설계",
+        "level": 3
+      },
+      {
+        "id": "운영-안정성-확보",
+        "text": "운영 안정성 확보",
+        "level": 3
+      },
+      {
+        "id": "개발사-협업",
+        "text": "개발사 협업",
+        "level": 3
+      },
+      {
+        "id": "결과-및-성과",
+        "text": "3. 결과 및 성과",
+        "level": 2
+      },
+      {
+        "id": "pc",
+        "text": "pc",
+        "level": 3
+      },
+      {
+        "id": "mobile",
+        "text": "mobile",
+        "level": 3
+      },
+      {
+        "id": "정성적-성과",
+        "text": "정성적 성과",
+        "level": 3
+      },
+      {
+        "id": "회고",
+        "text": "4. 회고",
+        "level": 2
+      },
+      {
+        "id": "교훈",
+        "text": "교훈",
+        "level": 3
+      },
+      {
+        "id": "개인-성장",
+        "text": "개인 성장",
+        "level": 3
+      },
+      {
+        "id": "reference",
+        "text": "5. Reference",
+        "level": 2
+      },
+      {
+        "id": "주문-결제-라우팅-출고-플로우",
+        "text": "주문 → 결제 라우팅 → 출고 플로우",
+        "level": 2
+      },
+      {
+        "id": "시스템-아키텍처",
+        "text": "시스템 아키텍처",
+        "level": 2
+      },
+      {
+        "id": "b2b-폐쇄몰-시연-화면",
+        "text": "B2B 폐쇄몰 시연 화면",
+        "level": 2
+      }
+    ]
+  },
+  {
+    "title": "관세청 전자상거래 통관플랫폼 연동 — 전사 공유 기획 보고서",
+    "description": "분산된 레거시 시스템을 묶는 미들웨어 허브 패턴과 유관 부서 협업을 통한 비즈니스 방어 전략",
+    "date": "2026-07-21",
+    "content": "# 관세청 전자상거래 통관플랫폼 연동 — 전사 공유 기획 보고서\n\n>  최종 업데이트: 2026-07-21 | PM: OOO\n\n---\n\n## 1. 프로젝트 개요 및 협업 구조\n\n### 1.1 배경 및 목표\n관세법 개정안에 따라, 전자상거래업체는 소비자 결제 시점에 개인통관고유부호(PCCC)를 **실시간 검증**하고, 거래정보를 관세청에 **사전 자동 제출**해야 합니다. 미이행 시 스마트통관 제외로 통관 지연 및 과태료 위험이 존재합니다. 본 프로젝트는 5개로 분산된 외부 시스템을 하나의 미들웨어로 통합 제어하는 것이 목표입니다.\n\n### 1.2 기초 정보\n| 항목 | 내용 |\n|---|---|\n| 법적 근거 | 관세법 제254조의2 개정안 |\n| 대상 플랫폼 | A쇼핑몰 (자사몰) |\n| 전자상거래업체부호 | **K******** (마스킹)** |\n| 대상 상품 | 해외직구 전 품목 |\n\n### 1.3 참여 업체 및 역할 (5개사 통합)\n| 업체 | 역할 | 주요 통신 및 협력 포인트 |\n|---|---|---|\n| **자사 기획팀** | 통합 PM 및 아키텍처 설계 | 유관 부서(CS, 물류) 운영 정책 수립 |\n| **A개발사** | API 미들웨어 및 프론트 개발 | 백엔드 허브, 3-Track 로직, 큐(Queue) 연동 구현 |\n| **B인증기관** | 본인인증 · 통관검증 중계 | 결제 실시간 PCCC 인증 API 연동 |\n| **C물류센터** | 해외 WMS 창고 관리 | 매일 송장/무게 데이터 Polling 연동 |\n| **D특송사** | 통관 · 특송 및 EDI 전송 | 거래정보 최종 검증 및 세관 EDI 대행 연동 |\n\n---\n\n## 2. 시간대별 데이터 통합 시퀀스 다이어그램\n\n고객 결제부터 관세청 거래정보 제출, 특송사 연동, 그리고 최종 통관 상태 반영에 이르는 **전체 데이터 흐름과 에러(예외) 대응 시나리오**입니다.\n\n```mermaid\nsequenceDiagram\n    autonumber\n    actor C as 고객\n    participant G as A쇼핑몰 (자사몰/미들웨어)\n    participant N as B인증기관\n    participant D as C물류센터 (WMS)\n    participant K as 관세청 (KCS)\n    participant Z as D특송사\n\n    rect rgb(240, 248, 255)\n    Note right of C: ■ STEP 0. 결제 및 인증 (T+0 실시간)\n    C->>G: 결제하기 클릭\n    G->>N: [PCCC API] 실시간 검증\n    alt [에러①] 인증기관 통신 장애 (망 지연)\n        N-->>G: 통신 장애 감지\n        G->>G: stat_sgn=02 선승인 처리 (결제 차단 안 함)\n        Note right of G: 해결: 망 복구 후 백그라운드 사후검증 배치\n    else [에러②] PCCC 검증 실패 (부호 불일치/만료/도용)\n        N-->>G: 검증 실패 응답\n        G-->>C: 결제 차단. 재입력 유도 모달 노출\n    else [에러③] 비갱신 유예대상자\n        N-->>G: 예외 응답 + 임시 인증번호 자동 회신\n        G-->>C: 입력 없이 자동 통과 (한시적 운영)\n    else [정상] 간소화/일반 인증 완료\n        N-->>G: 검증 성공 및 인증번호 반환\n        G-->>C: 결제 완료\n    end\n    end\n\n    rect rgb(255, 248, 240)\n    Note right of G: ■ STEP 1. 물류 송장(HBL)/무게 수집 (T+1일 오전)\n    G->>D: HBL 및 실측 무게 API 폴링 (하루 2회)\n    alt [에러⑤] 물류센터 API 타임아웃\n        D-->>G: Connection Refused\n        Note right of G: 해결: 15분 후 자동 재시도. 3회 실패 시 슬랙 알림\n    else [에러⑥] HBL 미채번\n        D-->>G: HBL=null 응답\n        Note right of G: 해결: 해당 건 Skip 후 다음 폴링 시 재수집\n    else [정상] HBL + 무게 정상 수신\n        D-->>G: 정상 응답\n        G->>G: 주문상태 [배송중] 전환\n    end\n    end\n\n    rect rgb(240, 255, 240)\n    Note right of G: ■ STEP 2-3. 관세청 거래정보 제출 및 에러 모니터링\n    G->>K: [TRA001] 거래정보 일괄제출\n    alt [에러⑧] 관세청 망 점검/장애\n        K-->>G: HTTP 502/503 또는 Timeout\n        Note right of G: 해결: 실패큐(DLQ) 적재 → 30분 후 자동 재시도\n    else [에러⑨] 관세청 반려 (3000 에러)\n        K-->>G: 에러코드 리턴\n        Note right of G: 해결: 실패사유 바인딩 후 운영팀 확인 (재제출 유도)\n    else [에러⑩] 30분 룰 위반 (동일 주문 중복)\n        K-->>G: 중복 제출 거부\n        Note right of G: 해결: 시스템 자체 Lock으로 30분 내 중복 방어\n    else [정상] 제출 성공\n        K-->>G: 정상 접수\n    end\n\n    loop 에러 상시 폴링 (30초 간격)\n        G->>K: [TRA003] 미확인오류 조회\n        alt [에러⑪] 관세청 에러 건 발견\n            K-->>G: 에러코드 리턴\n            G->>G: [출고보류(Hold)] 상태 자동 전환\n        else [정상] Clean\n            K-->>G: 오류 없음\n        end\n    end\n    end\n\n    rect rgb(255, 240, 245)\n    Note right of G: ■ STEP 4. 특송사 HWB 동기화 (TRA003 Clean 건만)\n    G->>Z: [POST /bulk-sync] 대용량 동기화\n    alt [에러⑫] 특송사 HTTP 500 에러\n        Z-->>G: 에러 응답\n        G->>G: 사유 바인딩 + Hold 자동 ON\n    else [에러⑬] 특송사 타임아웃 (30초 초과)\n        Z-->>G: Connection Timeout\n        Note right of G: 해결: 100건 청크로 분할 재전송\n    else [정상] 전송 성공\n        Z-->>G: 정상 접수 응답\n    end\n    end\n\n    rect rgb(245, 240, 255)\n    Note right of G: ■ STEP 5-6. 통관 및 최종 상태 전환 (T+3~5일)\n    Z-->>G: 최종 통관 상태 리턴\n    alt [에러⑭] 통관 보류/반려\n        G->>G: [출고보류] ON. CS팀 매뉴얼 대응\n    else [정상] 통관 완료\n        G->>G: 마스터 주문 [통관완료] 최종 전환\n    end\n    end\n```\n\n---\n\n## 3. 유관 부서 소통 및 선제적 방어 정책 (Risk Defense)\n\n이 프로젝트는 기술적 구현을 넘어, 타 부서와의 사전 합의를 통해 발생 가능한 운영 리스크를 원천 차단한 것이 핵심입니다.\n\n### 3.1 CS팀 협업: \"Point of No Return\" 및 수동 개입 차단\n- **배경**: 관세청 시스템에는 **제출된 거래정보를 취소하거나 삭제하는 API가 아예 존재하지 않습니다.** 송장이 채번되고 `[상품준비중]`이 된 이후에 고객이 결제를 취소하면 시스템과 세관 데이터가 심각하게 꼬이게 됩니다.\n- **방어 및 정책 수립**:\n  1. **단순 취소 차단**: CS팀과 사전 합의하여, `[상품준비중]` 이후의 단순 취소 버튼을 기술적으로 블록하고 **\"수령 후 해외 왕복 배송비 고객 부담의 반품\"**으로 운영 프로세스를 전환했습니다.\n  2. **수동 송장 수정 원천 차단**: CS 담당자가 어드민에서 송장번호 텍스트만 강제로 수정하는 것을 차단했습니다. 송장 변경 시 반드시 전용 **[재제출] 버튼**을 눌러 관세청과 특송사에 새 송장을 동시 재전송하도록 시스템 프로세스를 강제하여 데이터 정합성을 지켰습니다.\n\n### 3.2 물류/운영팀 협업: 관세청 3000 에러 선제적 방어\n- **분할 배송 오차 보정 (물류팀)**: 부피 문제로 주문을 여러 박스로 나눌 때, 각 송장의 금액(USD)을 분할하는 과정에서 소수점 오차가 발생하면 세관에서 세액 불일치로 반려(3000 에러)됩니다. 이를 방지하기 위해 **마지막 박스에 잔여 차액을 일괄 할당하여 100% 일치시키는 자체 보정 로직**을 기획했습니다.\n- **30분 룰 자체 Lock 방어 (운영팀)**: 관세청은 동일 주문번호를 30분 내 중복 제출 시 서버 자체를 블록합니다. 운영팀이 실수로 재제출 버튼을 여러 번 누르는 경우를 대비해, **시스템 레벨에서 자체 Lock을 걸어 중복 트래픽을 선제적으로 Drop**시켰습니다.\n\n### 3.3 매출 하락 방어: 본인인증(B기관) 장애 시 Failover\n- **매출 방어 로직 (선승인)**: 결제 트래픽이 몰리는 시점에 본인인증 기관의 망이 뻗거나 지연되면 고객은 결제를 포기합니다. 이를 방어하기 위해 타임아웃 발생 시 결제를 차단하지 않고 **`stat_sgn=02` 플래그로 일단 선승인 통과**를 시켰습니다.\n- **사후 검증 큐**: 선승인 된 건들은 백그라운드 스케줄러가 인증 기관이 복구된 후 Rate Limit(10 TPS 이하)에 맞춰 조용히 사후 검증(PER003)을 진행하도록 하여 매출 이탈을 방어했습니다.\n\n---\n\n## 4. 시스템 무결성을 위한 API 제어 (Dev & AQ)\n\n관세청과 같은 외부 낡은 인프라와의 연동은 잦은 Timeout과 502/503 에러를 유발합니다. 이를 극복하기 위해 설계된 안정성 확보 장치들입니다.\n\n| 로직명 | 대상 API | 핵심 역할 및 기대 효과 |\n|---|---|---|\n| **Dead-Letter Queue (DLQ)** | 관세청 `TRA001` 일괄제출 | 네트워크 장애(5xx) 시 즉각 실패 처리하지 않고, 실패큐에 적재 후 **지수 백오프(Exponential Backoff)를 통해 30분 뒤 자동 재시도**하여 데이터 유실 0% 달성 |\n| **청크 분할 (Chunking)** | D특송사 `bulk-sync` 동기화 | 대량 동기화 시 30초 Timeout이 발생하면 즉시 트랜잭션을 롤백하고, **100건 단위로 청크를 쪼개어 순차 재전송**하는 복원력(Resilience) 확보 |\n| **비동기 폴링 (Polling)** | 관세청 `TRA003` 오류조회 | 관세청에 제출된 내역의 오류를 데몬 스레드가 상시 감지하여 어드민 `[출고보류]` 상태로 자동 롤백 및 실패 사유 바인딩 자동화 |\n| **단건조회(TRA002) 차단** | 관세청 API 전체 | 단건조회 호출 시 TRA003 에러 큐 데이터가 영구 소멸되는 관세청 망의 치명적 단점을 파악하여, **개발자 디버깅 용도를 제외하고 시스템 내 자동 호출 전면 금지** |\n\n---\n\n## 5. 배포 전 체크리스트 (종합 리스크 검증)\n\n라이브 전, 예외 케이스 및 타 부서 영향도를 종합 점검하는 체크리스트입니다.\n\n- [ ] **Track A/B 분기 무결성**: 수하인/주문자 일치 시 간소화 패스, 불일치 시 SMS 인증창 정상 분기 확인\n- [ ] **인증기관 지연 Mocking**: 3170 에러 고의 유발 시 결제가 차단되지 않고 선승인 처리 되는지 점검\n- [ ] **레이스 컨디션 방어**: C물류센터 배치 수집과 내부 상태 변경 로직이 겹칠 때 DB 데드락이 발생하지 않는지 확인\n- [ ] **수동 변경 강제 블록**: 어드민에서 DOM 조작으로 송장을 억지 수정해도 백엔드에서 100% Validation 튕겨내는지 점검\n- [ ] **[재제출] 트랜잭션 롤백**: 새 송장 등록 3단계(채번→관세청→특송사) 중 마지막 통신 실패 시 앞 단계가 안전하게 롤백되는지 확인",
+    "_meta": {
+      "filePath": "customs-api-architecture.mdx",
+      "fileName": "customs-api-architecture.mdx",
+      "directory": ".",
+      "extension": "mdx",
+      "path": "customs-api-architecture"
+    },
+    "headings": [
+      {
+        "id": "프로젝트-개요-및-협업-구조",
+        "text": "1. 프로젝트 개요 및 협업 구조",
+        "level": 2
+      },
+      {
+        "id": "1-배경-및-목표",
+        "text": "1.1 배경 및 목표",
+        "level": 3
+      },
+      {
+        "id": "2-기초-정보",
+        "text": "1.2 기초 정보",
+        "level": 3
+      },
+      {
+        "id": "3-참여-업체-및-역할-5개사-통합",
+        "text": "1.3 참여 업체 및 역할 (5개사 통합)",
+        "level": 3
+      },
+      {
+        "id": "시간대별-데이터-통합-시퀀스-다이어그램",
+        "text": "2. 시간대별 데이터 통합 시퀀스 다이어그램",
+        "level": 2
+      },
+      {
+        "id": "유관-부서-소통-및-선제적-방어-정책-risk-defense",
+        "text": "3. 유관 부서 소통 및 선제적 방어 정책 (Risk Defense)",
+        "level": 2
+      },
+      {
+        "id": "1-cs팀-협업-point-of-no-return-및-수동-개입-차단",
+        "text": "3.1 CS팀 협업: \"Point of No Return\" 및 수동 개입 차단",
+        "level": 3
+      },
+      {
+        "id": "2-물류운영팀-협업-관세청-3000-에러-선제적-방어",
+        "text": "3.2 물류/운영팀 협업: 관세청 3000 에러 선제적 방어",
+        "level": 3
+      },
+      {
+        "id": "3-매출-하락-방어-본인인증b기관-장애-시-failover",
+        "text": "3.3 매출 하락 방어: 본인인증(B기관) 장애 시 Failover",
+        "level": 3
+      },
+      {
+        "id": "시스템-무결성을-위한-api-제어-dev-aq",
+        "text": "4. 시스템 무결성을 위한 API 제어 (Dev & AQ)",
+        "level": 2
+      },
+      {
+        "id": "배포-전-체크리스트-종합-리스크-검증",
+        "text": "5. 배포 전 체크리스트 (종합 리스크 검증)",
+        "level": 2
+      }
+    ]
+  },
+  {
+    "title": "관세청 전자상거래 통관플랫폼 연동 — 전사 공유 기획 보고서",
+    "description": "Project Details for 관세청 전자상거래 통관플랫폼 연동 — 전사 공유 기획 보고서",
+    "date": "2026-07-21",
+    "role": "Project",
+    "content": "# 관세청 전자상거래 통관플랫폼 연동 — 전사 공유 기획 보고서\n\n>  최종 업데이트: 2026-07-19 (D-27) | PM: 박종혁\n\n- --\n\n## 1. 프로젝트 개요\n\n### 1.1 배경 및 목표\n\n2026년 8월 15일 시행되는** 관세법 제254조의2 개정안** 에 따라, 전자상거래업체는 소비자 결제 시점에 개인통관고유부호(PCCC)를** 실시간 검증** 하고, 거래정보를 관세청에** 사전 자동 제출** 해야 한다. 미이행 시 스마트통관 제외 → 목록통관 전환으로 통관 지연이 발생하며, 과태료 및 블랙리스트 등재 위험이 있다.\n\n### 1.2 기초 정보\n\n| 항목 | 내용 |\n|---|---|\n| 법적 근거 | 관세법 제254조의2 개정안 (2026.08.15 시행) |\n| 대상 쇼핑몰 | 뉴트리시아몰 (고도몰5 기반) |\n| 전자상거래업체부호 |** K26000127**(2026.06.01 승인) |\n| 대상 상품 | 압타밀(해외직구) / 포티멜(해외직구) |\n| 계약 총액 | ₩32,413,815 (부가세 별도) — 1차 ₩17,013,815 + 2차 ₩15,400,000 |\n\n### 1.3 참여 업체 (5개사)\n\n| 업체 | 역할 | 담당자 |\n|---|---|---|\n|**(+)아이베 / 크로네**| 원청 · 기획 · PM | 박종혁 리드 |\n|** 긱스튜디오**| 개발사 | 강명제 팀장, 김동섭 엔지니어 |\n|** NICE평가정보**| 본인인증 · 통관검증 중계 | 신용철 매니저 (DI사업1실) |\n|** 옌타이 동수 (Dongshu)**| 중국 물류창고 WMS | 공부장, 안과장 |\n|** 자이언트네트워크그룹**| 통관 · 특송사 | 김현진 연구원 |\n\n- --\n\n## 2. 참조 가이드라인 및 버전\n\n| 연동 기관 | 문서 정식 명칭 | 적용 버전 | 비고 |\n|---|---|---|---|\n| 관세청 | 관세청 전자상거래 전용 REST API 명세서 |** v1.4**(26년 5월 개정) | AUT, PER, TRA 전체 |\n| NICE평가정보 | 통관 스마트 검증 API 개발 가이드 (CI 활용기관) |** v1.0**| SMARTPCC_11/20/30 |\n| NICE평가정보 | 통관 스마트 검증 API 개발 규격_260515.pdf | v1.0 | 암복호화 샘플 |\n| 자이언트 | GGATE API V2 (자이언트네트워크그룹 신고 API) |** v1.2.0**(26.06.10) | HWB 단건/벌크/조회 |\n| 관세청 | 04 전자문서항목정의서 전자상거래물품 통관목록(DKX) | v1.0 | 특송사용 EDI 서식 |\n| 관세청 | 03. 개인통관고유부호 체계 개선(안) | v1.0 | OTP/rspn_tp:03 예외처리 |\n| 관세청 | 01. 회원가입 및 전자상거래업체부호 등록 | v1.0 | API 사용신청 절차 |\n\n- --\n\n## 3. 시간대별 물류 + 데이터 통합 흐름도 \n\n고객이 결제 버튼을 누르는 순간부터, 데이터가 어떤 API를 통해 어디로 흐르고, 물리적 화물이 어디에 있는지를 시간순으로 정리한다.\n\n\n\n####  전체 데이터 흐름 및 단계별 시각화\n\n```mermaid\nsequenceDiagram\n    autonumber\n    actor C as 고객\n    participant G as 뉴트리시아몰 (고도몰/Geek)\n    participant N as NICE평가정보\n    participant D as 동수 (WMS)\n    participant K as 관세청 (KCS)\n    participant Z as 자이언트 (Giant)\n\n    rect rgb(240, 248, 255)\n    Note right of C: ■ STEP 0. 결제 및 인증 (T+0 실시간)\n    C->>G: 결제하기 클릭\n    G->>N: [SMARTPCC_11] PCCC 실시간 검증\n    alt [에러①] NICE/관세청 통신 장애 (3170 에러)\n        N-->>G: 통신 장애 감지\n        G->>G: stat_sgn=02 선승인 처리 (결제 차단 안 함)\n        Note right of G: 해결: 망 복구 후 PER003(SMARTPCC_30) 사후검증 배치\n        Note right of G: 3170이면 CS가 수동 확인 후 고객에게 PER001 재인증 알림톡\n    else [에러②] PCCC 검증 실패 (부호 불일치/만료/도용)\n        N-->>G: 검증 실패 응답\n        G-->>C: 결제 차단. 재입력 유도 모달 노출\n        Note right of G: 해결: 고객이 PCCC 재입력하거나 관세청 사이트에서 부호 재발급\n    else [에러③] 비갱신 유예대상자 (rspn_tp:03)\n        N-->>G: 03 응답 + 임시 인증번호 6자리 자동 회신\n        G-->>C: 입력 없이 자동 통과 (27년 12월까지 한시적)\n        Note right of G: 주의: 2027.12.31 이후 이 경로 폐쇄됨\n    else [에러④] Track B SMS 미수신/세션 만료\n        N-->>G: SMS 발송 완료 but 고객 미입력\n        G-->>C: 인증 모달 타임아웃\n        Note right of G: 해결: 재인증 UX 흐름으로 전환 (재발송 버튼)\n    else [정상] Track A(구매간소화) 또는 Track B(인증완료)\n        N-->>G: 검증 성공 및 Track(A/B) 반환 + 인증번호 6자리\n        G-->>C: 결제 완료 (p1)\n    end\n    end\n\n    rect rgb(255, 248, 240)\n    Note right of G: ■ STEP 1. 동수 HBL/무게 수집 (T+1일 11:00~12:00)\n    Note over G, D: 매 영업일 11:00 동수 수집 / 11:30, 12:00 Geek 폴링\n    G->>D: HBL 및 실측 무게(Weight) API 폴링 (하루 2회)\n    alt [에러⑤] 동수 API 타임아웃/응답 없음\n        D-->>G: 타임아웃 또는 Connection Refused\n        Note right of G: 해결: 15분 후 자동 재시도. 3회 실패 시 Slack 알림 + 수동 확인\n    else [에러⑥] HBL 미채번 (동수 내부 오류)\n        D-->>G: HBL=null 응답\n        Note right of G: 해결: 해당 건은 Skip하고 다음 폴링 시 재수집. 동수 담당자 연락\n    else [에러⑦] 무게(Weight) 값 NULL/이상값\n        D-->>G: weight=null 또는 음수\n        Note right of G: 해결: 기본값 0.0 적재 후 Flag 마킹. 운영팀 수동 확인 대상\n    else [정상] HBL + 무게 정상 수신\n        D-->>G: 송장번호(HBL) 및 무게 정상 응답\n        G->>G: 주문상태 [배송중] 전환 (Point of No Return - 취소 불가)\n    end\n    end\n\n    rect rgb(240, 255, 240)\n    Note right of G: ■ STEP 2-3. 관세청 거래정보 제출 및 에러 모니터링\n    Note over G, K: HBL 수신 즉시 자동 트리거\n    G->>K: [TRA001] 거래정보 일괄제출 (최대 300건/3MB)\n    alt [에러⑧] TRA001 제출 자체 실패 (네트워크/관세청 점검)\n        K-->>G: HTTP 502/503 또는 Connection Timeout\n        Note right of G: 해결: 실패큐(Dead-letter)에 적재 → 30분 후 자동 재시도\n    else [에러⑨] 관세청 3000 에러 (txif_sbmt_no 중복 또는 필드 오류)\n        K-->>G: 3000 에러코드 리턴\n        Note right of G: 해결: txif_sbmt_no 신규 채번 후 재제출. 필드 오류 시 117/118번에 사유 적재\n    else [에러⑩] 30분 룰 위반 (동일 ord_no 30분 내 중복)\n        K-->>G: 중복 제출 거부\n        Note right of G: 해결: ord_cmpl_dttm 비교하여 시스템 자체 방어. 30분 경과 후 재제출\n    else [정상] TRA001 제출 성공\n        K-->>G: 정상 접수\n    end\n\n    loop TRA003 30초 간격 상시 폴링 (50건/큐)\n        G->>K: [TRA003] 미확인오류 조회\n        alt [에러⑪] 관세청 에러 건 발견 (필드 불일치/인증 만료 등)\n            K-->>G: 에러코드 + 상세사유 리턴\n            G->>G: [출고보류(Hold)] 자동 ON + 실패리스트(117/118번) 적재\n            Note right of G: 해결: 운영팀 엑셀 다운 → 원인 파악 → [재제출] 버튼 (새 txif_sbmt_no)\n        else [정상] Clean (unread_cnt=0)\n            K-->>G: 오류 없음. 30초 Sleep 후 재폴링\n        end\n    end\n    end\n\n    rect rgb(255, 240, 245)\n    Note right of G: ■ STEP 4. 자이언트 특송사 전송 (TRA003 Clean 건만)\n    Note over G, Z: TRA003 정상(Clean) 건만 전송\n    G->>Z: [POST /bulk-sync] 자이언트 HWB 동기화 (동기식)\n    alt [에러⑫] 자이언트 HTTP 500/400 에러\n        Z-->>G: 에러 응답 (상세사유 포함)\n        G->>G: 117/118번에 에러사유 TRUNCATE 바인딩 + Hold ON\n        Note right of G: 해결: 에러 원인 수정 후 [재제출]로 자이언트에도 동시 재전송\n    else [에러⑬] 자이언트 타임아웃 (30초 초과)\n        Z-->>G: Connection/Read Timeout\n        Note right of G: 해결: 100건 청크로 분할 재전송. 지속 시 자이언트 담당자 연락\n    else [정상] 전송 성공\n        Z-->>G: 정상 접수 응답\n    end\n    end\n\n    rect rgb(245, 240, 255)\n    Note right of G: ■ STEP 5-6. 통관 및 최종 상태 전환 (T+3~5일)\n    Note over Z, K: 자이언트 주도 - 수입신고서(DKW/DKX) 세관 EDI 전송\n    Note over G, Z: 물리적 상품 준비(출고) 기준 T+3영업일\n    G->>Z: 최종 통관 결과 상태 폴링\n    alt [에러⑭] 통관 보류/반려 (세관 심사 불통과)\n        Z-->>G: 통관 보류/반려 상태 리턴\n        G->>G: [출고보류(Hold)] ON. CS팀 수동 대응 (고객 연락)\n        Note right of G: 해결: 원인별 대응 - 정보불일치: 재제출 / 검역: 서류 보완 / 도용: 신고\n    else [에러⑮] 송장 탈거로 HBL 변경 (동수 재발급)\n        Z-->>G: 기존 HBL과 적하목록 불일치 감지\n        G->>G: 기존 건 Hold\n        Note right of G: 해결: CS가 [재제출]로 새 HBL 등록 → TRA001+자이언트 동시 재전송\n    else [정상] 통관 완료\n        Z-->>G: 통관 완료 상태 리턴\n        G->>G: 분할배송 시 모든 HBL 완료 확인 후 최종 [통관완료] 전환\n    end\n    end\n```\n\n> **[시스템 예외 처리 안내]** 위 다이어그램의 [에러①~⑮]는 라이브 환경에서 발생 가능한 주요 예외 케이스입니다. 각 에러 항목의 해결 프로세스에 따라 시스템이 자동 대응하거나 CS팀의 매뉴얼 대응이 필요합니다.\n\n### STEP 0. 고객 결제 (실시간, T+0초)\n\n| 항목 | 내용 |\n|---|---|\n| 화물 위치 | 중국 옌타이 동수 창고에 재고로 있음 |\n| 트리거 | 고객이 뉴트리시아몰에서**[결제하기]** 버튼 클릭 |\n| API 호출 순서 | ① NICE `SMARTPCC_11` 호출 (CI 추출 + 관세청 PER001 대체 검증) → ② Track 분기 → ③ 결제 승인 → ④ 고도몰 주문 생성 `[결제완료]` |\n| 소요시간 | 2~5초 (실시간) |\n\n** Track 분기 상세:**\n\n| Track | 조건 | 동작 | 고객 경험 |\n|---|---|---|---|\n|** A (구매간소화)**| 주문자 = 수하인 (CI 일치, `reqt_tp:02`) | 백그라운드에서 자동인증. 인증번호 6자리가 백엔드로 즉시 회신. | 입력 없이 프리패스 |\n|** B (일반인증)**| 주문자 ≠ 수하인 또는 CI 불가 (`reqt_tp:01`) | SMS/알림톡으로 인증번호 발송. 고객이 6자리 직접 입력. | 인증번호 입력창 노출 |\n|** 예외 (03)**| 비갱신 유예대상자 (`rspn_tp:03`) | 관세청이 임시 인증번호 6자리를 즉시 회신. | 입력 없이 자동 통과 |\n\n> **[인증 Track 분기]** Track A(본인 구매)는 추가 입력 없이 통과되며, Track B(타인 선물 등)는 수하인이 직접 인증해야 합니다. 비갱신자(03)의 경우 관세청 지침에 따라 2027년 12월 31일까지 시스템에서 자동 통과 처리됩니다.\n\n** 장애 시 예외 처리 (PER003 사후검증):**\n- 관세청/NICE 망이 다운된 경우, 결제를 차단하지 않고 `stat_sgn=02`로** 선승인** 처리\n- 망 복구 후 NICE `SMARTPCC_30` API로 사후 검증 배치 실행 (초당 10건 이하 Rate Limiting)\n- `call_dttm` 필드에 장애 발생 시각을 필수 기입\n- 만약 `3170` 에러 (세관이 아닌 당사 내부 망 지연으로 판단) → CS 수동 확인 대기 + 고객에게 PER001 재인증 유도 알림톡 발송\n\n> ️**[3170 에러 대응]** 3170 에러는 관세청 망이 아닌 당사 시스템 또는 구간 네트워크 지연으로 판단되는 에러입니다. 이 경우 기 선승인된 주문에 대해 CS 부서의 수동 확인 및 고객 재인증 안내가 필요합니다.\n\n- --\n\n### STEP 1. 동수 창고 데이터 수집 및 HBL 채번 (T+수시간 ~ T+1일)\n\n| 항목 | 내용 |\n|---|---|\n| 화물 위치 | 중국 옌타이 동수 창고에서 피킹/포장 진행 중 |\n| 트리거 |** 매 영업일 11:00** 동수 WMS가 공식몰 `p1`(결제완료) 건들을 수집 |\n| API 호출 | ① 동수 WMS 수집 후 HBL(송장번호) 채번 및 패킹 시작 → ②** 공식몰(Geek) 스케줄러가 11:30 / 12:00 (하루 2회)** 동수 API를 호출하여 채번된 HBL과** 상품의 실측 무게(Weight)** 수신 → ③ 고도몰 DB에 HBL 및 무게 적재 |\n| 상태 전환 | 고도몰 주문 상태: `[결제완료]` →**`[상품준비중]`**|\n\n** 동수 데이터 수집 규칙 (7월 확정):**\n\n| 규칙 | 상세 |\n|---|---|\n| 수집 기준 | `orderGoodsData` 내의 `orderStatus`를** 최종 판단 기준** 으로 사용 (마스터 주문 상태 아님) |\n| 수집 대상 |** 오직 `p1`(결제완료)만** 수집 |\n| 수집 금지 | `g1`(상품준비중): 이미 WMS로 넘어간 건이므로 중복수집 시** 이중출고 대형사고**|\n| 자동 폐기 | `c`(취소), `r`(환불), `f`(결제실패) 코드가 섬여 있으면 동수 WMS가 자동 Drop |\n| 동수 테스트 제약 | Staging에서 실서버 데이터가 리턴됨.** 15~18시에만** 테스트 가능. `ord_no` 수동 삽입 필요 |\n\n\n\n** 분할 배송 발생 시 (1주문 → 복수 HBL):**\n\n| 필드 | 처리 방식 |\n|---|---|\n| `hbl_no` | 박스별 HBL 번호 각각 고유하게 1:1 매핑 |\n| `ord_no` | 최초 자사몰 주문번호** 동일하게 유지**(관세청 1주문-복수 HBL 허용) |\n| `itemSeq` | 해당 박스에 실제 적재된 상품만 선별하여 `001, 002` 형태로** 재생성**|\n| 금액 |**[해당 박스 실적재 수량 × 상품별 USD 고정 공급단가]** 로 분기 연산 |\n\n> **[분할 배송 신고 원칙]** 부피 문제 등으로 분할 배송 시, 주문번호는 동일하게 유지하되 각 박스에 적재된 실제 금액과 수량을 분할하여 관세청에 별도 신고해야 합니다. 미준수 시 세액 불일치(3000 에러)로 반려됩니다.\n\n- --\n\n### STEP 2. 관세청 거래정보 제출 (T+1일, HBL 적재 직후 트리거)\n\n| 항목 | 내용 |\n|---|---|\n| 화물 위치 | 동수 창고에서 포장 완료, 선적 대기 또는 항공 적재 준비 중 |\n| 트리거 | 11:30, 12:00 배치로** HBL이 DB에 적재되는 즉시** TRA001 배치 자동 트리거 (이후 실패건은 실패리스트에 적재) |\n| API 호출 | 관세청 `TRA001` (거래정보 일괄제출) |\n| 제약사항 | 최대 300건 배치. Body 최대 3MB. 30분 룰 방어 (`ord_cmpl_dttm` 저장) |\n\n** TRA001 주요 파라미터 및 주의사항:**\n\n| 파라미터 | 값 | 주의 |\n|---|---|---|\n| `txif_sbmt_no` | 21자리 신규채번 | ️ 재제출 시** 반드시 새로 채번**(3000 에러 방어) |\n| `sale_ents_sgn` | K26000127 | 업체부호 |\n| `sale_ents_id` |** Staging: K26000127 / Prod: Null**| ️ Prod 배포 시 반드시 Null로 원복 |\n| `elcm_pcd` | A | 독립자사몰 직접판매 |\n| `prod_unprc_curr_cd` | USD | 고정 |\n| `ord_amt_curr_cd` | USD | 고정 |\n| `cscl_agcs` | Null | 통관대행료 제외 |\n| `ord_prod_nm` | 국문 상품명 그대로 | 옵션 제거, 일반 상품명만 |\n\n\n\n- --\n\n### STEP 3. 에러 모니터링 및 확인 (T+1일~, TRA001 제출 직후부터 상시)\n\n| 항목 | 내용 |\n|---|---|\n| 화물 위치 | 중국 → 인천 이동 중 (항공/해운) |\n| 트리거 | TRA001 제출 직후부터 상시 폴링 |\n| API 호출 | 관세청 `TRA003` (미확인 오류 조회 큐 폴링) |\n| 동작 | 50건 단위 큐 조회. `unread_cnt=0`이면 30초 Sleep 후 재시도 |\n\n** 오류 발생 시 자동화 흐름:**\n1. TRA003에서 에러 건 발견\n2. 고도몰 어드민에**`[출고보류(Hold)]`** 플래그 자동 세팅 → 동수 창고 송장 출력 원천 차단\n3. 에러 코드 및 사유를 고도몰 순정 양식** 117번(사유), 118번(상세사유)** 필드에 자동 바인딩\n4. 운영팀이 실패 리스트 엑셀 다운로드 → 원인 파악 → 어드민에서**[재제출]** 버튼 클릭 (txif_sbmt_no 신규 채번)\n\n> ️**[TRA002 호출 주의]** TRA002(단건조회)를 선호출할 경우 TRA003 큐에서 해당 건이 소멸됩니다. TRA002는 예외적인 디버깅 목적으로만 제한적으로 사용해야 합니다.\n\n- --\n\n### STEP 4. 자이언트 특송사 데이터 전송 (TRA003 Clean 확인 후)\n\n| 항목 | 내용 |\n|---|---|\n| 화물 위치 | 중국에서 인천으로 이동 중 또는 인천 입항 대기 |\n| 트리거 | TRA003에서 에러 없음 확인된(Clean) 건만 전송 |\n| API 호출 | 자이언트 `POST /api/hwb/bulk-sync` (** 동기식**) |\n| 응답 처리 | 즉시 리턴되는 에러 코드/상세를 실시간 파싱 → 고도몰 117/118번에 다이렉트 바인딩 |\n\n** 자이언트 전송 필드 고정값:**\n\n| 필드 | 값 | 비고 |\n|---|---|---|\n| `shipperName` |** 동수 (DONGSHU E-BUSINESS)**| 실물 발송 근거지인 중국 현지 창고명 (일양로지스 아님) |\n| `domesticCarrierName` |** 롯데택배**| 국내 배송사 |\n| `brokerCode` |** K26000127**(9자리 고정) | 전자상거래업체부호 |\n| `brokerName` | 뉴트리시아몰 | 등록된 상호명 |\n| `pccCode` | 13자 고정 (P로 시작) | 개인통관고유부호 |\n| `tempAuthNo` | 6자 고정 | 일회용 인증번호 |\n| `sellerName` | 뉴트리시아몰 | 직구(A) 유형 = 쇼핑몰명 |\n| `qtyUnit` | EA | 고정 |\n\n- --\n\n### STEP 5. 인천 입항 → 통관 → 국내 배송 (T+2~4일)\n\n| 항목 | 내용 |\n|---|---|\n| 화물 위치 | 인천항/공항 입항 → 세관 창고 반입 → X-ray 검사 → 통관 심사 |\n| 데이터 흐름 | 자이언트가 당사가 제출한 거래정보(TRA001)+HWB 데이터를 기반으로 수입신고서(DKW)/통관목록(DKX)을 세관에 EDI 제출 |\n| 역할 구분 | DKW/DKX 제출은** 자이언트(특송사)의 역할**. 당사는 REST API로 거래정보/인증만 담당 |\n| 통관 완료 후 | 국내 택배사(롯데택배)로 인계 → 고객 배송 |\n\n### STEP 6. 통관 결과 확인 및 최종 상태 전환 (T+3~5일)\n\n| 항목 | 내용 |\n|---|---|\n| 화물 위치 | 통관 심사 완료 후 국내 택배망을 통해 고객 배송 중 |\n| 통관 결과 폴링 | 물리적인 상품 준비(출고 예정/완료) 후** 3일(T+3일) 시점** 에 자이언트 API를 호출하여 최종 통관/배송 상태 결과값 수신 |\n| 고도몰 상태 전환 | 통관 통과 및 분할 배송 건의 경우, 쪼개진** 모든 HBL이 최종 출고 완료** 판정을 받았을 때만 마스터 주문 상태를 최종**`[통관완료]`** 로 일괄 전환 |\n| 이유 | 고도몰 DB 구조상 개별 송장 단위로 상태값을 제어할 수 없음 (sno 단위로만 상태 매핑) |\n\n> **[통관 상태 안내]** 배송중 상태 전환 후 3~5일 내에 통관이 완료되면 시스템에서 자동으로 [통관완료] 상태로 업데이트 됩니다.\n\n- --\n\n## 4. 기능별 상세 매칭 (API 가이드라인 ↔ 개발 요구사항)\n\n### 4.1 인증 체계 (PER/AUT)\n\n| 가이드 | 기능 | 상태 | 운영 비고 |\n|---|---|---|---|\n| 관세청 v1.4 AUT | AUT001 토큰발급 / AUT002 폐기 |  | OAuth 2.0, 24시간 자동갱신. 계정당 최대 3개 인가키 |\n| NICE v1.0 | SMARTPCC_11 (PER001 대체) |  | Track A/B 자동분기. 비갱신자(03) 허용. AES/GCM/NoPadding 복호화 |\n| NICE v1.0 | SMARTPCC_20 (PER002 대체) |  | 주소/연락처 변경 시 재검증. TRA001 이후 호출 차단 |\n| NICE v1.0 | SMARTPCC_30 (PER003 대체) |  | 장애 시 선승인 후 사후검증. 10TPS 제한. 3170 에러 시 CS 수동 |\n\n### 4.2 거래정보 (TRA)\n\n| 가이드 | 기능 | 상태 | 운영 비고 |\n|---|---|---|---|\n| 관세청 v1.4 | TRA001 거래정보 일괄제출 |  | 최대 300건, Body 3MB. txif_sbmt_no 21자리 신규채번 |\n| 관세청 v1.4 | TRA002 단건조회 |  | ️ 예외용만. 선호출 시 TRA003 큐 데이터 영구소멸 |\n| 관세청 v1.4 | TRA003 미확인오류 폴링 |  | 50건 큐. unread_cnt=0이면 30초 Sleep. 조회기간 7일 제한 |\n| UNIPASS API041 | (구) PCCC 검증 |  | 8/15 이후 완전 중단 → PER001로 대체 |\n\n### 4.3 동수 WMS 연동\n\n| 가이드 | 기능 | 상태 | 운영 비고 |\n|---|---|---|---|\n| 동수 협의(7월) | 공식몰 주도형 Outbound Polling |  | p1만 수집, g1/c/r/f 제외 |\n| 동수 협의 | 1회 조회 100건 제한, 초과 시 청크분할 |  | 출고일자+HBL 모두 있는 건만 항공발송 전환 |\n| 동수 협의 | 분할배송 연산 규칙 |  | [실적재 수량×USD 고정단가]. 소수점 누적오차 리스크 존재 |\n\n### 4.4 자이언트 연동\n\n| 가이드 | 기능 | 상태 | 운영 비고 |\n|---|---|---|---|\n| GGATE v1.2.0 | HWB 벌크 동기화 (`POST /api/hwb/bulk-sync`) |  | E2E 대기 |\n| GGATE v1.2.0 | 동기식 응답 실시간 파싱 → 117/118번 바인딩 |  | 비동기 배치 기각됨 |\n| GGATE v1.2.0 | 통관이상 배치 폴링 (HWB+3영업일부터 조회) |  | DB 상태 적재 + 어드민 필터 연동 |\n| 자이언트 협의 | 교환 건은 TRA 재제출 불요 (CS 수동) |  | 스마트통관을 위해 TRA제출은 필수 |\n\n### 4.5 어드민 및 프론트엔드 기획\n\n| 기획 | 기능 | 상태 | 운영 비고 |\n|---|---|---|---|\n| 쿠팡형 UI(7.1) | 체크박스 제거, 원클릭 동의 |  |** 개인정보 및 결제 동의 UI 미변경 상태. 프론트엔드 최우선 작업 필요**|\n| Hold 자동화(7.7) | TRA003/자이언트/PER003 실패 시 자동 ON |  | 2일 공수 |\n| 실패리스트(7.2) | 117/118번 바인딩. 저장≠송출 분리. 재제출 시 txif_sbmt_no 신규채번 |  | 4일 공수 |\n| 취소차단(6.3) | 취소/환불 주문 TRA001 배열에서 Drop |  | orderGoodsData. orderStatus 기준 |\n| USD/HS코드(7.6) | 별도 DB 신설, 엑셀 벌크 업로드 |  | 1일 공수 |\n| 영문정보(7.3) | 영문주소: 행안부 API. 영문성명: 로마자 추천+수동입력 |  | Papago 기각. 2일 공수 |\n| 상품명(7월) | 옵션 제거, 일반 상품명만 제출 |  | v1.4 지침 충족 |\n\n- --\n\n## 5. 운영 정책\n\n### 5.1 계도기간 및 2027년 유예 정책\n\n| 정책 | 기간 | 상세 |\n|---|---|---|\n|** 임시인증번호(Z99999)**|** 2026.08.15 ~ 2026.09.15**| 오픈 후 1개월간 인증번호 대신 `Z99999`를 TRA 및 수입신고서에 기재 가능. 9/16부터 전면 불가. |\n|** 협력인정업체 시범적용**|** 2026.08.15 ~ 2027.01.31**| 정식 지정 전이라도 CI 수집 요건을 갖추면 Track A 구매간소화 특례 시범 적용. 당사는 NICE 연동으로 해당. |\n|** 정식 지정 신청 개시**|** 2027.01.01~**| 정식 등록 신청 접수 시작. 세관 승인 10일 이내. |\n|** 유예 종료**|** 2027.02.01 이후**| 정식 협력인정업체만 Track A 유지. 미등록 시 혜택 완전 종료. |\n\n** 협력인정업체 등록 요건 (고시 제10조):**\n1. 전자상거래업자 등록 완료\n2. 직전 반기 거래정보 제출 정합성** 95% 이상**(HBL번호, 주문번호, 업체부호 일치 기준)\n3. 최근 1년 내 PCCC 도용 처벌 없을 것\n4. 최근 1년 내 개인정보보호법 과징금/고발 없을 것\n5. 본인확인기관(NICE)을 통해 CI 취득 가능 상태일 것\n\n> ️**[데이터 정합성 유지]** 계도기간부터 TRA001을 통한 거래정보를 성실히 제출하여 정합성 95% 이상을 유지해야 협력인정업체 승인이 가능합니다. (반기별 평가 미달 시 특례 적용 정지)\n\n### 5.2 취소/환불 정책 (Point of No Return)\n\n| 시점 | 취소 가능 여부 | 처리 방식 |\n|---|---|---|\n| 결제전 |  가능 | 일반 취소 |\n| 결제완료 ~ 상품준비중 전 |  가능 | 취소 처리, TRA001 배열에서 Drop |\n|** 상품준비중 (HBL 채번 후)**| ** 불가**| 무조건 수령 후 반품 프로세스 (해외 왕복배송비 고객 부담) |\n\n### 5.3 송장 재발급 및 재제출 운영 정책\n\n통관 과정 중 송장 탈거(파손/분실) 등으로 인해** 새로운 HBL 송장번호가 재발급되는 경우** 의 CS 운영 원칙입니다.\n-** 수동 송장 업데이트 차단**: 고도몰 주문 상세에서 CS팀이 송장번호만 단순 수정/업데이트하는 행위는** 시스템 차원에서 원천 차단** 합니다. (단순 업데이트 시 관세청에는 과거 송장으로 제출된 상태로 남아 데이터가 심각하게 꼬입니다)\n-** 전용 [재제출] 기능 사용 의무화**: 새로운 송장번호 발급 시, 반드시 어드민에 마련된 전용**[재제출] 기능** 을 통해서만 송장을 갱신해야 합니다.\n-** 재제출 시나리오 동작 흐름**: CS팀이 [재제출]을 통해 새 송장 입력 시 → 시스템이 새 `txif_sbmt_no` 자동 채번 → 관세청 `TRA001`에 새 송장으로 재전송 → 성공 시 자이언트 `bulk-sync` 에도 동시 재전송 됨.\n\n- --\n\n## 6. 배포 전 체크리스트 (QA 및 리스크 검증)\n\n라이브 오픈(8/15) 및 실서버 이관(8/5) 전, 모든 시스템이 정상적으로 돌아가는지 확인하기 위한 종합 QA 및 리스크 체크리스트입니다.\n\n### 6.1 프론트엔드 및 인증 (NICE)\n- [ ]** UI 변경 확인**: 결제 및 개인정보 동의 UI(쿠팡형 원클릭) 정상 노출 여부\n- [ ]** Track A/B 분기 테스트**: 수하인=주문자(Track A 간소화), 수하인≠주문자(Track B SMS 인증) 정상 분기 확인\n- [ ]** 예외 케이스(03) 테스트**: 비갱신 대상자(03) 입력 시 임시 인증번호(Z99999 등) 우회 통과 확인\n- [ ]** NICE 망 장애(3170) 테스트**: 모달 세션 타임아웃 및 세관 지연 시 `stat_sgn=02` 선승인 후 사후검증(PER003) 전환 확인\n\n### 6.2 동수 창고 (WMS) 및 분할 배송 (개발 레벨 상세 체크)\n- [ ]** 100건 대량 배치 송수신 및 JSON 파싱**: 동수 WMS `p1` 100건 배치 처리 시 JSON Body Parsing Exception 없이 100% 맵핑되는지 점검\n- [ ]** 무게(Weight) API NULL 대응**: 실측 무게값이 NULL 또는 문자열 파싱 에러로 떨어질 경우 기본값 0.0 처리 혹은 예외 처리 여부\n- [ ]** 레이스 컨디션 및 트랜잭션**: 동수 배치와 고도몰 상태 전환 타이밍 충돌 시 DB 트랜잭션 락/데드락 발생 없이 g1 수집 방어 여부\n- [ ]** 분할 배송 소수점 로직**: 분기 연산 시 `Float/Double` 오차 방어 로직 (마지막 HBL에 차액을 무조건 할당하여 마스터 총액과 정확히 일치 검증)\n\n### 6.3 관세청 (TRA) 및 자이언트 연동 (Timeout & Payload)\n- [ ]** API 응답 타임아웃(Timeout) 엣지 케이스**: 관세청 TRA001 / 자이언트 동기화 시 10초 이상 지연(Connection/Read Timeout) 발생 시 재시도(Retry) 또는 Dead-letter 큐 적재 로직 확인\n- [ ]** TRA001 30분 룰 강제 테스트**: 동일 `ord_no` 30분 내 중복 방어가 실제 `ord_cmpl_dttm` 컬럼 비교를 통해 완벽히 Drop 되는지 검증\n- [ ]** 자이언트 에러 응답 파싱**: 자이언트 HTTP 500/400 에러 시 Response Body 내의 상세 사유가 고도몰 117/118번 컬럼의 VARCHAR 길이 제한을 초과하지 않고 안전하게 바인딩(TRUNCATE) 되는지 점검\n- [ ]** 3일 후(T+3) 폴링 스케줄러 데몬**: 배송 시작 후 +3 영업일 뒤 자이언트 폴링 스케줄러가 데몬으로 안정적으로 돌면서 `[통관완료]`로 일괄 전환하는지 서버 로그 검증\n\n### 6.4 어드민 제어 및 CS 정책\n- [ ]** 수동 송장 변경 차단 무결성**: 어드민에서 꼼수(DOM 조작/패킷 탬퍼링)로 송장번호를 강제 수정하더라도 백엔드 API 단에서 막아내는지(Validation) 점검\n- [ ]**[재제출] 다중 트랜잭션 성공/실패 롤백**: 새 송장 등록 시 [새 채번 → TRA001 제출 → 자이언트 전송] 3단계 트랜잭션 중 중간에 터졌을 때(ex: TRA001 성공, 자이언트 실패) 데이터 불일치를 방어할 롤백/Hold 로직 확인\n\n### 6.5 시스템 및 인프라 (8/5 실서버 이관용)\n- [ ] `sale_ents_id` 원복: Staging(K26000127)에서** Prod(Null)** 로 변경 확인\n- [ ]** 방화벽 ANY 오픈 확인**: 관세청 통합테스트 전 방화벽 정상 오픈 여부 확인 (Prod: `103.87.116.64`)\n- [ ]** OAuth 인증 토큰(AUT001)**: 24시간 토큰 자동 갱신 실패 시(만료) 재시도 로직이 백그라운드에 구현되어 있는지 점검\n- [ ]** TLS 1.3 통신 확인**: 관세청 및 자이언트 서버와 TLS 1.3 통신이 정상적으로 맺어지는지 점검\n\n- --\n\n## 7. 예상 리스크 및 대응 방안 (Risk Management)\n\n\n\n| # | 카테고리 | 예상 리스크 | 배경 | 예상 영향 | 대응 방안 |\n|---|---|---|---|---|---|\n| 1 | 테스트 |** TRA003 Silent Failure (사각지대)**| 테스트 환경에서 관세청 에러를 강제로 유발할 방법이 없음 | 오픈 후 통관 반려 사실을 며칠 뒤에야 인지. 대형 고객 컴플레인 | 오픈 후 최소 2주간 매일 오전/오후 개발사+운영팀 교차 대사 작업 |\n| 2 | 테스트 |** 동수 WMS Staging = 실서버**| 동수 테스트 환경이 실서버 데이터를 리턴하며, 15~18시에만 테스트 가능 | 통합 테스트 시간 제약으로 충분한 QA 불가 | ord_no 수동 삽입으로 우회 + E2E는 집중 시간대 배정 |\n| 3 | 인프라 |** 방화벽 ANY 오픈 미확정**| 관세청이 통합테스트 전 방화벽 ANY 오픈 시점을 별도 통보 예정이나 아직 미통보 | 방화벽 미오픈 시 연동 테스트 자체 진행 불가 | 관세청 eccs@korea. kr 주간 단위 일정 재확인 메일 발송 |\n| 4 | 인프라 |** 관세청 서버 에러 시 (점검/장애)**| 관세청 정기 점검이나 예고 없는 서버 장애 발생 시 TRA001/TRA003 전면 불통 | 실패리스트 대량 적재, 신규 주문 거래정보 제출 전면 지연 | 실패큐(Dead-letter) 적재 → 서버 복구 후 자동 일괄 재처리. 2시간 이상 장기 장애 시 운영팀 수동 전환 |\n| 5 | 연동 |** 동수-고도몰 상태 레이스 컨디션**| 동수 배치와 고도몰 주문 상태 전환의 타이밍 충돌 | 치명적인 이중출고 (대형 물류사고) | 초기 1주간 매일 DB 대사 스크립트 실행. p1→g1 전환 시 DB 락으로 방어 |\n| 6 | 연동 |** 연휴/명절 후 배치 폭주**| 공휴일 연휴 후 적체된 수십~수백 건이 한꺼번에 배치 | TRA001 300건/동수 100건 제한으로 병목, 서버 OOM 또는 Gateway Timeout | 배치 간 30초 간격 + 청크 단위 순차 실행 |\n| 7 | 연동 |** 자이언트 500건 벌크 미검증**| GGATE API가 단건→500건 확장되었으나 실제 대량 테스트 미진행 | 응답 지연/타임아웃으로 전건 실패 처리 | 100건 청크 + 타임아웃 30초 방어 + 자이언트 김현진 연구원과 사전 부하 테스트 협의 |\n| 8 | 데이터 |** 분할배송 소수점 누적오차**| USD 단위 소수점 버림 연산이 누적되면 마스터 총액과 불일치 | 세액 불일치로 관세청 반려 (3000 에러) | 마지막 박스에 나머지 차액 일괄 할당 로직 구현 완료. QA 검증 필수 |\n| 9 | 데이터 |** 30분 룰 Edge Case**| 동일 ord_no로 30분 이내 재제출 시 관세청이 자동 거부 | TRA001 대량 반려 발생 가능 | ord_cmpl_dttm 저장하여 시스템 자체 방어 + 관세청에 공식 질의 예정 |\n| 10 | CS/운영 |** 송장 탈거 후 CS 오대응**| CS 직원이 [재제출]을 사용하지 않고 송장만 메모/수동 수정할 경우 | 적하목록과 불일치로 통관 전면 보류 + 과태료 대상 | 수동 변경 시스템 차단 + CS 스크립트 및 어드민 운영 가이드 교육 |\n| 11 | CS/운영 |** 분할배송 CS 문의 폭주**| 고도몰은 마스터 단위 상태 제어만 가능하여 \"송장은 떴는데 배송중으로 안 바뀐다\" | CS 대응 시간 폭증 | CS 스크립트에 분할배송 안내 사전 명시. 알림톡 자동 발송 |\n| 12 | 인증 |** NICE 모달 세션 타임아웃**| 고객이 인증창을 오래 놓아두면 세션 만료되어 결제 자체가 무산 | 이탈률 상승 + CS 폭주 | 재인증 UX 흐름 구현(재발송 버튼) + 안내 문구 |\n| 13 | 인증 |** NICE AES/GCM 복호화 키 변경**| NICE 측에서 암호화 키를 사전 통보 없이 갱신할 경우 | SMARTPCC_11 전면 장애 → 결제 전면 차단 | NICE 신용철 매니저와 키 변경 통보 SLA 사전 합의 |\n| 14 | 정책 |** 계도기간 종료 후 미대응 (9/16~)**| 계도기간(8/15~9/15) 종료 후 Z99999 임시인증번호 전면 불가 | 미갱신 고객 결제 실패 폭주 | 9/1부터 미갱신 고객 대상 사전 알림톡 캠페인. 고객 안내 배너 강화 |\n| 15 | 정책 |** 95% 정합성 미달 → 협력인정업체 탈락**| 반기별(1월/7월) 관세청 평가에서 거래정보 정합성 95% 미달 시 | Track A(구매간소화) 특례 6개월 정지. 모든 고객 Track B로 강제 전환 → UX 악화 | 계도기간부터 TRA001 제출 정확도 모니터링 대시보드 운영. 월간 정합성 리포트 자체 생성 |\n\n- --\n\n## 8. 개발사 (Geek Studio) 시연 항목\n\n\n\n### 7.1 결제창 인증 유형별 시연 (3건)\n\n| # | 시연 유형 | 테스트 조건 | 확인 포인트 |\n|---|---|---|---|\n| 1 |** 갱신용 (일반 SMS, Track B)**| 주문자 ≠ 수하인 또는 CI 불일치 | SMS 인증창 노출 → 6자리 입력 → 검증 통과 |\n| 2 |** 구매간소화용 (Track A)**| 주문자 = 수하인, CI 일치 | 입력창 없이 자동 통과 (프리패스) |\n| 3 |** 비갱신용 (예외 케이스)**| rspn_tp:03 응답 대상자 | 입력창 없이 자동 통과 (03 예외 처리) |\n\n### 7.2 백엔드/어드민 제어 시연 (2건)\n\n| # | 시연 항목 | 제약사항 | 확인 포인트 |\n|---|---|---|---|\n| 1 |** 실패 건 수동 재제출**| TRA003 강제 에러 유발 불가능 → 과거 실패 이력 샘플 활용 | 재제출 버튼 클릭 → 새 txif_sbmt_no 채번 확인 → 정상 접수 |\n| 2 |** 출고보류(Hold) 플래그 자동세팅**| 에러 발생 시 자동으로 Hold ON 되는지 확인 | Hold 플래그 상태 확인 + 실패 리스트 엑셀 다운로드 |\n\n\n\n- --\n\n## 9. 마일스톤 (7/19 기준)\n\n| Phase | 단계 | 일정 | 현황 |\n|---|---|---|---|\n| — | 1차 자율테스트 | 04.13~04.24 |  |\n| — | API 휴지기 | 04.27~05.01 |  |\n| — | 2차 통합테스트 | 05.11~05.22 |  |\n| P1 | 코어모듈 기술검증 | ~05.22 |  |\n| P2 | 운영환경준비 (업체부호 발급 등) | 06.01~06.04 |  |\n| P3 | 외부API연동 (NICE 테스트베드 등) | 06월 |  |\n| P4 | 모듈결합 QA (4자망) | 07.01~ | ** P5와 병행**|\n| P5 | E2E 통합테스트 | 07.10~08.04 | ** D-27**|\n| P6 | ** 실서버 이관 (Prod Deploy)**|** 2026.08.05**|  대기 |\n| — |** 전사 공유 및 시연 미팅**|** 다음주**|  예정 |\n| — | ** 정식 오픈 (Live)**|** 2026.08.15**|  D-27 |\n\n- --\n\n## 10. 고정 파라미터 레퍼런스\n\n| 파라미터 | 값 | 설명 |\n|---|---|---|\n| elcm_pcd | A | 독립자사몰 직접판매 |\n| sale_ents_sgn | K26000127 | 업체부호 |\n| sale_ents_id |** Staging:K26000127 / Prod:Null**| ️ 원복필수 |\n| prod_unprc_curr_cd | USD | 고정 |\n| ord_amt_curr_cd | USD | 고정 |\n| cscl_agcs | Null | 통관대행료 제외 |\n| shipperName | DONGSHU E-BUSINESS | 중국 현지 창고명 |\n| domesticCarrierName | 롯데택배 | 국내 배송사 |\n| brokerCode | K26000127 | 9자리 고정 |\n| qtyUnit | EA | 고정 |\n\n- --",
+    "_meta": {
+      "filePath": "customs-api.mdx",
+      "fileName": "customs-api.mdx",
+      "directory": ".",
+      "extension": "mdx",
+      "path": "customs-api"
+    },
+    "headings": [
+      {
+        "id": "프로젝트-개요",
+        "text": "1. 프로젝트 개요",
+        "level": 2
+      },
+      {
+        "id": "1-배경-및-목표",
+        "text": "1.1 배경 및 목표",
+        "level": 3
+      },
+      {
+        "id": "2-기초-정보",
+        "text": "1.2 기초 정보",
+        "level": 3
+      },
+      {
+        "id": "3-참여-업체-5개사",
+        "text": "1.3 참여 업체 (5개사)",
+        "level": 3
+      },
+      {
+        "id": "참조-가이드라인-및-버전",
+        "text": "2. 참조 가이드라인 및 버전",
+        "level": 2
+      },
+      {
+        "id": "시간대별-물류-데이터-통합-흐름도",
+        "text": "3. 시간대별 물류 + 데이터 통합 흐름도",
+        "level": 2
+      },
+      {
+        "id": "전체-데이터-흐름-및-단계별-시각화",
+        "text": "전체 데이터 흐름 및 단계별 시각화",
+        "level": 4
+      },
+      {
+        "id": "step-0-고객-결제-실시간-t0초",
+        "text": "STEP 0. 고객 결제 (실시간, T+0초)",
+        "level": 3
+      },
+      {
+        "id": "step-1-동수-창고-데이터-수집-및-hbl-채번-t수시간-t1일",
+        "text": "STEP 1. 동수 창고 데이터 수집 및 HBL 채번 (T+수시간 ~ T+1일)",
+        "level": 3
+      },
+      {
+        "id": "step-2-관세청-거래정보-제출-t1일-hbl-적재-직후-트리거",
+        "text": "STEP 2. 관세청 거래정보 제출 (T+1일, HBL 적재 직후 트리거)",
+        "level": 3
+      },
+      {
+        "id": "step-3-에러-모니터링-및-확인-t1일-tra001-제출-직후부터-상시",
+        "text": "STEP 3. 에러 모니터링 및 확인 (T+1일~, TRA001 제출 직후부터 상시)",
+        "level": 3
+      },
+      {
+        "id": "step-4-자이언트-특송사-데이터-전송-tra003-clean-확인-후",
+        "text": "STEP 4. 자이언트 특송사 데이터 전송 (TRA003 Clean 확인 후)",
+        "level": 3
+      },
+      {
+        "id": "step-5-인천-입항-통관-국내-배송-t24일",
+        "text": "STEP 5. 인천 입항 → 통관 → 국내 배송 (T+2~4일)",
+        "level": 3
+      },
+      {
+        "id": "step-6-통관-결과-확인-및-최종-상태-전환-t35일",
+        "text": "STEP 6. 통관 결과 확인 및 최종 상태 전환 (T+3~5일)",
+        "level": 3
+      },
+      {
+        "id": "기능별-상세-매칭-api-가이드라인-개발-요구사항",
+        "text": "4. 기능별 상세 매칭 (API 가이드라인 ↔ 개발 요구사항)",
+        "level": 2
+      },
+      {
+        "id": "1-인증-체계-peraut",
+        "text": "4.1 인증 체계 (PER/AUT)",
+        "level": 3
+      },
+      {
+        "id": "2-거래정보-tra",
+        "text": "4.2 거래정보 (TRA)",
+        "level": 3
+      },
+      {
+        "id": "3-동수-wms-연동",
+        "text": "4.3 동수 WMS 연동",
+        "level": 3
+      },
+      {
+        "id": "4-자이언트-연동",
+        "text": "4.4 자이언트 연동",
+        "level": 3
+      },
+      {
+        "id": "5-어드민-및-프론트엔드-기획",
+        "text": "4.5 어드민 및 프론트엔드 기획",
+        "level": 3
+      },
+      {
+        "id": "운영-정책",
+        "text": "5. 운영 정책",
+        "level": 2
+      },
+      {
+        "id": "1-계도기간-및-2027년-유예-정책",
+        "text": "5.1 계도기간 및 2027년 유예 정책",
+        "level": 3
+      },
+      {
+        "id": "2-취소환불-정책-point-of-no-return",
+        "text": "5.2 취소/환불 정책 (Point of No Return)",
+        "level": 3
+      },
+      {
+        "id": "3-송장-재발급-및-재제출-운영-정책",
+        "text": "5.3 송장 재발급 및 재제출 운영 정책",
+        "level": 3
+      },
+      {
+        "id": "배포-전-체크리스트-qa-및-리스크-검증",
+        "text": "6. 배포 전 체크리스트 (QA 및 리스크 검증)",
+        "level": 2
+      },
+      {
+        "id": "1-프론트엔드-및-인증-nice",
+        "text": "6.1 프론트엔드 및 인증 (NICE)",
+        "level": 3
+      },
+      {
+        "id": "2-동수-창고-wms-및-분할-배송-개발-레벨-상세-체크",
+        "text": "6.2 동수 창고 (WMS) 및 분할 배송 (개발 레벨 상세 체크)",
+        "level": 3
+      },
+      {
+        "id": "3-관세청-tra-및-자이언트-연동-timeout-payload",
+        "text": "6.3 관세청 (TRA) 및 자이언트 연동 (Timeout & Payload)",
+        "level": 3
+      },
+      {
+        "id": "4-어드민-제어-및-cs-정책",
+        "text": "6.4 어드민 제어 및 CS 정책",
+        "level": 3
+      },
+      {
+        "id": "5-시스템-및-인프라-85-실서버-이관용",
+        "text": "6.5 시스템 및 인프라 (8/5 실서버 이관용)",
+        "level": 3
+      },
+      {
+        "id": "예상-리스크-및-대응-방안-risk-management",
+        "text": "7. 예상 리스크 및 대응 방안 (Risk Management)",
+        "level": 2
+      },
+      {
+        "id": "개발사-geek-studio-시연-항목",
+        "text": "8. 개발사 (Geek Studio) 시연 항목",
+        "level": 2
+      },
+      {
+        "id": "1-결제창-인증-유형별-시연-3건",
+        "text": "7.1 결제창 인증 유형별 시연 (3건)",
+        "level": 3
+      },
+      {
+        "id": "2-백엔드어드민-제어-시연-2건",
+        "text": "7.2 백엔드/어드민 제어 시연 (2건)",
+        "level": 3
+      },
+      {
+        "id": "마일스톤-719-기준",
+        "text": "9. 마일스톤 (7/19 기준)",
+        "level": 2
+      },
+      {
+        "id": "고정-파라미터-레퍼런스",
+        "text": "10. 고정 파라미터 레퍼런스",
+        "level": 2
+      }
+    ]
+  },
+  {
     "title": "온톨로지 공학 : RDF, RDFS, OWL 시맨틱 웹 표준",
     "description": "공급망 관리(SCM) 현업에서 일하는 개발자나 데이터 분석가라면 누구나 이런 경험이 있을 것입니다.",
     "date": "2026-07-20",
     "role": "Planner",
-    "content": "![](https://blog.kakaocdn.net/dna/q0Whk/btsPO7INc6p/AAAAAAAAAAAAAAAAAAAAAF5ZafdiLM_yKNYp7ubdyAiZ_56JQ_2jCkfk6eZbQ8uG/img.png?credential=yqXZFxpELC7KVnFOS48ylbz2pIh7yKj8&expires=1785509999&allow_ip=&allow_referer=&signature=PS6PnA1SS%2FJ6q3ZdR84QZ9TIyK4%3D)\n공급망 관리(SCM) 현업에서 일하는 개발자나 데이터 분석가라면 누구나 이런 경험이 있을 것입니다.\n종합 ERP 시스템에는 PART-A789라는 코드로, 창고관리시스템(WMS)에는 SKU-9511이라는 코드로\n협력사 시스템에는 또 다른 이름으로 등록된 **'똑같은'** 부품.\n이들을 통합 분석하기 위해 우리는 오늘도 엑셀 VLOOKUP과 수작업 매핑 테이블에 의존하며 힘겨운 싸움을 하고 있습니다.\n이 방식은 비효율적일 뿐만 아니라, 데이터가 추가되거나 변경될 때마다 깨지기 쉬운 **아주 위험한 구조**입니다.\n만약 시스템이 PART-A789와 SKU-9511이 **'의미적으로 동일한 대상'**임을 스스로 이해할 수 있다면 어떨까요?\n이 질문에 대한 해답이 바로 **온톨로지 공학**과 **지식 그래프**에 있습니다.\n지금부터 이 기술들이 어떻게 데이터의 단순 나열을 넘어\n**컴퓨터가 '이해'하고 '추론'하는 지식의 네트워크로 바꾸어 놓는지**\n그 핵심 구성 요소인 **RDF, RDFS, OWL**을 중심으로 차근차근 알아보겠습니다.\n---\n## 1. RDF로 모든 것을 '주어-서술어-목적어'로 표현하기\n온톨로지의 가장 기초가 되는 벽돌은 **RDF(Resource Description Framework)**입니다.\nRDF의 핵심 아이디어는 세상의 모든 지식을 아주 단순한 **트리플(Triple)**\n즉 **주어(Subject)** **- 서술어(Predicate) - 목적어(Object)**라는 세 요소의 조합으로 표현하는 것입니다.\n마치 우리가 \"A 창고는 - 서울에 - 위치한다\"라고 말하는 것과 같습니다.\n이 단순한 구조는 컴퓨터가 정보를 명확하게 처리할 수 있는 최소 단위가 됩니다.\n여기서 가장 중요한 점은, 각 요소가 단순한 문자열이 아니라 **URI(Uniform Resource Identifier)**라는 고유한 웹 주소 형태의 식별자를 갖는다는 것입니다.\n- 'A창고' (X) -\\> \\<http://mySCM.com/warehouse/A\\> (O)\n- '위치한다' (X) -\\> \\<http://mySCM.com/property/isLocatedIn\\> (O)\n- '서울' (X) -\\> \\<http://mySCM.com/city/Seoul\\> (O)\n이렇게 모든 개념에 고유 ID를 부여함으로써, '서울'이라는 이름의 도시와 '서울'이라는 이름의 사람을 컴퓨터가 절대 혼동하지 않게 됩니다. 즉, **데이터의 모호함이 원천적으로 제거**됩니다.\n이러한 트리플들이 수없이 연결되면, 점과 선으로 이루어진 거대한 지식의 네트워크, 즉 **지식 그래프**가 만들어집니다.\n#### 잠깐, 이게 관계형 데이터베이스(RDB)랑 뭐가 다른가요?\nRDB가 정해진 틀(테이블 스키마)에 데이터를 맞추는 방식이라면\nRDF는 데이터 조각(트리플)들을 레고처럼 자유롭게 연결하는 방식입니다.\n<table>\n<tr>\n<td>구분</td>\n<td>**관계형 데이터베이스 (RDB)**</td>\n<td>**그래프 데이터 (RDF)**</td>\n</tr>\n<tr>\n<td>**구조**</td>\n<td>정해진 스키마 (테이블, 행, 열)</td>\n<td>스키마 없는 유연한 구조 (트리플)</td>\n</tr>\n<tr>\n<td>**관계 표현**</td>\n<td>외래 키(Foreign Key)를 이용한 **JOIN** 연산</td>\n<td>관계로 노드를 직접 연결 (**Graph Traversal**)</td>\n</tr>\n<tr>\n<td>**유연성**</td>\n<td>스키마 변경이 매우 복잡하고 비용이 큼</td>\n<td>새로운 관계(Predicate)나 데이터 타입 추가가 자유로움</td>\n</tr>\n</table>\nSCM 데이터처럼 공급사, 고객사, 물류센터 등 계속해서 관계와 종류가 변하는 복잡한 환경에서는 RDF의 유연성이 강력한 무기가 됩니다.\n---\n## 2. RDFS로 데이터에 '분류 체계(문법)' 부여하기\nRDF만으로는 데이터의 의미를 충분히 표현할 수 없습니다. \\<http://mySCM.com/warehouse/A\\>가 '창고'라는 **개념**에 속하는지 아니면 '부품'인지 컴퓨터는 알지 못합니다.\n이때 필요한 것이 바로 **RDFS(RDF Schema)**입니다.\nRDFS는 우리가 만든 RDF 데이터에 대한 **'기본적인 문법 규칙'과 '분류 체계**'를 정의합니다.\nRDFS는 몇 가지 중요한 용어를 제공하여 데이터에 질서를 부여합니다.\n- **rdfs:Class**: '개념' 또는 '분류'를 정의합니다. (예: 창고, 제품, 공급업체)\n- **rdfs:subClassOf**: 특정 클래스가 다른 클래스의 하위 분류임을 명시합니다. (예: 냉장창고는 창고의 하위 분류)\n- **rdfs:domain**: 특정 관계(서술어)의 **주어**가 될 수 있는 클래스를 제한합니다.\n- **rdfs:range**: 특정 관계(서술어)의 **목적어**가 될 수 있는 클래스를 제한합니다.\n#### RDFS가 왜 중요한가요?\n\"오직 **창고**만이 **제품**을 보관할 수 있다\"는 규칙을 시스템에 알려줄 수 있습니다.\n```plain text\n:stores a rdf:Property ;\n         # 주어(domain)는 반드시 '창고' 클래스여야 함\n         rdfs:domain :Warehouse ;\n         # 목적어(range)는 반드시 '제품' 클래스여야 함\n         rdfs:range :Product .\n```\n만약 누군가 '제품이 창고를 보관한다'와 같은 논리적으로 말이 안 되는 데이터를 입력하면 시스템은 이 규칙에 어긋남을 스스로 감지할 수 있게 됩니다.\n이처럼 RDFS는 데이터의 **정합성과 품질을 보장**하는 최소한의 안전장치 역할을 합니다.\n---\n## 3. 세 번째 벽돌: OWL로 '논리적 추론 시스템' 구축하기\nRDFS는 기본적인 분류 체계는 제공하지만, 더 복잡한 현실 세계의 비즈니스 규칙을 표현하기에는 한계가 있습니다.\n- \"모든 부품은 **단 하나의** 고유 부품 번호만 가질 수 있다.\"\n- \"A 부품의 공급사는 B사이고, B사의 협력사는 C사라면, C사도 A 부품의 **잠재적 공급망**에 속한다.\"\n- \"ERP의 PART-A789와 WMS의 SKU-9511은 **사실 동일한 부품**이다.\"\n이러한 정교하고 복잡한 논리를 표현하고 이를 바탕으로 시스템이 새로운 사실을 **'추론'**하게 만드는 강력한 언어가 바로 **OWL(Web Ontology Language)**입니다.\nOWL은 RDFS를 확장하여 컴퓨터가 마치 사람처럼 논리적 사고를 할 수 있는 강력한 기능을 제공합니다.\n#### OWL의 추론 능력\nOWL이 제공하는 몇 가지 핵심 기능만 봐도 그 강력함을 느낄 수 있습니다.\n<table>\n<tr>\n<td>OWL 문법</td>\n<td>의미(논리 규칙)</td>\n<td>SCM 활용 예시</td>\n<td>**시스템의 추론 결과**</td>\n</tr>\n<tr>\n<td>**sameAs**</td>\n<td>**동일성 선언**</td>\n<td>:PART-A789 owl:sameAs :SKU-9511 .</td>\n<td>:PART-A789를 검색하면 :SKU-9511의 정보까지 **자동으로 함께 조회**됩니다. (서두의 문제 해결!)</td>\n</tr>\n<tr>\n<td>**TransitiveProperty**</td>\n<td>**추이적 관계**</td>\n<td>:isLocatedIn(…에 위치한다)을 추이적 속성으로 정의. (부천공장은 부천에 위치, 부천은 경기도에 위치)</td>\n<td>우리는 명시하지 않았지만, 시스템은 **부천공장이 경기도에 위치한다는 새로운 사실을 스스로 추론**해냅니다.</td>\n</tr>\n<tr>\n<td>**FunctionalProperty**</td>\n<td>**유일성 보장**</td>\n<td>:hasPartNumber를 함수적 속성으로 정의.</td>\n<td>한 부품에 두 개 이상의 부품 번호를 할당하려 하면, 시스템이 **논리적 모순임을 감지**합니다.</td>\n</tr>\n<tr>\n<td>**inverseOf**</td>\n<td>**역관계 정의**</td>\n<td>:isSuppliedBy는 :supplies의 역관계.</td>\n<td>A사가 B부품을 공급(supplies)한다고 입력하면, B부품은 A사에 의해 공급된다(isSuppliedBy)는 사실이 **자동으로 생성**됩니다.</td>\n</tr>\n</table>\n이러한 규칙들을 바탕으로 새로운 사실을 추론해내는 소프트웨어 엔진을 **추론기**라고 부릅니다.\nOWL과 추론기를 통해 우리의 SCM 데이터 시스템은 단순히 데이터를 저장하는 창고에서 새로운 지식을 스스로 생성하고 확장해나가는 지능적인 '**지식 베이스(Knowledge Base)'**로 진화합니다.\n---\n## 실전 활용: SPARQL로 지식 그래프에 질문하고 답 얻기\n자, 이렇게 지식 그래프를 구축했다면 어떻게 활용할 수 있을까요?\n지식 그래프에 질문을 던지는 표준 언어가 바로 **SPARQL(스파클)** 입니다.\nSPARQL은 '**그래프를 위한 SQL'**이라고 생각하면 쉽습니다.\n우리가 처음 제기했던 문제, 즉 ERP의 PART-A789와 관련된 모든 정보를 찾고 싶을 때 SPARQL을 사용하면 어떻게 될까요?\n```plain text\n\n\nSELECT ?name ?location\nWHERE {\n  # ?part는 PART-A789 이거나, 그와 동일한(sameAs) 모든 것을 의미\n  { :PART-A789 ?p ?o } UNION { ?s ?p :PART-A789 } .\n  BIND(IF(BOUND(?s), ?s, :PART-A789) AS ?part)\n\n  # ?part와 관련된 이름과 위치 정보를 찾음\n  ?part :hasName ?name .\n  ?part :isStoredIn ?warehouse .\n  ?warehouse :isLocatedIn ?location .\n}\n```\n이 쿼리의 놀라운 점은 우리는 PART-A789만 물어봤지만 OWL의 owl:sameAs 규칙 덕분에\n시스템은 알아서 SKU-9511과 관련된 정보(예: WMS 상의 창고 위치)까지 **모두 찾아서 한 번에** 보여준다는 것입니다.\n더 이상 여러 시스템을 오가며 수작업으로 데이터를 취합할 필요가 없습니다.\n---\n## 결론: 데이터를 넘어 지식으로, 미래 SCM의 핵심 인프라\nRDF, RDFS, OWL. 언뜻 복잡해 보이지만 이 기술들의 여정은 결국 한 가지 목표를 향합니다.\n바로 **'지식을 정확하고 명료하게 표현하여 기계가 이해하고 활용하게 만들자'**는 것입니다.\n- **RDF**는 지식의 최소 단위(알파벳)를 정의하고\n- **RDFS**는 그 지식들의 기본 분류 체계(기본 문법)를 세우며\n- **OWL**은 그 지식들 사이에 흐르는 논리(고급 문법)를 부여하여 추론을 가능하게 합니다.\n이러한 정교한 설계도를 통해 우리는 데이터의 모호함을 제거하고 여러 시스템에 흩어진 데이터를 완벽하게 통합하며,\n궁극적으로는 시스템이 데이터의 **'의미'**를 이해하여 사람의 의사결정을 돕는 진정한 AI 시스템을 구축할 수 있습니다.\n특히 환각(Hallucination) 현상이 문제 되는 최신 LLM(거대 언어 모델) 시대에\n사실에 기반한 **지식 그래프는 AI가 신뢰할 수 있는 답변을 생성하도록 돕는 핵심적인 역할**을 합니다.",
+    "content": "![](https://blog.kakaocdn.net/dna/q0Whk/btsPO7INc6p/AAAAAAAAAAAAAAAAAAAAAF5ZafdiLM_yKNYp7ubdyAiZ_56JQ_2jCkfk6eZbQ8uG/img.png?credential=yqXZFxpELC7KVnFOS48ylbz2pIh7yKj8&expires=1785509999&allow_ip=&allow_referer=&signature=PS6PnA1SS%2FJ6q3ZdR84QZ9TIyK4%3D)\n공급망 관리(SCM) 현업에서 일하는 개발자나 데이터 분석가라면 누구나 이런 경험이 있을 것입니다.\n종합 ERP 시스템에는 PART-A789라는 코드로, 창고관리시스템(WMS)에는 SKU-9511이라는 코드로\n협력사 시스템에는 또 다른 이름으로 등록된 **'똑같은'** 부품.\n이들을 통합 분석하기 위해 우리는 오늘도 엑셀 VLOOKUP과 수작업 매핑 테이블에 의존하며 힘겨운 싸움을 하고 있습니다.\n이 방식은 비효율적일 뿐만 아니라, 데이터가 추가되거나 변경될 때마다 깨지기 쉬운 ** 아주 위험한 구조** 입니다.\n만약 시스템이 PART-A789와 SKU-9511이 **'의미적으로 동일한 대상'** 임을 스스로 이해할 수 있다면 어떨까요?\n이 질문에 대한 해답이 바로 ** 온톨로지 공학** 과 ** 지식 그래프** 에 있습니다.\n지금부터 이 기술들이 어떻게 데이터의 단순 나열을 넘어\n** 컴퓨터가 '이해'하고 '추론'하는 지식의 네트워크로 바꾸어 놓는지**\n그 핵심 구성 요소인 ** RDF, RDFS, OWL** 을 중심으로 차근차근 알아보겠습니다.\n---\n## 1. RDF로 모든 것을 '주어-서술어-목적어'로 표현하기\n온톨로지의 가장 기초가 되는 벽돌은 ** RDF(Resource Description Framework)** 입니다.\nRDF의 핵심 아이디어는 세상의 모든 지식을 아주 단순한 ** 트리플(Triple)**\n즉 ** 주어(Subject)** **- 서술어(Predicate) - 목적어(Object)** 라는 세 요소의 조합으로 표현하는 것입니다.\n마치 우리가 \"A 창고는 - 서울에 - 위치한다\"라고 말하는 것과 같습니다.\n이 단순한 구조는 컴퓨터가 정보를 명확하게 처리할 수 있는 최소 단위가 됩니다.\n여기서 가장 중요한 점은, 각 요소가 단순한 문자열이 아니라 ** URI(Uniform Resource Identifier)** 라는 고유한 웹 주소 형태의 식별자를 갖는다는 것입니다.\n- 'A창고' (X) -\\> \\<http://mySCM. com/warehouse/A\\> (O)\n- '위치한다' (X) -\\> \\<http://mySCM. com/property/isLocatedIn\\> (O)\n- '서울' (X) -\\> \\<http://mySCM. com/city/Seoul\\> (O)\n이렇게 모든 개념에 고유 ID를 부여함으로써, '서울'이라는 이름의 도시와 '서울'이라는 이름의 사람을 컴퓨터가 절대 혼동하지 않게 됩니다. 즉, ** 데이터의 모호함이 원천적으로 제거** 됩니다.\n이러한 트리플들이 수없이 연결되면, 점과 선으로 이루어진 거대한 지식의 네트워크, 즉 ** 지식 그래프** 가 만들어집니다.\n#### 잠깐, 이게 관계형 데이터베이스(RDB)랑 뭐가 다른가요?\nRDB가 정해진 틀(테이블 스키마)에 데이터를 맞추는 방식이라면\nRDF는 데이터 조각(트리플)들을 레고처럼 자유롭게 연결하는 방식입니다.\n| 구분 | **관계형 데이터베이스 (RDB)** | **그래프 데이터 (RDF)** |\n| --- | --- | --- |\n| **구조** | 정해진 스키마 (테이블, 행, 열) | 스키마 없는 유연한 구조 (트리플) |\n| **관계 표현** | 외래키(Foreign Key)를 통한 간접 연결 | 노드 간 직접 연결 (엣지) |\n| **질의 방식** | SQL (JOIN 연산) | SPARQL (경로 탐색) |\n| **유연성** | 스키마 변경이 어려움 | 새로운 속성/관계 추가가 쉬움 |\nSCM 데이터처럼 공급사, 고객사, 물류센터 등 계속해서 관계와 종류가 변하는 복잡한 환경에서는 RDF의 유연성이 강력한 무기가 됩니다.\n---\n## 2. RDFS로 데이터에 '분류 체계(문법)' 부여하기\nRDF만으로는 데이터의 의미를 충분히 표현할 수 없습니다. \\<http://mySCM. com/warehouse/A\\>가 '창고'라는 ** 개념** 에 속하는지 아니면 '부품'인지 컴퓨터는 알지 못합니다.\n이때 필요한 것이 바로 ** RDFS(RDF Schema)** 입니다.\nRDFS는 우리가 만든 RDF 데이터에 대한 **'기본적인 문법 규칙'과 '분류 체계**'를 정의합니다.\nRDFS는 몇 가지 중요한 용어를 제공하여 데이터에 질서를 부여합니다.\n-** rdfs:Class**: '개념' 또는 '분류'를 정의합니다. (예: 창고, 제품, 공급업체)\n-** rdfs:subClassOf**: 특정 클래스가 다른 클래스의 하위 분류임을 명시합니다. (예: 냉장창고는 창고의 하위 분류)\n-** rdfs:domain**: 특정 관계(서술어)의 ** 주어** 가 될 수 있는 클래스를 제한합니다.\n-** rdfs:range**: 특정 관계(서술어)의 ** 목적어** 가 될 수 있는 클래스를 제한합니다.\n#### RDFS가 왜 중요한가요?\n\"오직 ** 창고** 만이 ** 제품** 을 보관할 수 있다\"는 규칙을 시스템에 알려줄 수 있습니다.\n```plain text\n:stores a rdf:Property ;\n         # 주어(domain)는 반드시 '창고' 클래스여야 함\n         rdfs:domain :Warehouse ;\n         # 목적어(range)는 반드시 '제품' 클래스여야 함\n         rdfs:range :Product .\n```\n만약 누군가 '제품이 창고를 보관한다'와 같은 논리적으로 말이 안 되는 데이터를 입력하면 시스템은 이 규칙에 어긋남을 스스로 감지할 수 있게 됩니다.\n이처럼 RDFS는 데이터의 ** 정합성과 품질을 보장** 하는 최소한의 안전장치 역할을 합니다.\n---\n## 3. 세 번째 벽돌: OWL로 '논리적 추론 시스템' 구축하기\nRDFS는 기본적인 분류 체계는 제공하지만, 더 복잡한 현실 세계의 비즈니스 규칙을 표현하기에는 한계가 있습니다.\n- \"모든 부품은 ** 단 하나의** 고유 부품 번호만 가질 수 있다.\"\n- \"A 부품의 공급사는 B사이고, B사의 협력사는 C사라면, C사도 A 부품의 ** 잠재적 공급망** 에 속한다.\"\n- \"ERP의 PART-A789와 WMS의 SKU-9511은 ** 사실 동일한 부품** 이다.\"\n이러한 정교하고 복잡한 논리를 표현하고 이를 바탕으로 시스템이 새로운 사실을 **'추론'** 하게 만드는 강력한 언어가 바로 ** OWL(Web Ontology Language)** 입니다.\nOWL은 RDFS를 확장하여 컴퓨터가 마치 사람처럼 논리적 사고를 할 수 있는 강력한 기능을 제공합니다.\n#### OWL의 추론 능력\nOWL이 제공하는 몇 가지 핵심 기능만 봐도 그 강력함을 느낄 수 있습니다.\n<table>\n<tr>\n<td>OWL 문법</td>\n<td>의미(논리 규칙)</td>\n<td>SCM 활용 예시</td>\n<td>** 시스템의 추론 결과**</td>\n</tr>\n<tr>\n<td>** sameAs**</td>\n<td>** 동일성 선언**</td>\n<td>:PART-A789 owl:sameAs :SKU-9511 .</td>\n<td>:PART-A789를 검색하면 :SKU-9511의 정보까지 ** 자동으로 함께 조회** 됩니다. (서두의 문제 해결!)</td>\n</tr>\n<tr>\n<td>** TransitiveProperty**</td>\n<td>** 추이적 관계**</td>\n<td>:isLocatedIn(…에 위치한다)을 추이적 속성으로 정의. (부천공장은 부천에 위치, 부천은 경기도에 위치)</td>\n<td>우리는 명시하지 않았지만, 시스템은 ** 부천공장이 경기도에 위치한다는 새로운 사실을 스스로 추론** 해냅니다.</td>\n</tr>\n<tr>\n<td>** FunctionalProperty**</td>\n<td>** 유일성 보장**</td>\n<td>:hasPartNumber를 함수적 속성으로 정의.</td>\n<td>한 부품에 두 개 이상의 부품 번호를 할당하려 하면, 시스템이 ** 논리적 모순임을 감지** 합니다.</td>\n</tr>\n<tr>\n<td>** inverseOf**</td>\n<td>** 역관계 정의**</td>\n<td>:isSuppliedBy는 :supplies의 역관계.</td>\n<td>A사가 B부품을 공급(supplies)한다고 입력하면, B부품은 A사에 의해 공급된다(isSuppliedBy)는 사실이 ** 자동으로 생성** 됩니다.</td>\n</tr>\n</table>\n이러한 규칙들을 바탕으로 새로운 사실을 추론해내는 소프트웨어 엔진을 ** 추론기** 라고 부릅니다.\nOWL과 추론기를 통해 우리의 SCM 데이터 시스템은 단순히 데이터를 저장하는 창고에서 새로운 지식을 스스로 생성하고 확장해나가는 지능적인 '** 지식 베이스(Knowledge Base)'** 로 진화합니다.\n---\n## 4. 실전 활용: SPARQL로 지식 그래프에 질문하고 답 얻기\n자, 이렇게 지식 그래프를 구축했다면 어떻게 활용할 수 있을까요?\n지식 그래프에 질문을 던지는 표준 언어가 바로 ** SPARQL(스파클)** 입니다.\nSPARQL은 '** 그래프를 위한 SQL'** 이라고 생각하면 쉽습니다.\n우리가 처음 제기했던 문제, 즉 ERP의 PART-A789와 관련된 모든 정보를 찾고 싶을 때 SPARQL을 사용하면 어떻게 될까요?\n```plain text\n\n\nSELECT ?name ?location\nWHERE {\n  # ?part는 PART-A789 이거나, 그와 동일한(sameAs) 모든 것을 의미\n  { :PART-A789 ?p ?o } UNION { ?s ?p :PART-A789 } .\n  BIND(IF(BOUND(?s), ?s, :PART-A789) AS ?part)\n\n  # ?part와 관련된 이름과 위치 정보를 찾음\n  ?part :hasName ?name .\n  ?part :isStoredIn ?warehouse .\n  ?warehouse :isLocatedIn ?location .\n}\n```\n이 쿼리의 놀라운 점은 우리는 PART-A789만 물어봤지만 OWL의 owl:sameAs 규칙 덕분에\n시스템은 알아서 SKU-9511과 관련된 정보(예: WMS 상의 창고 위치)까지 ** 모두 찾아서 한 번에** 보여준다는 것입니다.\n더 이상 여러 시스템을 오가며 수작업으로 데이터를 취합할 필요가 없습니다.\n---\n## 5. 결론: 데이터를 넘어 지식으로, 미래 SCM의 핵심 인프라\nRDF, RDFS, OWL. 언뜻 복잡해 보이지만 이 기술들의 여정은 결국 한 가지 목표를 향합니다.\n바로 **'지식을 정확하고 명료하게 표현하여 기계가 이해하고 활용하게 만들자'** 는 것입니다.\n-** RDF** 는 지식의 최소 단위(알파벳)를 정의하고\n-** RDFS** 는 그 지식들의 기본 분류 체계(기본 문법)를 세우며\n-** OWL** 은 그 지식들 사이에 흐르는 논리(고급 문법)를 부여하여 추론을 가능하게 합니다.\n이러한 정교한 설계도를 통해 우리는 데이터의 모호함을 제거하고 여러 시스템에 흩어진 데이터를 완벽하게 통합하며,\n궁극적으로는 시스템이 데이터의 **'의미'** 를 이해하여 사람의 의사결정을 돕는 진정한 AI 시스템을 구축할 수 있습니다.\n특히 환각(Hallucination) 현상이 문제 되는 최신 LLM(거대 언어 모델) 시대에\n사실에 기반한 ** 지식 그래프는 AI가 신뢰할 수 있는 답변을 생성하도록 돕는 핵심적인 역할** 을 합니다.",
     "_meta": {
       "filePath": "ontology-engineering.mdx",
       "fileName": "ontology-engineering.mdx",
@@ -15,43 +402,169 @@ export default [
     },
     "headings": [
       {
-        "id": "rdf-",
+        "id": "rdf로-모든-것을-주어-서술어-목적어로-표현하기",
         "text": "1. RDF로 모든 것을 '주어-서술어-목적어'로 표현하기",
         "level": 2
       },
       {
-        "id": "-rdb-",
+        "id": "잠깐-이게-관계형-데이터베이스rdb랑-뭐가-다른가요",
         "text": "잠깐, 이게 관계형 데이터베이스(RDB)랑 뭐가 다른가요?",
         "level": 4
       },
       {
-        "id": "rdfs-",
+        "id": "rdfs로-데이터에-분류-체계문법-부여하기",
         "text": "2. RDFS로 데이터에 '분류 체계(문법)' 부여하기",
         "level": 2
       },
       {
-        "id": "rdfs-",
+        "id": "rdfs가-왜-중요한가요",
         "text": "RDFS가 왜 중요한가요?",
         "level": 4
       },
       {
-        "id": "-owl-",
+        "id": "세-번째-벽돌-owl로-논리적-추론-시스템-구축하기",
         "text": "3. 세 번째 벽돌: OWL로 '논리적 추론 시스템' 구축하기",
         "level": 2
       },
       {
-        "id": "owl-",
+        "id": "owl의-추론-능력",
         "text": "OWL의 추론 능력",
         "level": 4
       },
       {
-        "id": "-sparql-",
-        "text": "실전 활용: SPARQL로 지식 그래프에 질문하고 답 얻기",
+        "id": "실전-활용-sparql로-지식-그래프에-질문하고-답-얻기",
+        "text": "4. 실전 활용: SPARQL로 지식 그래프에 질문하고 답 얻기",
         "level": 2
       },
       {
-        "id": "-scm-",
-        "text": "결론: 데이터를 넘어 지식으로, 미래 SCM의 핵심 인프라",
+        "id": "결론-데이터를-넘어-지식으로-미래-scm의-핵심-인프라",
+        "text": "5. 결론: 데이터를 넘어 지식으로, 미래 SCM의 핵심 인프라",
+        "level": 2
+      }
+    ]
+  },
+  {
+    "title": "SCM 발주 자동화 대시보드",
+    "description": "분산된 데이터를 모아 예측과 발주를 자동화하다",
+    "date": "2026-07-21",
+    "role": "Project",
+    "content": "# 1. 문제 정의 및 기획 배경\n- --\n## 1. 프로젝트 개요\n### 문제점 인식\n- 수입 분유의 발주-입고 리드타임이 6개월 이상으로, 품절 시 즉시 대응이 불가능하며 과재고 시 유통기한 폐기 리스크가 상존\n- 기존 재고 관리: 엑셀 파일 기반 수기 관리. 수십 개 채널의 판매·입출고 데이터가 별도 시트로 분산되어 실시간 현황 파악 불가\n- PO 발행 시 환율 변동에 따른 재고 자산 가치를 수동 계산. 담당자가 바뀌면 수식이 깨지는 구조적 문제\n- 수요 예측 부재: 매일 1시간씩 수기로 재고 확인·회전율 계산, 주 2시간씩 발주-생산-입고 매칭·재고자산 평가를 수행. 과거 판매량만으로 경험적 발주를 진행하여 품절/과재고가 반복\n### 프로젝트 목표\n- 파편화된 엑셀 데이터를 단일 DB로 통합하고, 수요 예측·FEFO 역산·재고 시뮬레이션을 자동화하여 데이터 기반 발주 의사결정 체계를 확립\n- 수기로 파일을 만들고 편집하는 반복 업무를 제거하고, 정해진 양식만 업로드하면 즉시 데이터화·계산·시뮬레이션이 되는 구조를 구현\n\n## 2. 진행 과정 및 역할\n- --\n### 기술 스택 선정 및 아키텍처 설계 (단독)\n- Python 3.11 / FastAPI / Uvicorn: 경량 비동기 웹 프레임워크. 로컬 환경에서도 빠른 응답 속도 확보\n- SQLite 3: 별도 DB 서버 없이 파일 기반 동작. IT 인프라 의존도 제거 (별도 서버 비용/승인 불필요)\n- Pandas / NumPy: 수요 예측 연산 및 데이터 변환 처리\n- Tailwind CSS / Chart. js: 실무자가 직관적으로 확인할 수 있는 대시보드 UI\n### DB 스키마 설계 (오버엔지니어링 방지)\n- 3차 정규화(3NF) 기반 독립 테이블 설계: 마스터 정보(상품·채널·공급사), 입출고 트래킹, 파이프라인(PO 진행 상태), 인보이스별 환율 정보를 각각 분리\n- PO-Invoice 근삿값 매칭 알고리즘: PO와 Invoice 간 다대다 관계를 처리하는 매칭 로직. 복잡한 ERD 없이 실무에 필요한 수준으로 설계\n### 핵심 비즈니스 로직\n- 24주 수요 예측 및 수요 평탄화 엔진: 과거 판매 데이터 기반 채널별 24주 수요 예측. 극단적 편차 보정으로 1년치 발주 예정량 산출\n- FEFO 역산 로직: 유통기한과 채널별 판매 속도를 역산하여 '이 재고는 몇 주 안에 소진되어야 하는가'를 자동 산출. 채널 간 이관 판단 근거 제공\n- 채널별 재고 자산 금액 시뮬레이터: 인보이스별 매입 환율 적용. 다음 PO의 캐시플로우 참고 기준으로 활용\n- 이벤트성 과거 데이터 수집·대입 시뮬레이터: 프로모션/시즌 효과를 수요 예측에 반영\n### 운영 환경\n- Windows 11 작업 스케줄러 기반 자동 구동: 출근 시 자동으로 서버가 기동, 브라우저 접속만으로 최신 데이터 확인\n- 보안: 내부 IP 접근 제한. 허가된 사용자만 접속 가능한 구조\n- AI 도구를 코딩 보조로 활용하되, 아키텍처 및 비즈니스 로직 설계는 전적으로 자체 수행\n\n## 3. 결과 및 성과\n- --\n### 정량적 성과\n- 파편화된 엑셀 → 단일 DB 통합: 수만 건 데이터의 실시간 연산 및 시각화\n- 수요 예측 기반 선제적 발주 체계로 전환: 품절/과재고 리스크 사전 방어\n- 재고 확인·회전율 계산: 일 1시간 → 5분(대시보드 조회). 발주-생산-입고 매칭·자산 평가: 주 2시간 → 자동 산출\n- 수기 엑셀 파일 생성·편집 불필요: 정해진 양식 업로드만으로 즉시 데이터화 및 시뮬레이션 (업무 효율 증대)\n### 정성적 성과\n- 팀 운영 도구로 안착: 일 단위로 팀원들이 의사결정에 활용\n- '감'이 아닌 '수치'로 발주 논의가 가능해짐: 데이터 기반 의사결정 문화의 기반 마련\n\n## 4. 회고\n- --\n### 문제 해결: 현업 참여형 설계(Co-Design)\n- 초기 도입 후 팀원들의 UI/UX 편의성이 맞지 않아 안착까지 약 2개월 지연. 이후 피드백을 수용하여 수정\n- 완벽한 결과물의 일방적 제공보다 핵심 기능 배포 후 사용자와 피드백을 주고받는 방식이 실용적임을 확인\n- 팀원들의 정량적 리소스 확보 ⇒ 다음 프로젝트나 프로세스 개선 아이디어 창출 가능\n### 개인 성장\n- 비즈니스 도메인(SCM)의 요구사항을 기술적 시스템 설계로 변환하는 전체 과정을 단독 경험\n- 기술적 완성도보다 현업의 맥락 파악이 우선되어야 함을 체득\n\n## 5. Reference\n- --\n## 대시보드 KPI 시각화\n아래는 대시보드 메인 화면의 24주 수요 예측 시뮬레이션 그래프 컨셉입니다. 실제 운영 스크린샷으로 교체할 예정입니다.\n\n-** 파편화된 엑셀 → 단일 DB 통합  ** 수만 건 데이터의 실시간 연산 및 시각화**\n\n\n\n-** 수요 예측 기반 선제적 발주 체계  ** 품절/과재고 리스크 사전 방어**\n\n\n\n-** 수기 엑셀 업무 제거  ** 정해진 양식 업로드만으로 즉시 데이터화·시뮬레이션**\n\n\n\n## DB 스키마 ERD \n\n```mermaid\nerDiagram\n    PRODUCT_DB ||--o{ ORDER_DB : \"발주\"\n    PRODUCT_DB ||--o{ PRODUCTION_DB : \"생산\"\n    PRODUCT_DB ||--o{ OUTFLOW_HISTORY : \"출고\"\n    PRODUCT_DB ||--o{ MONTHLY_ORDER_PLAN : \"발주계획\"\n    ORDER_DB ||--o| PRODUCTION_DB : \"매칭\"\n    WAREHOUSE_DB ||--o{ INVENTORY_SNAPSHOT : \"재고\"\n    WAREHOUSE_DB ||--o{ OUTFLOW_HISTORY : \"출고\"\n    WAREHOUSE_DB ||--o{ WAREHOUSE_PRODUCT_MOQ : \"MOQ\"\n    PRODUCT_DB ||--o{ WAREHOUSE_PRODUCT_MOQ : \"MOQ\"\n    WAREHOUSE_DB ||--o{ LOGISTICS_COST_DB : \"물류비\"\n    PRODUCT_DB {\n        string product_code PK\n        string product_name\n        float purchase_price\n    }\n    WAREHOUSE_DB {\n        string warehouse_name PK\n        string warehouse_type\n        int allowed_expiry_days\n    }\n    INBOUND_DB {\n        string invoice_no\n        date expiry_date\n        float exchange_rate\n        string status\n    }\n```\n\n## 수요 예측 엔진 (24주 시뮬레이션)\n```mermaid\nflowchart TD\n    A[\"직전 12주 출고이력\"] --> E[\"주차별 평활화\"]\n    A --> F[\"감모 버퍼\"]\n    B[\"판매 실적\"] --> F\n    C[\"파이프라인 입고\"] --> H\n    D[\"현재고\"] --> H\n    E --> H[\"24주 시뮬레이션\"]\n    F --> H\n    G[\"가중치 0.5~2.0\"] --> H\n    H --> I{\"기말재고 < 0?\"}\n    I -->|\"12주내\"| J[\"항공편 경고\"]\n    I -->|\"부족분\"| K[\"MOQ 올림 → 발주 제안\"]\n    style H fill:#fef3c7,stroke:#d97706\n    style J fill:#fee2e2,stroke:#dc2626\n    style K fill:#dcfce7,stroke:#16a34a\n```\n### 핵심 수식 (forecasting. py)\n```python\n# 24주 미래 재고 시뮬레이션 공식\n예상기말재고(W) = (\n    전주기말재고\n    + 파이프라인_입고\n    + 입고예정\n    - (주간수요 × weight_factor + 감모버퍼)\n)\n\n# 주간수요: 직전 12주 단순 출고량 평균 → 24주 Flat 상수\n# 감모버퍼: (1/12) × Σ(단순출고량 - 순수판매량)\n# weight_factor: 실무자 수동 조절 (0.5 ~ 2.0)\n# 항공편 트리거: W+12 재고 < 0 시 경고\n```\n## FEFO 유통기한 역산\n```mermaid\nflowchart LR\n    A[\"현재고\"] --> B{\"잔여 180일?\"}\n    B -->|Yes| C[\"임박 재고\"]\n    C --> D[\"소진일 예측\"]\n    D --> E[\"폐기 위험 금액\"]\n    E --> F{\"이관?\"}\n    F -->|Yes| G[\"이관\"]\n    F -->|No| H[\"프로모션\"]\n    style C fill:#fef3c7,stroke:#d97706\n    style E fill:#fee2e2,stroke:#dc2626\n```\n### 기술 스택\n- Backend: Python 3.11 / FastAPI 0.115 / SQLAlchemy 2.0\n- Database: SQLite WAL (11 tables, 3NF)\n- Frontend: Jinja2 SSR + Vanilla JS + Chart. js 4.4\n- 인증: JWT + bcrypt (12시간 토큰)\n- 스케줄러: APScheduler (3시간 자동 백업)\n- 엑셀 I/O: pandas + openpyxl (6종 양식)\n\n## 시스템 UI 스크린샷\n![대시보드 메인](/assets/SCM-dashboard02_dashboard.png)\n<div style=\"display:grid; grid-template-columns: 1fr 1fr; gap: 1rem;\">\n  <img src=\"/assets/SCM-dashboard03_inventory.png\" style=\"width: 100%; border-radius: 8px;\" alt=\"재고 현황\" />\n  <img src=\"/assets/SCM-dashboard04_expiry.png\" style=\"width: 100%; border-radius: 8px;\" alt=\"유통기한 관리\" />\n  <img src=\"/assets/SCM-dashboard05_order_plan.png\" style=\"width: 100%; border-radius: 8px;\" alt=\"발주 시뮬레이션\" />\n  <img src=\"/assets/SCM-dashboard06_matching.png\" style=\"width: 100%; border-radius: 8px;\" alt=\"인보이스 매칭\" />\n</div>\n![설정 및 로그인](/assets/SCM-dashboard07_settings.png)",
+    "_meta": {
+      "filePath": "scm-dashboard.mdx",
+      "fileName": "scm-dashboard.mdx",
+      "directory": ".",
+      "extension": "mdx",
+      "path": "scm-dashboard"
+    },
+    "headings": [
+      {
+        "id": "프로젝트-개요",
+        "text": "1. 프로젝트 개요",
+        "level": 2
+      },
+      {
+        "id": "문제점-인식",
+        "text": "문제점 인식",
+        "level": 3
+      },
+      {
+        "id": "프로젝트-목표",
+        "text": "프로젝트 목표",
+        "level": 3
+      },
+      {
+        "id": "진행-과정-및-역할",
+        "text": "2. 진행 과정 및 역할",
+        "level": 2
+      },
+      {
+        "id": "기술-스택-선정-및-아키텍처-설계-단독",
+        "text": "기술 스택 선정 및 아키텍처 설계 (단독)",
+        "level": 3
+      },
+      {
+        "id": "db-스키마-설계-오버엔지니어링-방지",
+        "text": "DB 스키마 설계 (오버엔지니어링 방지)",
+        "level": 3
+      },
+      {
+        "id": "핵심-비즈니스-로직",
+        "text": "핵심 비즈니스 로직",
+        "level": 3
+      },
+      {
+        "id": "운영-환경",
+        "text": "운영 환경",
+        "level": 3
+      },
+      {
+        "id": "결과-및-성과",
+        "text": "3. 결과 및 성과",
+        "level": 2
+      },
+      {
+        "id": "정량적-성과",
+        "text": "정량적 성과",
+        "level": 3
+      },
+      {
+        "id": "정성적-성과",
+        "text": "정성적 성과",
+        "level": 3
+      },
+      {
+        "id": "회고",
+        "text": "4. 회고",
+        "level": 2
+      },
+      {
+        "id": "문제-해결-현업-참여형-설계co-design",
+        "text": "문제 해결: 현업 참여형 설계(Co-Design)",
+        "level": 3
+      },
+      {
+        "id": "개인-성장",
+        "text": "개인 성장",
+        "level": 3
+      },
+      {
+        "id": "reference",
+        "text": "5. Reference",
+        "level": 2
+      },
+      {
+        "id": "대시보드-kpi-시각화",
+        "text": "대시보드 KPI 시각화",
+        "level": 2
+      },
+      {
+        "id": "db-스키마-erd",
+        "text": "DB 스키마 ERD",
+        "level": 2
+      },
+      {
+        "id": "수요-예측-엔진-24주-시뮬레이션",
+        "text": "수요 예측 엔진 (24주 시뮬레이션)",
+        "level": 2
+      },
+      {
+        "id": "핵심-수식-forecasting-py",
+        "text": "핵심 수식 (forecasting. py)",
+        "level": 3
+      },
+      {
+        "id": "fefo-유통기한-역산",
+        "text": "FEFO 유통기한 역산",
+        "level": 2
+      },
+      {
+        "id": "기술-스택",
+        "text": "기술 스택",
+        "level": 3
+      },
+      {
+        "id": "시스템-ui-스크린샷",
+        "text": "시스템 UI 스크린샷",
         "level": 2
       }
     ]
@@ -61,7 +574,7 @@ export default [
     "description": "우리가 흔히 보는 SCM 프로세스는 자재 공급 → 생산 → 재고 → 유통 → 고객으로 이어지는 선형적인 흐름으로 그려집니다.",
     "date": "2026-07-20",
     "role": "Planner",
-    "content": "## 1. 공급망 관리(SCM)의 본질: 정적이 아닌 '동적 네트워크'\n![](https://blog.kakaocdn.net/dna/M6cjL/btsPJDGFr8A/AAAAAAAAAAAAAAAAAAAAAF9yqI7tC6k_y3Ti-6hITCjdjHVQ45TW_rVAlCLGoEDI/img.jpg?credential=yqXZFxpELC7KVnFOS48ylbz2pIh7yKj8&expires=1785509999&allow_ip=&allow_referer=&signature=qwYHWvEe4VQstoi3xgRlNHXJmyE%3D)\n우리가 흔히 보는 SCM 프로세스는 자재 공급 → 생산 → 재고 → 유통 → 고객으로 이어지는 선형적인 흐름으로 그려집니다.\n하지만 이는 현실을 극도로 단순화한 그림입니다.\n실제 공급망의 특수성은 다음과 같습니다.\n- **극심한 상호연결성과 파급 효과**공급망의 모든 참여자(노드)는 거미줄처럼 얽혀있습니다. 베트남의 작은 부품 공장 파업(하나의 노드 변경)이 독일 자동차 생산 라인의 중단과 미국 소비자의 주문 취소로 이어지는 '파급 효과'가 발생합니다.\n- **정보의 왜곡과 증폭 **고객의 작은 수요 변화가 소매, 도매, 제조, 공급 단계를 거슬러 올라가면서 정보가 왜곡되고 예측 변동성이 눈덩이처럼 커지는 '채찍 효과'가 발생합니다. 이는 각 단계가 전체 네트워크를 보지 못하고 단절된 정보에만 의존하기 때문입니다.\n- **지속적인 변동성**수요 변동, 운송 지연, 파업, 자연재해 등 공급망은 계획(Plan)이 아닌 변수(Exception)에 의해 움직이는 파도 효과를 가지고 있습니다.\n## 2. 데이터의 역할: 이 복잡성 속에서 우리가 파악하려는 것\n이런 복잡한 네트워크 속에서 데이터의 역할은 단순히 현황을 기록하는 것을 넘어,\n'**네트워크의 동적인 상태를 이해하고 미래를 예측하여 최적의 의사결정을 내리는 것**'에 있습니다.\n구체적으로 우리는 데이터를 통해 다음을 파악하고자 합니다.\n- **가시성(Visibility) 확보**지금 특정 제품의 생산과 배송은 어디쯤에 있는지, 특정 창고의 재고는 얼마인지 등 전체 공급망의 현재 상태를 투명하게 파악합니다.\n- **리스크 식별 및 영향도 분석** \"만약 A 공급사에 문제가 생기면, 어떤 제품 생산에 차질이 생기고, 그로 인해 어떤 고객 주문이 가장 위험해지는가?\" 와 같이 **하나의 이벤트가 네트워크 전체에 미치는 파급 효과**를 분석합니다.\n- **최적화:** 최소의 재고로 최대의 고객 만족을 이끌어내는 법, 가장 효율적인 물류 경로는 어디인지 등 비용과 효율을 최적화할 지점을 찾습니다.\n따라서 SCM 전략은 위와 같은 대표적인 3가지 요소를 분석하고 사전에 점검하며\n기업의 **미래 비즈니스를 위한 주춧돌**이 되줘야 합니다.\n나아가, 예상치 못한 타 부서의 문제가 발생했을 때 이를 막아줄 **방패의 역할**도 되어야 합니다.\n![](https://blog.kakaocdn.net/dna/ehsYko/btsPJtqA4a7/AAAAAAAAAAAAAAAAAAAAAAlZFswrsHZashtHKwMjkdFvrG44ytfUBEBKs1HpsH75/img.jpg?credential=yqXZFxpELC7KVnFOS48ylbz2pIh7yKj8&expires=1785509999&allow_ip=&allow_referer=&signature=aG5l8Mgz3DlQbq0eWimrmlLhKhk%3D)\n## 3. 한계를 넘어 새로운 방향으로: 관계, 전략, 그리고 기술\n#### 현실의 장벽: 왜 데이터는 있는데 통찰력은 없는가?\n데이터 기반 SCM의 유토피아를 꿈꾸지만, 현실은 여러 장벽에 부딪힙니다. 가장 큰 문제는 다음과 같습니다.\n1. **데이터 사일로**ERP, SCM, WMS 등 기업 내 데이터는 각기 다른 시스템에 파편화되어 있어 통합적인 분석이 어렵습니다.\n2. **분석의 복잡성**설령 모든 데이터를 한곳에 모았다 하더라도, N단계로 이어지는 관계를 분석하는 것은 전통적인 분석 방식으로는 매우 어렵고 느립니다. 'A 공급사 → B 부품 → C 완제품 → D 고객'으로 이어지는 관계만 분석하려 해도, 수많은 테이블을 연결(JOIN)하는 복잡하고 느린 작업이 필요합니다.\n3. **데이터의 관계성단순히 엑셀과 SQL로 데이터를 적절히 적재하고 출력하는 것이 아니라**각 시트, 테이블 나아가 스키마 별로의 유의미한 관계성을 파악해야하지만단순 2차원 배열의 테이블이나 RDB 로써는 이 **관계**를 정의하는데 한계가 있습니다.\n이러한 한계는 결국 '**데이터는 존재하지만, 유의미한 통찰력을 실시간으로 얻지 못하는**' 상황을 만듭니다.\n#### 방향성 전환: '예측'을 넘어 '대응'으로\n이 한계를 극복하기 위해 저는 분석의 패러다임 자체를 전환해야 한다고 결론 내렸습니다.\n단순히 미래 수요를 더 정확하게 '예측'하는 것을 넘어, 예측 불가능한 이벤트가 발생했을 때 신속하게 그 파급 효과를 파악하고 최적의 경로를 재설정하는 **'회복탄력성'과 '대응' 능력을 갖추는 것**으로 목표를 재설정했습니다.\n이 '대응' 능력의 핵심은 데이터의 '**관계성**'을 이해하는 데 있습니다.\n개별 데이터의 수치만으로는 \"**만약 특정 이벤트가 발생한다면, 그 파급 효과의 전체 범위는 어디까지인가?**\"라는 질문에 답할 수 없습니다. 데이터 간의 연결고리를 추적해야만 충격의 전파 경로를 파악하고 즉각적으로 대응할 수 있습니다.\n#### 성공 사례: 팔란티어는 어떻게 '관계'로 문제를 해결하는가?\n이러한 '관계' 기반 접근을 통해 그 효과를 증명해낸 대표적인 기업이 바로 **팔란티어(Palantir Technologies)**입니다.\n좀 더 보태자면 작년 12월 경 부터 처음 알게된 기업이고 [유튜버 빅데이터 닥터](https://www.youtube.com/@bigdatadoctor) 님의 영상을 접하며 좀 더 상세히 알게되었습니다.\n[빅데이터닥터 BIGDATA DOCTOR<br />문제의 본질을 찾아내서 근본적으로 해결하려 합니다. ➤ 공식 이메일 bigdatadoctor@icloud.com ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯ ✦ 빅데이터닥터 - 작가 - 내과 전문의 - 심장내<br />www.youtube.com](https://www.youtube.com/@bigdatadoctor)\n팔란티어는 복잡한 현실 세계를 '온톨로지'라는 개념으로 **디지털 세계에 복제(Digital Twin)**합니다.\n예를 들어, 항공기 제조사 에어버스는 팔란티어 플랫폼을 통해 수백만 개의 부품과 수천 개의 공급업체, 복잡한 생산 공정의 관계망을 하나의 지도처럼 펼쳐봅니다.\n이를 통해 특정 부품의 공급 지연이 어떤 항공기 생산 라인에 며칠의 차질을 빚게 할지 시뮬레이션하고 즉각적으로 대응합니다.\n팔란티어의 성공은 '관계' 데이터가 어떻게 예측을 넘어선 '대응'의 영역을 여는지 보여주는 가장 강력한 예시입니다.\n## 4. SCM 모듈화 구현\n저는 그들의 핵심 원리인 '온톨로지'와 '그래프 DB'를 채택하여\n어떠한 비즈니스 기업에서도 활용 될 수 있는 기반 역량을 다지기 위해 SCM 사이드 프로젝트를 구상하였습니다.\n물론, 개인이 SCM 시스템 전체를 만드는 것은 현실적으로 불가능하며 현명하지도 않습니다.\n저는 가장 큰 부가가치를 창출할 수 있는 핵심, 즉 '예측의 정확도를 넘어 그 이유까지 설명하는 인텔리전스 모듈'과\n'이를 통해 기획자가 직관적 의사결정을 내릴 수 있는 시각화'에 집중하기로 했습니다.\n따라서 단순히 숫자를 예측하는 모델을 넘어 SCM 운영 기획자의 \"왜?\"라는 질문에 답하여 신뢰를 얻는 '설명 가능한 예측' 시스템을 구축해보며 일어나는 데이터의 관계성과 변수들의 사이클을 구현 해보는데 의의를 두었습니다.\n#### 핵심 목표: 신뢰를 기반으로 한 의사결정 지원\n- **(X) 기존의 예측**\"다음 달 A 제품은 1,500개 팔릴 겁니다.\" (근거를 알 수 없어 기획자는 이 숫자를 믿어야 할지 확신할 수 없습니다.)\n- **(O) 나의 목표**\"다음 달 A 제품은 1,500개 팔릴 것으로 예측되며,**그 주된 이유는 작년 동기 대비 강화된 프로모션과 경쟁사 B의 재고 부족 현상 때문입니다.**\"(기획자는 예측의 근거를 이해하고, 자신의 지식과 결합하여 행동 여부를 결정할 수 있습니다.)\n#### 아키텍처 설계: 왜 이 구조를 선택했는가?\n이 '설명 가능한 예측'을 구현하기 위해, 저는 다음과 같은 단계별 아키텍처를 설계했습니다.\n**Step 1 & 2: 관계의 지도 그리기 (코어 지식 그래프 구축)**모든 데이터 분석의 시작은 현실을 디지털 세계에 올바르게 표현하는 것입니다.먼저 SCM의 핵심 요소들(제품, 창고, 판매, 프로모션, 공급사 등)을 노드(Node)로,그들의 상호작용(판매되다, 적용되다, 공급받다 등)을 관계(Relationship)로 정의합니다.그 후, 흩어져 있는 테이블 형태의 데이터를 이 '관계의 지도',즉 지식 그래프(Knowledge Graph) 위에 채워 넣어 **디지털 트윈**을 구현합니다.\n**Step 3: 통찰력의 원천 (그래프 기반 피처 엔지니어링)**\n보통 머신러닝은 숫자 테이블을 입력받지만, 그래프의 진짜 힘은 그 '관계 구조'에 있습니다.\n저는 머신러닝 모델이 더 똑똑한 판단을 내릴 수 있도록,\n그래프에 다음과 같은 질문을 던져 '지능적인 특성(Feature)'을 추출할 것입니다. (RAG 결합으로 볼 수도 있습니다.)\n<table>\n<tr>\n<td>기획자의 궁금증</td>\n<td>그래프 쿼리 feature</td>\n<td>설명</td>\n</tr>\n<tr>\n<td>\"프로모션이 얼마나 영향을 줬나?\"</td>\n<td>promo_influence_score</td>\n<td>특정 제품과 연결된 프로모션 노드의 수나 강도를 계산</td>\n</tr>\n<tr>\n<td>\"공급망 리스크는 없나?\"</td>\n<td>supply_chain_risk_factor</td>\n<td>제품과 연결된 공급사 노드의 리드타임이나 안정성 점수를 활용</td>\n</tr>\n<tr>\n<td>\"어떤 상품과 같이 잘 팔리지?\"</td>\n<td>cross_sale_velocity</td>\n<td>동일 판매 이벤트에 함께 포함된 다른 제품의 판매량을 활용</td>\n</tr>\n<tr>\n<td>\"재고는 충분한가?\"</td>\n<td>inventory_tension</td>\n<td>창고의 현재 재고량과 평균 출고 속도를 비교하여 계산</td>\n</tr>\n</table>\n이렇게 생성된 '관계 기반 피처'들은 단순한 숫자 너머의 맥락을 담고 있기에,\n다음 단계의 머신러닝 모델이 훨씬 정교하고 설명 가능한 예측을 할 수 있는 기반이 됩니다.\n**Step 4 & 5: ML 모델링 및 시각화**\n지능적인 피처들을 입력받아 XGBoost 같은 머신러닝 모델이 미래 수요를 예측합니다.\n예측 결과는 다시 그래프에 새로운 '예측 노드'로 저장하여 학습데이터로 재활용합니다.\n가장 중요한 것은 이 결과를 기획자가 '사용'할 수 있게 만드는 것입니다.\n이를 위해 3가지 핵심 기능을 갖춘 대시보드를 구상했습니다.\n1. **예측 대시보드 (What)**\"미래 수요는 어떻게 될까?\" → 과거 판매량과 미래 예측치를 시계열 차트로 보여주며, 예측이 평소와 다른 '이상 지점'을 자동으로 강조해줍니다.\n2. **인과관계 분석 뷰 (Why)**\"이 예측이 왜 이렇게 나왔지?\" → 기획자가 1번의 '이상 지점'을 클릭하면, 해당 시점의 제품을 중심으로 판매량에 영향을 미친 모든 요인(프로모션, 경쟁사 이슈 등)들이 그래프로 시각화되어 \"아, 이때 이래서 판매량이 급증했구나!\"를 한눈에 이해시켜 줍니다.\n3. **리스크 전파 시뮬레이션 (What-if)**\"만약 공급사에 문제가 생기면?\" → 기획자가 특정 공급사 노드를 '지연' 상태로 설정하면, 그로 인해 영향받는 모든 제품과 예상 손실이 지도 위에 붉게 표시되어 리스크의 범위를 직관적으로 파악하게 돕습니다.\n## **To be Continue,**\n<mention-page url=\"https://app.notion.com/p/39b1c9d90f4980d3bd7dc4edee106063\"/>",
+    "content": "## 1. 공급망 관리(SCM)의 본질: 정적이 아닌 '동적 네트워크'\n![](https://blog.kakaocdn.net/dna/M6cjL/btsPJDGFr8A/AAAAAAAAAAAAAAAAAAAAAF9yqI7tC6k_y3Ti-6hITCjdjHVQ45TW_rVAlCLGoEDI/img.jpg?credential=yqXZFxpELC7KVnFOS48ylbz2pIh7yKj8&expires=1785509999&allow_ip=&allow_referer=&signature=qwYHWvEe4VQstoi3xgRlNHXJmyE%3D)\n우리가 흔히 보는 SCM 프로세스는 자재 공급 → 생산 → 재고 → 유통 → 고객으로 이어지는 선형적인 흐름으로 그려집니다.\n하지만 이는 현실을 극도로 단순화한 그림입니다.\n실제 공급망의 특수성은 다음과 같습니다.\n-** 극심한 상호연결성과 파급 효과** 공급망의 모든 참여자(노드)는 거미줄처럼 얽혀있습니다. 베트남의 작은 부품 공장 파업(하나의 노드 변경)이 독일 자동차 생산 라인의 중단과 미국 소비자의 주문 취소로 이어지는 '파급 효과'가 발생합니다.\n-** 정보의 왜곡과 증폭 ** 고객의 작은 수요 변화가 소매, 도매, 제조, 공급 단계를 거슬러 올라가면서 정보가 왜곡되고 예측 변동성이 눈덩이처럼 커지는 '채찍 효과'가 발생합니다. 이는 각 단계가 전체 네트워크를 보지 못하고 단절된 정보에만 의존하기 때문입니다.\n-** 지속적인 변동성** 수요 변동, 운송 지연, 파업, 자연재해 등 공급망은 계획(Plan)이 아닌 변수(Exception)에 의해 움직이는 파도 효과를 가지고 있습니다.\n## 2. 데이터의 역할: 이 복잡성 속에서 우리가 파악하려는 것\n이런 복잡한 네트워크 속에서 데이터의 역할은 단순히 현황을 기록하는 것을 넘어,\n'** 네트워크의 동적인 상태를 이해하고 미래를 예측하여 최적의 의사결정을 내리는 것**'에 있습니다.\n구체적으로 우리는 데이터를 통해 다음을 파악하고자 합니다.\n-** 가시성(Visibility) 확보** 지금 특정 제품의 생산과 배송은 어디쯤에 있는지, 특정 창고의 재고는 얼마인지 등 전체 공급망의 현재 상태를 투명하게 파악합니다.\n-** 리스크 식별 및 영향도 분석** \"만약 A 공급사에 문제가 생기면, 어떤 제품 생산에 차질이 생기고, 그로 인해 어떤 고객 주문이 가장 위험해지는가?\" 와 같이 ** 하나의 이벤트가 네트워크 전체에 미치는 파급 효과** 를 분석합니다.\n-** 최적화:** 최소의 재고로 최대의 고객 만족을 이끌어내는 법, 가장 효율적인 물류 경로는 어디인지 등 비용과 효율을 최적화할 지점을 찾습니다.\n따라서 SCM 전략은 위와 같은 대표적인 3가지 요소를 분석하고 사전에 점검하며\n기업의 ** 미래 비즈니스를 위한 주춧돌** 이 되줘야 합니다.\n나아가, 예상치 못한 타 부서의 문제가 발생했을 때 이를 막아줄 ** 방패의 역할** 도 되어야 합니다.\n![](https://blog.kakaocdn.net/dna/ehsYko/btsPJtqA4a7/AAAAAAAAAAAAAAAAAAAAAAlZFswrsHZashtHKwMjkdFvrG44ytfUBEBKs1HpsH75/img.jpg?credential=yqXZFxpELC7KVnFOS48ylbz2pIh7yKj8&expires=1785509999&allow_ip=&allow_referer=&signature=aG5l8Mgz3DlQbq0eWimrmlLhKhk%3D)\n## 3. 한계를 넘어 새로운 방향으로: 관계, 전략, 그리고 기술\n#### 현실의 장벽: 왜 데이터는 있는데 통찰력은 없는가?\n데이터 기반 SCM의 유토피아를 꿈꾸지만, 현실은 여러 장벽에 부딪힙니다. 가장 큰 문제는 다음과 같습니다.\n1.** 데이터 사일로** ERP, SCM, WMS 등 기업 내 데이터는 각기 다른 시스템에 파편화되어 있어 통합적인 분석이 어렵습니다.\n2.** 분석의 복잡성** 설령 모든 데이터를 한곳에 모았다 하더라도, N단계로 이어지는 관계를 분석하는 것은 전통적인 분석 방식으로는 매우 어렵고 느립니다. 'A 공급사 → B 부품 → C 완제품 → D 고객'으로 이어지는 관계만 분석하려 해도, 수많은 테이블을 연결(JOIN)하는 복잡하고 느린 작업이 필요합니다.\n3.** 데이터의 관계성단순히 엑셀과 SQL로 데이터를 적절히 적재하고 출력하는 것이 아니라** 각 시트, 테이블 나아가 스키마 별로의 유의미한 관계성을 파악해야하지만단순 2차원 배열의 테이블이나 RDB 로써는 이 ** 관계** 를 정의하는데 한계가 있습니다.\n이러한 한계는 결국 '** 데이터는 존재하지만, 유의미한 통찰력을 실시간으로 얻지 못하는**' 상황을 만듭니다.\n#### 방향성 전환: '예측'을 넘어 '대응'으로\n이 한계를 극복하기 위해 저는 분석의 패러다임 자체를 전환해야 한다고 결론 내렸습니다.\n단순히 미래 수요를 더 정확하게 '예측'하는 것을 넘어, 예측 불가능한 이벤트가 발생했을 때 신속하게 그 파급 효과를 파악하고 최적의 경로를 재설정하는 **'회복탄력성'과 '대응' 능력을 갖추는 것** 으로 목표를 재설정했습니다.\n이 '대응' 능력의 핵심은 데이터의 '** 관계성**'을 이해하는 데 있습니다.\n개별 데이터의 수치만으로는 \"** 만약 특정 이벤트가 발생한다면, 그 파급 효과의 전체 범위는 어디까지인가?**\"라는 질문에 답할 수 없습니다. 데이터 간의 연결고리를 추적해야만 충격의 전파 경로를 파악하고 즉각적으로 대응할 수 있습니다.\n#### 성공 사례: 팔란티어는 어떻게 '관계'로 문제를 해결하는가?\n이러한 '관계' 기반 접근을 통해 그 효과를 증명해낸 대표적인 기업이 바로 ** 팔란티어(Palantir Technologies)** 입니다.\n좀 더 보태자면 작년 12월 경 부터 처음 알게된 기업이고 [유튜버 빅데이터 닥터](https://www. youtube. com/@bigdatadoctor) 님의 영상을 접하며 좀 더 상세히 알게되었습니다.\n[빅데이터닥터 BIGDATA DOCTOR<br />문제의 본질을 찾아내서 근본적으로 해결하려 합니다.  공식 이메일 bigdatadoctor@icloud. com ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯  빅데이터닥터 - 작가 - 내과 전문의 - 심장내<br />www. youtube. com](https://www. youtube. com/@bigdatadoctor)\n팔란티어는 복잡한 현실 세계를 '온톨로지'라는 개념으로 ** 디지털 세계에 복제(Digital Twin)** 합니다.\n예를 들어, 항공기 제조사 에어버스는 팔란티어 플랫폼을 통해 수백만 개의 부품과 수천 개의 공급업체, 복잡한 생산 공정의 관계망을 하나의 지도처럼 펼쳐봅니다.\n이를 통해 특정 부품의 공급 지연이 어떤 항공기 생산 라인에 며칠의 차질을 빚게 할지 시뮬레이션하고 즉각적으로 대응합니다.\n팔란티어의 성공은 '관계' 데이터가 어떻게 예측을 넘어선 '대응'의 영역을 여는지 보여주는 가장 강력한 예시입니다.\n## 4. SCM 모듈화 구현\n저는 그들의 핵심 원리인 '온톨로지'와 '그래프 DB'를 채택하여\n어떠한 비즈니스 기업에서도 활용 될 수 있는 기반 역량을 다지기 위해 SCM 사이드 프로젝트를 구상하였습니다.\n물론, 개인이 SCM 시스템 전체를 만드는 것은 현실적으로 불가능하며 현명하지도 않습니다.\n저는 가장 큰 부가가치를 창출할 수 있는 핵심, 즉 '예측의 정확도를 넘어 그 이유까지 설명하는 인텔리전스 모듈'과\n'이를 통해 기획자가 직관적 의사결정을 내릴 수 있는 시각화'에 집중하기로 했습니다.\n따라서 단순히 숫자를 예측하는 모델을 넘어 SCM 운영 기획자의 \"왜?\"라는 질문에 답하여 신뢰를 얻는 '설명 가능한 예측' 시스템을 구축해보며 일어나는 데이터의 관계성과 변수들의 사이클을 구현 해보는데 의의를 두었습니다.\n#### 핵심 목표: 신뢰를 기반으로 한 의사결정 지원\n-**(X) 기존의 예측**\"다음 달 A 제품은 1,500개 팔릴 겁니다.\" (근거를 알 수 없어 기획자는 이 숫자를 믿어야 할지 확신할 수 없습니다.)\n-**(O) 나의 목표**\"다음 달 A 제품은 1,500개 팔릴 것으로 예측되며,** 그 주된 이유는 작년 동기 대비 강화된 프로모션과 경쟁사 B의 재고 부족 현상 때문입니다.**\"(기획자는 예측의 근거를 이해하고, 자신의 지식과 결합하여 행동 여부를 결정할 수 있습니다.)\n#### 아키텍처 설계: 왜 이 구조를 선택했는가?\n이 '설명 가능한 예측'을 구현하기 위해, 저는 다음과 같은 단계별 아키텍처를 설계했습니다.\n** Step 1 & 2: 관계의 지도 그리기 (코어 지식 그래프 구축)** 모든 데이터 분석의 시작은 현실을 디지털 세계에 올바르게 표현하는 것입니다. 먼저 SCM의 핵심 요소들(제품, 창고, 판매, 프로모션, 공급사 등)을 노드(Node)로, 그들의 상호작용(판매되다, 적용되다, 공급받다 등)을 관계(Relationship)로 정의합니다. 그 후, 흩어져 있는 테이블 형태의 데이터를 이 '관계의 지도',즉 지식 그래프(Knowledge Graph) 위에 채워 넣어 ** 디지털 트윈** 을 구현합니다.\n** Step 3: 통찰력의 원천 (그래프 기반 피처 엔지니어링)**\n보통 머신러닝은 숫자 테이블을 입력받지만, 그래프의 진짜 힘은 그 '관계 구조'에 있습니다.\n저는 머신러닝 모델이 더 똑똑한 판단을 내릴 수 있도록,\n그래프에 다음과 같은 질문을 던져 '지능적인 특성(Feature)'을 추출할 것입니다. (RAG 결합으로 볼 수도 있습니다.)\n| 기획자의 궁금증 | 그래프 쿼리 feature | 설명 |\n| --- | --- | --- |\n| \"프로모션이 얼마나 영향을 줬나?\" | promo_influence_score | 특정 제품과 연결된 프로모션 노드의 수나 강도를 계산 |\n| \"공급망 리스크는 없나?\" | supply_chain_risk_factor | 제품과 연결된 공급사 노드의 리드타임이나 안정성 점수를 활용 |\n| \"어떤 상품과 같이 잘 팔리지?\" | cross_sale_velocity | 동일 판매 이벤트에 함께 포함된 다른 제품의 판매량을 활용 |\n| \"재고는 충분한가?\" | inventory_tension | 창고의 현재 재고량과 평균 출고 속도를 비교하여 계산 |\n이렇게 생성된 '관계 기반 피처'들은 단순한 숫자 너머의 맥락을 담고 있기에,\n다음 단계의 머신러닝 모델이 훨씬 정교하고 설명 가능한 예측을 할 수 있는 기반이 됩니다.\n** Step 4 & 5: ML 모델링 및 시각화**\n지능적인 피처들을 입력받아 XGBoost 같은 머신러닝 모델이 미래 수요를 예측합니다.\n예측 결과는 다시 그래프에 새로운 '예측 노드'로 저장하여 학습데이터로 재활용합니다.\n가장 중요한 것은 이 결과를 기획자가 '사용'할 수 있게 만드는 것입니다.\n이를 위해 3가지 핵심 기능을 갖춘 대시보드를 구상했습니다.\n1.** 예측 대시보드 (What)**\"미래 수요는 어떻게 될까?\" → 과거 판매량과 미래 예측치를 시계열 차트로 보여주며, 예측이 평소와 다른 '이상 지점'을 자동으로 강조해줍니다.\n2.** 인과관계 분석 뷰 (Why)**\"이 예측이 왜 이렇게 나왔지?\" → 기획자가 1번의 '이상 지점'을 클릭하면, 해당 시점의 제품을 중심으로 판매량에 영향을 미친 모든 요인(프로모션, 경쟁사 이슈 등)들이 그래프로 시각화되어 \"아, 이때 이래서 판매량이 급증했구나!\"를 한눈에 이해시켜 줍니다.\n3.** 리스크 전파 시뮬레이션 (What-if)**\"만약 공급사에 문제가 생기면?\" → 기획자가 특정 공급사 노드를 '지연' 상태로 설정하면, 그로 인해 영향받는 모든 제품과 예상 손실이 지도 위에 붉게 표시되어 리스크의 범위를 직관적으로 파악하게 돕습니다.",
     "_meta": {
       "filePath": "scm-ontology-palantir.mdx",
       "fileName": "scm-ontology-palantir.mdx",
@@ -71,63 +584,58 @@ export default [
     },
     "headings": [
       {
-        "id": "-scm-",
+        "id": "공급망-관리scm의-본질-정적이-아닌-동적-네트워크",
         "text": "1. 공급망 관리(SCM)의 본질: 정적이 아닌 '동적 네트워크'",
         "level": 2
       },
       {
-        "id": "-",
+        "id": "데이터의-역할-이-복잡성-속에서-우리가-파악하려는-것",
         "text": "2. 데이터의 역할: 이 복잡성 속에서 우리가 파악하려는 것",
         "level": 2
       },
       {
-        "id": "-",
+        "id": "한계를-넘어-새로운-방향으로-관계-전략-그리고-기술",
         "text": "3. 한계를 넘어 새로운 방향으로: 관계, 전략, 그리고 기술",
         "level": 2
       },
       {
-        "id": "-",
+        "id": "현실의-장벽-왜-데이터는-있는데-통찰력은-없는가",
         "text": "현실의 장벽: 왜 데이터는 있는데 통찰력은 없는가?",
         "level": 4
       },
       {
-        "id": "-",
+        "id": "방향성-전환-예측을-넘어-대응으로",
         "text": "방향성 전환: '예측'을 넘어 '대응'으로",
         "level": 4
       },
       {
-        "id": "-",
+        "id": "성공-사례-팔란티어는-어떻게-관계로-문제를-해결하는가",
         "text": "성공 사례: 팔란티어는 어떻게 '관계'로 문제를 해결하는가?",
         "level": 4
       },
       {
-        "id": "scm-",
+        "id": "scm-모듈화-구현",
         "text": "4. SCM 모듈화 구현",
         "level": 2
       },
       {
-        "id": "-",
+        "id": "핵심-목표-신뢰를-기반으로-한-의사결정-지원",
         "text": "핵심 목표: 신뢰를 기반으로 한 의사결정 지원",
         "level": 4
       },
       {
-        "id": "-",
+        "id": "아키텍처-설계-왜-이-구조를-선택했는가",
         "text": "아키텍처 설계: 왜 이 구조를 선택했는가?",
         "level": 4
-      },
-      {
-        "id": "to-be-continue",
-        "text": "To be Continue,",
-        "level": 2
       }
     ]
   },
   {
     "title": "데이터가 기사를 춤추게 한다: 기사 생산성 14% 향상의 분석 로직",
-    "description": "데이터 기반으로 기사들의 생산성과 효율성을 정량적으로 분석하고 개선점을 도출",
+    "description": "데이터 기반으로 기사들의 생산성과 효율성을 정량적으로 분석하고 병목을 해결한 SCM 최적화 사례",
     "date": "2026-07-20",
-    "role": "Data Analyst",
-    "content": "# 📈 기사 생산성, 감이 아닌 '데이터'로 측정하다\n지난 글에서 TMS(운송관리시스템)를 통해 배차를 자동화하고 운송비를 절감한 과정을 다뤘습니다. 하지만 물류 최적화의 진정한 완성은 **현장(Field)의 생산성 향상**에 있습니다.\n물류 현장에서는 흔히 \"저 기사님은 일 참 잘해\"라고 말합니다. 하지만 '잘한다'는 기준은 모호합니다. 단순히 배송을 많이 한 것인지, 사고 없이 안전하게 한 것인지, 아니면 동선을 효율적으로 짠 것인지 알 수 없습니다. \n저는 이 모호한 직관을 타파하고, **기사들의 배송 동선과 소요 시간을 데이터로 정량화하여 '생산성'을 측정하는 데이터 파이프라인과 알고리즘**을 설계했습니다.\n\n## 🧮 생산성을 정의하는 3가지 변수\n단순 배송 건수만으로 기사를 평가하면 불공평합니다. 산동네를 도는 기사와 평지 아파트를 도는 기사의 조건이 완전히 다르기 때문입니다. 그래서 저는 생산성을 다음의 3가지 변수로 분해(Decomposition)하여 모델링했습니다.\n`[이미지: 기사 동선 최적화 및 생산성 변수 산출 개념도 - 노션 하위 페이지 참조]`\n1. **이동 시간 (Travel Time)**: 배송지 간의 순수 이동 시간. 네비게이션 API의 예상 시간과 기사의 실제 GPS 이동 로그를 대조하여, '동선 최적화 여부'를 수학적으로 파악합니다.\n2. **하차 및 검수 시간 (Drop-off Time)**: 목적지에 도착한 후 물건을 내리고 바코드를 스캔하여 처리하기까지의 체류 시간입니다. 스캔 타임스탬프 간의 델타(Delta) 값으로 계산합니다.\n3. **노드 난이도 가중치 (Node Difficulty Weight)**: 배송지의 엘리베이터 유무, 주차 난이도 등을 상수로 둔 공간 가중치입니다.\n\n## 🚀 알고리즘이 만든 14%의 마법\n기사들의 PDA 단말기에서 쏘아주는 실시간 로그 데이터를 바탕으로, 위의 변수들을 계산하여 일별 생산성 리포트를 추출했습니다.\n- **문제 진단**: 데이터를 까보니, 유독 '하차 및 검수 시간'이 비정상적으로 긴 병목(Bottleneck) 현상을 겪는 기사 그룹을 발견했습니다. 원인은 배송지에 도착해서야 탑차 안에서 물건을 뒤지며 찾느라 허비하는 시간이었습니다.\n- **해결책 제시 (Prescriptive Analytics)**: 저는 상차(Loading) 시점에 TMS가 기사의 최적 하차 순서를 계산하고, 그 **역순(LIFO, Last-In First-Out)으로 물건 적재 위치를 가이드**해주는 스크린을 추가 개발했습니다.\n효과는 즉각적이었습니다. 물건을 찾는 데 걸리는 불필요한 시간이 사라지면서, 전체 **단위 시간당 배송 완료 건수(생산성)가 무려 14% 향상**되었습니다. 현장의 감을 데이터로 증명해 낸 순간이었습니다.\n\n---\n> **다음 글 예고**\n> 배차와 배송 동선을 최적화했다고 물류가 완성되지는 않습니다. 애초에 '무엇을, 언제, 얼마나' 준비해야 할지 모른다면 물류 센터는 악성 재고와 품절 사이에서 고통받게 됩니다.\n> 다음 글에서는 물류의 최상단, **SCM(공급망 관리)의 근본적인 리스크를 제어하기 위해 기획한 수요 예측 대시보드** 이야기로 넘어갑니다.",
+    "role": "Data Analyst & Product Manager",
+    "content": "## 1. 기사 생산성, 감이 아닌 '데이터'로 측정하다\n지난 글에서 TMS(운송관리시스템)를 통해 배차를 자동화하고 운송비를 절감한 과정을 다뤘습니다. 하지만 물류 최적화의 진정한 완성은 시스템 내부가 아닌 **현장(Field)의 생산성 향상**에 있습니다.\n\n물류 현장에서는 흔히 \"저 기사님은 일 참 잘해\"라고 말합니다. 하지만 '잘한다'는 기준은 모호합니다. 단순히 배송을 많이 한 것인지, 사고 없이 안전하게 한 것인지, 아니면 동선을 효율적으로 짠 것인지 알 수 없습니다. \n저는 이 모호한 직관을 타파하고, **기사들의 배송 동선과 소요 시간을 데이터로 정량화하여 '생산성'을 측정하는 데이터 파이프라인과 알고리즘**을 설계했습니다.\n\n## 2. 생산성을 정의하는 3가지 핵심 변수\n단순 배송 건수만으로 기사를 평가하면 불공평합니다. 산동네를 도는 기사와 평지 아파트를 도는 기사의 조건이 완전히 다르기 때문입니다. 그래서 저는 생산성을 다음의 3가지 변수로 분해(Decomposition)하여 수리 모델링을 진행했습니다.\n\n1. **이동 시간 (Travel Time)**: 배송지 간의 순수 이동 시간입니다. 네비게이션 API의 예상 시간과 기사의 실제 GPS 이동 로그를 대조하여, '동선 최적화 여부'를 수학적으로 파악합니다.\n2. **하차 및 검수 시간 (Drop-off Time)**: 목적지에 도착한 후 물건을 내리고 바코드를 스캔하여 처리하기까지의 체류 시간입니다. 스캔 타임스탬프 간의 델타(Delta) 값으로 계산합니다.\n3. **노드 난이도 가중치 (Node Difficulty Weight)**: 배송지의 엘리베이터 유무, 주차 난이도, 진입로의 너비 등을 상수로 둔 공간 가중치입니다.\n\n## 3. 데이터 파이프라인 및 스키마 설계\n현장의 아날로그 데이터를 디지털로 전환하기 위해, 기사들의 PDA 단말기에서 쏘아주는 실시간 로그 데이터를 수집하는 파이프라인을 구축했습니다.\n\n```sql\n-- 기사 이동 및 하차 이벤트 로그 스키마 예시\nCREATE TABLE driver_event_logs (\n    log_id VARCHAR(50) PRIMARY KEY,\n    driver_id VARCHAR(30) NOT NULL,\n    route_id VARCHAR(30) NOT NULL,\n    node_id VARCHAR(50) NOT NULL,\n    event_type ENUM('ARRIVE', 'SCAN_START', 'SCAN_END', 'DEPART') NOT NULL,\n    gps_lat DECIMAL(10, 8),\n    gps_lng DECIMAL(10, 8),\n    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP\n);\n```\n\n이벤트 로그를 바탕으로 **하차 소요 시간(Drop-off Time)**을 계산하는 로직은 아래와 같이 구현되었습니다. 도착(`ARRIVE`) 시점부터 모든 스캔이 끝나고 출발(`DEPART`)하는 시점까지의 시간차를 계산하고, 이를 노드 난이도 가중치로 보정합니다.\n\n```python\ndef calculate_productivity_score(event_logs, difficulty_weights):\n    \"\"\"\n    기사의 일별 생산성 점수를 산출하는 함수\n    \"\"\"\n    score = 0\n    for node in event_logs:\n        # 하차 시간 계산 (Departure - Arrival)\n        drop_off_time = (node['DEPART'] - node['ARRIVE']).total_seconds()\n        \n        # 기준 하차 시간 대비 실제 소요 시간 비율 산출\n        base_time = get_base_time(node['item_count'])\n        efficiency = base_time / drop_off_time\n        \n        # 난이도 가중치 곱 연산\n        weight = difficulty_weights.get(node['node_id'], 1.0)\n        score += (efficiency * weight)\n        \n    return score\n```\n\n## 4. 데이터가 찾아낸 병목과 처방적 분석(Prescriptive Analytics)\n위 알고리즘을 바탕으로 일별 생산성 리포트를 추출하고 데이터를 시각화해 본 결과, 흥미로운 병목(Bottleneck) 현상을 발견했습니다.\n\n유독 '하차 및 검수 시간'이 비정상적으로 긴 기사 그룹이 존재했는데, 현장 실사 결과 원인은 명확했습니다. 배송지에 도착해서야 탑차 안에서 물건을 뒤지며 찾느라 허비하는 시간이 전체 하차 시간의 40%를 차지하고 있었던 것입니다.\n\n### LIFO(Last-In First-Out) 적재 가이드 시스템 도입\n문제 해결을 위해 저는 상차(Loading) 시점에 TMS가 기사의 최적 하차 순서를 계산하고, 그 **역순(LIFO, Last-In First-Out)으로 물건 적재 위치를 가이드**해주는 스크린 UI를 추가 기획했습니다.\n가장 늦게 배송할 물건을 가장 깊숙이 넣고, 가장 먼저 배송할 물건을 문 앞에 배치하도록 시스템이 적재 지도를 그려주는 방식입니다.\n\n## 5. 결과 및 Reference\n**효과는 즉각적이었습니다.** 물건을 찾는 데 걸리는 불필요한 시간이 완전히 사라지면서, 전체 **단위 시간당 배송 완료 건수(생산성)가 무려 14% 향상**되었습니다. 감과 경험에 의존하던 물류 현장을 데이터로 진단하고 시스템으로 처방하여 증명해 낸 짜릿한 순간이었습니다.\n\n> 배차와 배송 동선을 최적화했다고 물류가 완성되지는 않습니다. 애초에 '무엇을, 언제, 얼마나' 준비해야 할지 모른다면 물류 센터는 악성 재고와 품절 사이에서 고통받게 됩니다.\n> 다음 글에서는 물류의 최상단, **SCM(공급망 관리)의 근본적인 리스크를 제어하기 위해 기획한 수요 예측 대시보드** 이야기로 넘어갑니다.",
     "_meta": {
       "filePath": "tms-driver-productivity.mdx",
       "fileName": "tms-driver-productivity.mdx",
@@ -137,13 +645,139 @@ export default [
     },
     "headings": [
       {
-        "id": "-3-",
-        "text": "🧮 생산성을 정의하는 3가지 변수",
+        "id": "기사-생산성-감이-아닌-데이터로-측정하다",
+        "text": "1. 기사 생산성, 감이 아닌 '데이터'로 측정하다",
         "level": 2
       },
       {
-        "id": "-14-",
-        "text": "🚀 알고리즘이 만든 14%의 마법",
+        "id": "생산성을-정의하는-3가지-핵심-변수",
+        "text": "2. 생산성을 정의하는 3가지 핵심 변수",
+        "level": 2
+      },
+      {
+        "id": "데이터-파이프라인-및-스키마-설계",
+        "text": "3. 데이터 파이프라인 및 스키마 설계",
+        "level": 2
+      },
+      {
+        "id": "데이터가-찾아낸-병목과-처방적-분석prescriptive-analytics",
+        "text": "4. 데이터가 찾아낸 병목과 처방적 분석(Prescriptive Analytics)",
+        "level": 2
+      },
+      {
+        "id": "lifolast-in-first-out-적재-가이드-시스템-도입",
+        "text": "LIFO(Last-In First-Out) 적재 가이드 시스템 도입",
+        "level": 3
+      },
+      {
+        "id": "결과-및-reference",
+        "text": "5. 결과 및 Reference",
+        "level": 2
+      }
+    ]
+  },
+  {
+    "title": "운송 관리 시스템(TMS) 개발",
+    "description": "파편화된 운송 프로세스의 표준화 및 통합",
+    "date": "2026-07-21",
+    "role": "Project",
+    "content": "# 1. 문제 정의 및 기획 배경\n\n- --\n\n<div style=\"display: flex; flex-wrap: wrap; gap: 1rem; margin-bottom: 2rem;\">\n  <a href=\"https://github. com/park-jjong/TWLKRTMS-releaseRepository\" target=\"_blank\" class=\"reference-link\">\n    <svg xmlns=\"http://www. w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4\"/><path d=\"M9 18c-4.51 2-5-2-7-2\"/></svg>\n    <span>GitHub Repository</span>\n  </a>\n  <a href=\"https://www. youtube. com/watch?v=uegOVSqd4lU\" target=\"_blank\" class=\"reference-link\">\n    <svg xmlns=\"http://www. w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M2.5 17a24.12 24.12 0 0 1 0-10 2 2 0 0 1 1.4-1.4 49.56 49.56 0 0 1 16.2 0A2 2 0 0 1 21.5 7a24.12 24.12 0 0 1 0 10 2 2 0 0 1-1.4 1.4 49.55 49.55 0 0 1-16.2 0A2 2 0 0 1 2.5 17\"/><path d=\"m10 15 5-3-5-3z\"/></svg>\n    <span>System Video Reference</span>\n  </a>\n  <a href=\"/projects/tms-driver-productivity\" class=\"reference-link\">\n    <svg xmlns=\"http://www. w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z\"/><polyline points=\"14 2 14 8 20 8\"/><line x1=\"16\" y1=\"13\" x2=\"8\" y2=\"13\"/><line x1=\"16\" y1=\"17\" x2=\"8\" y2=\"17\"/><polyline points=\"10 9 9 9 8 9\"/></svg>\n    <span>기사 생산성 분석 원리</span>\n  </a>\n</div>\n\n- --\n\n## 1. 프로젝트 개요\n### 문제점 인식\n- 기존 운송 프로세스의 분산 및 수작업 중심 인수인계 방식은 심각한 비효율을 초래함.\n- 개인 편의에 따른 인수인계 파편화로 정보 누락, 소통 오류, 업무 연속성 저해 발생.\n- 월별 긴급 배송 프로세스 중 오퍼레이션 담당의 실수로 인한 오배송 전체 3~4% 발생\n### 벤치마킹 및 아이디어 도출\n-**“Detrack”** 서비스 시스템을 벤치마킹하여 대시보드 형태의 테이블 기반 주문 관리 및 날짜별 조회, 엑셀 출력 기능의 효율성을 확인.\n- TWLKR의 배송 운영을 시스템으로 표준화하고 중앙 집중화하는 아이디어를 구체화함.\n### 프로젝트 목표\n- TMS(운송관리시스템) 기획·개발을 통한** 전사적 운송 프로세스 혁신 및 운영 효율성 극대화**.\n-** 세부 목표**\n\t- 분산 프로세스 표준화, 인수인계 시스템화, 실시간 배송 추적 및 데이터 기반 관리, 사용자 편의성 제고를 통한 시스템 조기 안착.\n\n## 2. 진행 과정 및 역할\n\n- --\n\n### 주요 기능 및 서비스 정의\n-** 대시보드 기반 주문 관리 시스템 구현 (Detrack 벤치마킹)**: 날짜별 조회, 검색, 상세 정보 확인 및 상태 업데이트 기능 제공.\n-** 체계적인 인수인계 커뮤니케이션 시스템 도입**: 인수인계 노트 작성, 조회, 관리 기능 제공.\n-** 2단계 접근 제어 시스템 구축**: 일반 사용자(Dispatcher)와 관리자(Administrator) 역할에 따른 권한 부여.\n-** 도착지별 거리 및 소요시간 정립** \n웨이하우스별로 도착지 우편번호를 기준 거리와 예상 소요시간을 데이터들을 중첩시켜 평균 중위값을 자동으로 측정하여 예상 소요시간 리드타임 표준 정립\n\t-** 거리는 naverapi를 이용** 하여 실시간으로 4가지 (실시간빠른길, 편한길, 최단거리, 무료우선 중)  2번째로 긴 거리를 선정\n### 프로세스 설계\n```mermaid\ngraph LR\n    subgraph 로그인_인증\n        U1[사용자] -->|로그인 정보 입력| WS1(웹 서버)\n        WS1 -->|인증 요청| AM1[인증 모듈]\n        AM1 -->|인증 결과| WS1\n        WS1 -->|로그인 성공/실패 응답| U1\n    end\n\n    subgraph 대시보드_주문_관리\n        U2[사용자] -->|대시보드/주문 조회 요청| WS2(웹 서버)\n        WS2 -->|데이터 조회 요청| DB2[데이터베이스]\n        DB2 -->|주문 데이터 응답| WS2\n        WS2 -->|화면 렌더링/JSON 응답| U2\n        U2 -->|주문 생성/수정/삭제 요청| WS2\n        WS2 -->|DB 업데이트 요청| DB2\n        DB2 -->|처리 결과 응답| WS2\n        WS2 -->|성공/실패 응답| U2\n    end\n\n    subgraph 인수인계_관리\n        U3[사용자] -->|인수인계 작성/조회 요청| WS3(웹 서버)\n        WS3 -->|데이터 처리 요청| DB3[데이터베이스]\n        DB3 -->|데이터 응답/업데이트| WS3\n        WS3 -->|화면 렌더링/JSON 응답| U3\n    end\n\n    subgraph 관리자_기능\n        U4[관리자] -->|사용자 관리 페이지 요청| WS4(웹 서버)\n        WS4 -->|관리자 권한 확인| AM4[인증 모듈]\n        AM4 -->|권한 확인 결과| WS4\n        WS4 -->|사용자 목록/폼 응답| U4\n        U4 -->|사용자 생성/수정 요청| WS4\n        WS4 -->|DB 업데이트 요청| DB4[데이터베이스]\n        DB4 -->|처리 결과 응답| WS4\n        WS4 -->|성공/실패 응답| U4\n    end\n```\n- 사용자 인터페이스: 웹 브라우저 기반의 직관적인 대시보드 및 관리 화면 제공\n- 프론트엔드/백엔드 연동\nSSR (Server-Side Rendering) 및 CSR (Client-Side Rendering)을 동시 활용\n- 데이터 흐름\n사용자 요청은 클라이언트 → 웹 서버(FastAPI) → 인증 모듈/비즈니스 로직\n을 거쳐 MySQL 데이터베이스와 연동되며 모든 활동은 로깅 시스템에 기록됨.\n### 예상 성과\n- 운송 프로세스의 표준화 및 효율 증대.\n- 수작업으로 인한 휴먼 에러 및 지연 감소.\n- 데이터 기반의 의사결정 지원 및 생산성 향상 기반 마련.\n###** 팀 구성 및 협업**:\n-** 배송 Operation 팀 기획 및 주도**: 경영진 설득을 통해 팀을 구성하고 시스템 단독 개발.\n-** 팀원 추천 기준**: '과묵함'(민감 정보), '꼼꼼함'(데이터 정확성), 'CS 역량 연관성'(고객 중심)을 기준으로 팀원 추천 및 역량 극대화.\n-** 기술 스택**\n\t| 구분 | 기술 스택 | 내용 |\n| --- | --- | --- |\n| Backend | Python 3.12, FastAPI, Jinja2 | SSR 및 CSR 하이브리드 아키텍처 구축 |\n| Frontend | HTML/CSS/JavaScript, Bootstrap/Tailwind | Bootstrap/Tailwind 활용, 모듈형 JS 개발 |\n| Database | MySQL 8.0 on Cloud SQL | Cloud SQL 배포, Private IP 연결 |\n| Infrastructure | Google App Engine Flexible | Docker 컨테이너 기반 Custom |\n-** 보안**\n\t| 보안 영역 | 구현 내용 |\n| --- | --- |\n| 네트워크 보안 | • Cloud Armor를 통한 DDoS 및 웹 공격 방어<br/>• Cloud SQL에 Private IP 연결 사용<br/>• 방화벽 규칙을 통한 인가된 소스만 접근 허용 |\n| 애플리케이션 보안 | • HSTS, X-Content-Type-Options, X-Frame-Options 헤더 적용<br/>• CSRF 방어를 위한 SameSite=Lax 쿠키 설정<br/>• 모든 보호된 라우트에 대한 서버 측 세션 유효성 검사<br/>• 서버 및 클라이언트 양단에서의 포괄적인 입력값 검증 |\n| 데이터 보호 | • Lock 메커니즘을 통한 동시 수정 방지<br/>• 5분 후 Lock 자동 타임아웃 및 해제<br/>• HTTPS를 통한 전송 데이터 암호화 (HTTPS 강제) |\n| 인증 및 권한 부여 | • 역할 기반 접근 제어 (USER/ADMIN)<br/>• 보안 쿠키를 사용한 세션 기반 인증<br/>• 미인증 접근 시 로그인 페이지로 자동 리디렉션 |\n-** 주요 활동**\n\t-** 프로젝트 기획 및 단독개발**: 경영진 설득 및 프로젝트 전반 기획 및 단독 개발\n\t-** 사용자 중심 시스템 안착 지원**: 주야간 근무조 동료 대상 개별 코칭을 통한 조기 안착 지원.\n\t-** 저항 극복 및 기능 개선**: 지속적인 소통 및 커피챗을 통한 피드백 수렴. '다수 행 선택 배차' 등 핵심 기능 추가 및 불필요한 클릭 UX 감소에 기여.\n\t-** 보안 및 데이터 무결성 강화**: 동시 수정 방지(Lock Mechanism) 및 5분 후 자동 타임아웃/잠금 해제 기능 기획 반영.\n-** 어려움 및 해결**\n\t-** 레거시 모델 개선 저항**: 동료들의 새 시스템 도입 저항에 직면.\n\t\t-** 해결**: 개별 코칭 및 편안한 대화(커피챗)를 통해 우려 경청 및 핵심 기능 즉시 반영으로 시스템 수용도 제고.\n\t-** 민감 정보 및 데이터 동시성 관리**: 보안 및 데이터 무결성 확보의 중요성 인식.\n\t\t-** 해결**:** 동시 수정 방지(Lock Mechanism)** 및** 자동 타임아웃 해제** 기능 기획 반영, 다단계 보안 아키텍처 설계.\n## 3. 결과 및 성과\n- --\n### 핵심 성과 지표 (KPI)\n-** 정량적 성과**\n\t-** 주차별 기사 생산성 14% 향상**\n\t\t⇒ 개발 3개월 전부터 통합 출고 스케줄표를 따로 만들어 적용\n그에 따라 총 4개월 정도 데이터와 작년 데이터 대비 향상한 내용\n\t- 연간 외부 기사 인건비** 약 6% 절감 예상**(감소 Man-hour 기반 추산)\n\t- 출발지 별** 평균 소요 거리 및 시간 표준** 정립 \n(데이터가 쌓일수록 정확도 상승)\n\t- 오배송건 0건 \n-** 정성적 성과**\n\t- 전사적 운송 프로세스 통일, 커뮤니케이션 오류 감소로 인한 KPI 상승\n\t- 주요 고객사 배송 최적화를 위한 지역별 기사 스케줄 재정립\n### 적용 결과\n- 데스크탑 환경 전용, 한국어 최적화, KST (UTC+9) 기준 시간 처리.\n- 단순한 시스템 도입을 넘어,** 파편화된 출고 업무 구조를 TMS 중심으로 프로세스 재편 ⇒ 물동량 데이터 추출 가공**\n\n## 4. 회고\n- --\n### 개선 방안\n-** 시스템 안정성 강화**\n\t- 소규모 데이터 처리를 위한 시스템 개발로 인한 안정성 강화 필요\n- 외부 ERP와 연동성 생성 필요\n### 개인 성장\n- 레거시 프로세스 문제 파악, 경영진 설득, 사용자 저항 관리, 시스템 안착 전 과정 주도 경험.\n-** 사용자 중심 사고** 및** 지속적인 소통** 의 중요성 체득.\n- 복잡한 조직 내 변화 관리자로서의 역량 강화 및 인력 관리, 팀 빌딩 실질적 경험 축적.\n## 5. Reference\n- --\n## 시스템 아키텍처\n```mermaid\ngraph TB\n    subgraph Frontend[\"프론트엔드\"]\n        UI[\"웹 대시보드\n(HTML/CSS/JS)\"]\n        MAP[\"지도 API\n(거리 산출)\"]\n    end\n    \n    subgraph Backend[\"백엔드\"]\n        API[\"FastAPI\n웹 서버\"]\n        AUTH[\"2단계 접근 제어\n(Dispatcher/Admin)\"]\n        LOG[\"로깅 시스템\"]\n    end\n    \n    subgraph Data[\"데이터\"]\n        DB[\"MySQL\nDatabase\"]\n        EXCEL[\"엑셀 출력\n모듈\"]\n    end\n    \n    UI --> API\n    MAP --> API\n    API --> AUTH\n    API --> DB\n    API --> LOG\n    DB --> EXCEL\n    \n    style Frontend fill:#dbeafe, stroke:#1e3a5f\n    style Backend fill:#fef3c7,stroke:#d97706\n    style Data fill:#f0fdf4,stroke:#16a34a\n```\n\n## 운송 프로세스 플로우\n```mermaid\nflowchart LR\n    subgraph Input[\"주문 접수\"]\n        A[\"장애 오더\n(Dell ERP)\"] --> B[\"배차 요청\"]\n    end\n    \n    subgraph TMS[\"TMS 시스템\"]\n        B --> C[\"기사 배정\n(거리 자동 산출)\"]\n        C --> D[\"배차 현황\n실시간 조회\"]\n        D --> E[\"인수인계\n노트 관리\"]\n    end\n    \n    subgraph Output[\"운송 실행\"]\n        C --> F[\"부품 출고\"]\n        F --> G[\"엔지니어 배송\n조율 (24/7)\"]\n        G --> H[\"설치/교체\n완료\"]\n        H --> I[\"회수 물품\n입고\"]\n    end\n    \n    style Input fill:#e0f2fe, stroke:#0284c7\n    style TMS fill:#dbeafe, stroke:#1e3a5f\n    style Output fill:#f0fdf4,stroke:#16a34a\n```\n\n## 성과 비교 (Before → After)\n```mermaid\ngraph LR\n    subgraph Before[\"Before (수기 관리)\"]\n        B1[\"경험 기반 배차\"]\n        B2[\"오배송 3~4%\"]\n        B3[\"파편화된 인수인계\"]\n    end\n    \n    subgraph After[\"After (TMS 도입)\"]\n        A1[\"거리 기반 최적 배차\"]\n        A2[\"오배송 0건\"]\n        A3[\"시스템 통합 인수인계\"]\n    end\n    \n    B1 -->|\"시스템화\"| A1\n    B2 -->|\"생산성 14%↑\"| A2\n    B3 -->|\"운송비 6%↓\"| A3\n    \n    style Before fill:#fee2e2,stroke:#dc2626\n    style After fill:#dcfce7,stroke:#16a34a\n```\n\n\n\tGitHub Repository, 대시보드 실제 스크린샷을 추가해 주세요.",
+    "_meta": {
+      "filePath": "tms.mdx",
+      "fileName": "tms.mdx",
+      "directory": ".",
+      "extension": "mdx",
+      "path": "tms"
+    },
+    "headings": [
+      {
+        "id": "프로젝트-개요",
+        "text": "1. 프로젝트 개요",
+        "level": 2
+      },
+      {
+        "id": "문제점-인식",
+        "text": "문제점 인식",
+        "level": 3
+      },
+      {
+        "id": "벤치마킹-및-아이디어-도출",
+        "text": "벤치마킹 및 아이디어 도출",
+        "level": 3
+      },
+      {
+        "id": "프로젝트-목표",
+        "text": "프로젝트 목표",
+        "level": 3
+      },
+      {
+        "id": "진행-과정-및-역할",
+        "text": "2. 진행 과정 및 역할",
+        "level": 2
+      },
+      {
+        "id": "주요-기능-및-서비스-정의",
+        "text": "주요 기능 및 서비스 정의",
+        "level": 3
+      },
+      {
+        "id": "프로세스-설계",
+        "text": "프로세스 설계",
+        "level": 3
+      },
+      {
+        "id": "예상-성과",
+        "text": "예상 성과",
+        "level": 3
+      },
+      {
+        "id": "결과-및-성과",
+        "text": "3. 결과 및 성과",
+        "level": 2
+      },
+      {
+        "id": "핵심-성과-지표-kpi",
+        "text": "핵심 성과 지표 (KPI)",
+        "level": 3
+      },
+      {
+        "id": "적용-결과",
+        "text": "적용 결과",
+        "level": 3
+      },
+      {
+        "id": "회고",
+        "text": "4. 회고",
+        "level": 2
+      },
+      {
+        "id": "개선-방안",
+        "text": "개선 방안",
+        "level": 3
+      },
+      {
+        "id": "개인-성장",
+        "text": "개인 성장",
+        "level": 3
+      },
+      {
+        "id": "reference",
+        "text": "5. Reference",
+        "level": 2
+      },
+      {
+        "id": "시스템-아키텍처",
+        "text": "시스템 아키텍처",
+        "level": 2
+      },
+      {
+        "id": "운송-프로세스-플로우",
+        "text": "운송 프로세스 플로우",
+        "level": 2
+      },
+      {
+        "id": "성과-비교-before-after",
+        "text": "성과 비교 (Before → After)",
         "level": 2
       }
     ]
