@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Code } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
@@ -6,7 +6,7 @@ import remarkGfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw';
 import { projectsFullMarkdown, blogFullMarkdown, projects, blogList } from '../data/projectsData';
 import { useTheme } from '../context/ThemeContext';
-import mermaid from 'mermaid';
+import { Mermaid } from '../components/Mermaid';
 
 const slugify = (text: string) => {
   return text
@@ -46,19 +46,10 @@ export const ProjectDetail = () => {
   const [modalImageSrc, setModalImageSrc] = useState<string | null>(null);
   const [modalSvgContent, setModalSvgContent] = useState<string | null>(null);
 
-  useEffect(() => {
-    mermaid.initialize({
-      startOnLoad: false,
-      theme: theme === 'dark' ? 'dark' : 'default',
-      fontFamily: '"Inter", sans-serif',
-      securityLevel: 'loose'
-    });
-    mermaid.run({ querySelector: '.mermaid' }).catch(e => console.error(e));
-  }, [markdownContent, theme]);
-
+  // Mermaid global rendering removed, handled by custom Mermaid component
   const handleMermaidClick = (e: React.MouseEvent) => {
     const target = e.target as HTMLElement;
-    const mermaidContainer = target.closest('.mermaid');
+    const mermaidContainer = target.closest('.mermaid-wrapper');
     if (mermaidContainer && mermaidContainer.innerHTML.includes('<svg')) {
       setModalSvgContent(mermaidContainer.innerHTML);
     }
@@ -67,15 +58,15 @@ export const ProjectDetail = () => {
 
 
   const components = {
-    code: ({ node, className, children, ...props }: any) => {
+    code: ({ className, children, ...props }: any) => {
       const match = /language-(\w+)/.exec(className || '');
       if (match && match[1] === 'mermaid') {
         return (
           <div 
-            className="mermaid" 
-            style={{ display: 'flex', justifyContent: 'center', margin: '2rem 0', cursor: 'zoom-in', maxWidth: '100%', overflowX: 'auto' }}
+            className="mermaid-wrapper" 
+            style={{ margin: '2rem 0', cursor: 'zoom-in', maxWidth: '100%' }}
           >
-            {String(children).replace(/\n$/, '')}
+            <Mermaid chart={String(children).replace(/\n$/, '')} />
           </div>
         );
       }
