@@ -883,18 +883,18 @@ SSR (Server-Side Rendering) 및 CSR (Client-Side Rendering)을 동시 활용
 - 운송 프로세스의 표준화 및 효율 증대.
 - 수작업으로 인한 휴먼 에러 및 지연 감소.
 - 데이터 기반의 의사결정 지원 및 생산성 향상 기반 마련.
-### **팀 구성 및 협업**:
+### 팀 구성 및 협업:
 - **배송 Operation 팀 기획 및 주도**: 경영진 설득을 통해 팀을 구성하고 시스템 단독 개발.
 - **팀원 추천 기준**: '과묵함'(민감 정보), '꼼꼼함'(데이터 정확성), 'CS 역량 연관성'(고객 중심)을 기준으로 팀원 추천 및 역량 극대화.
 - **기술 스택**
-	| 구분 | 기술 스택 | 내용 |
+| 구분 | 기술 스택 | 내용 |
 | --- | --- | --- |
 | Backend | Python 3.12, FastAPI, Jinja2 | SSR 및 CSR 하이브리드 아키텍처 구축 |
 | Frontend | HTML/CSS/JavaScript, Bootstrap/Tailwind | Bootstrap/Tailwind 활용, 모듈형 JS 개발 |
 | Database | MySQL 8.0 on Cloud SQL | Cloud SQL 배포, Private IP 연결 |
 | Infrastructure | Google App Engine Flexible | Docker 컨테이너 기반 Custom |
 - **보안**
-	| 보안 영역 | 구현 내용 |
+| 보안 영역 | 구현 내용 |
 | --- | --- |
 | 네트워크 보안 | • Cloud Armor를 통한 DDoS 및 웹 공격 방어<br/>• Cloud SQL에 Private IP 연결 사용<br/>• 방화벽 규칙을 통한 인가된 소스만 접근 허용 |
 | 애플리케이션 보안 | • HSTS, X-Content-Type-Options, X-Frame-Options 헤더 적용<br/>• CSRF 방어를 위한 SameSite=Lax 쿠키 설정<br/>• 모든 보호된 라우트에 대한 서버 측 세션 유효성 검사<br/>• 서버 및 클라이언트 양단에서의 포괄적인 입력값 검증 |
