@@ -709,36 +709,12 @@ flowchart LR
 
 # 3. 결과 및 성과
 ---
-
-- **주문 확인·출고 업무  **83% 단축**  \|  팀원 2명 × 일 30분 → 5분
-
-
-
-- **월 정산  **100% 자동화**  \|  월 1\~2일 수기 → 0일. 정산, 분석 등 데이터 즉시 추출
-
-
-
-- **결제-출고 정책 전환  **변수 원천 차단**  \|  담당자 재량 → 시스템 강제. 미수금·정산 불일치 제거
-
-
-
-- **거래명세서  **수기 → 실시간 자동 발송**  \|  24시간 즉시 발송
-
-
-
-- **메시징 비용  **80% 절감**  \|  LMS 3.0P → 알림톡 0.6P
-
-
-
-- **PG 수수료  **0원**  \|  마진 구조 보전을 위한 결제 체계 설계
-### 
-		pc
-		![](https://prod-files-secure.s3.us-west-2.amazonaws.com/3361c9d9-0f49-81d8-a453-000300867bf8/04866e00-4253-45bc-adae-5c2777c0e922/image.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466TKOHGYXP%2F20260717%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260717T212502Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEJ3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIFUYAduEUa43wv1ZU4gMZdPUs%2Fg8NsO%2B2hRsHv4Alx8yAiEA9O02xFwZOo7meSlLvwJP5rj%2BdKjfMYN4FBbeJSOM%2Fckq%2FwMIZhAAGgw2Mzc0MjMxODM4MDUiDAN%2FbTonw5AHL5eDRyrcA8UW2lQ3QYMfW0pS3UWDJiajiDZFdgUcdabBeSEEOuAooROVUQN7HrfXUQyhbD%2BzftT0pAa40TUaiXCGnTNMDzXHu5dgR6WF4QVja86X%2F7cA8W4SmFx8VKsuZGuzdZfBrbQlcwnGZefH6MiBX%2F01v0PS%2BSe%2FH6Ya%2FXk74PBfzGtFQdSojwIK2JiZxpGVWGjMApl9Ib%2FsPtGxgzaYWkdWEJKefRul3EAsLOFptroqiQo3cGjVRXQMYB%2FVyWQb%2BDphCm490RNi%2B3wvp6jZPu34g4BrYPiTDrxZPECIR0Sk3tluQRD2Lsep0OeH38N6L8KSqKUnXE5Y2F9WbG1CNYqQJ4%2FQ%2F8Qae9EMd69GWpiK8rd7%2Bmwk%2FQ4puIkCFwcBajkDOTHO8o%2B4S0ma3oOBwwdraN%2Ff1W16gK%2FCaeo1eFNO4lMtAGORUn0qf7U%2FYf%2B3HpXYu5taQpdZfGocOINUl0xERNv8C5PNV0umRodou9lMrQGGwcnh2qR4EK8lj9xSngEgRjg%2FpcizUzbQfnUSvxeuzMjyA%2Bqdm6KWXwreJbx8blySjAkwRyxthUeYbTAc%2F%2BmvwhRvD54W3jonvZnDCGuTde%2Bxp9pKWpcLGfEI0LXwMD3oaeh0tcBnKCT7I%2B7zMMir6tIGOqUBrYBySjOffQZeIkenRhMevv89FOoxVeVMYVhP8lCoQepB%2B1Kfovu2Jzc1IV76jvAboQmUaG9CSSjVwgAlD2lUSb%2F7ANaagsolzkzwD09ErFkcpX4L6URvl6YeS%2BGpPdQmPq1J%2FC0IhaK6Bau5430j%2BgheCMZ5R7sXXuXrw4700vNsCpHo%2Fg7UGogp1l1Ne37AD0H9ApHaK8TiojiptNpzXBL2S8Pg&X-Amz-Signature=a01644e24928a6c441065c77b0f7fd20759165aa37229f3a0fa3d75e4762e102&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
-		![](https://prod-files-secure.s3.us-west-2.amazonaws.com/3361c9d9-0f49-81d8-a453-000300867bf8/f1776d04-a9aa-456a-ad16-21605694d248/image.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466TKOHGYXP%2F20260717%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260717T212502Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEJ3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIFUYAduEUa43wv1ZU4gMZdPUs%2Fg8NsO%2B2hRsHv4Alx8yAiEA9O02xFwZOo7meSlLvwJP5rj%2BdKjfMYN4FBbeJSOM%2Fckq%2FwMIZhAAGgw2Mzc0MjMxODM4MDUiDAN%2FbTonw5AHL5eDRyrcA8UW2lQ3QYMfW0pS3UWDJiajiDZFdgUcdabBeSEEOuAooROVUQN7HrfXUQyhbD%2BzftT0pAa40TUaiXCGnTNMDzXHu5dgR6WF4QVja86X%2F7cA8W4SmFx8VKsuZGuzdZfBrbQlcwnGZefH6MiBX%2F01v0PS%2BSe%2FH6Ya%2FXk74PBfzGtFQdSojwIK2JiZxpGVWGjMApl9Ib%2FsPtGxgzaYWkdWEJKefRul3EAsLOFptroqiQo3cGjVRXQMYB%2FVyWQb%2BDphCm490RNi%2B3wvp6jZPu34g4BrYPiTDrxZPECIR0Sk3tluQRD2Lsep0OeH38N6L8KSqKUnXE5Y2F9WbG1CNYqQJ4%2FQ%2F8Qae9EMd69GWpiK8rd7%2Bmwk%2FQ4puIkCFwcBajkDOTHO8o%2B4S0ma3oOBwwdraN%2Ff1W16gK%2FCaeo1eFNO4lMtAGORUn0qf7U%2FYf%2B3HpXYu5taQpdZfGocOINUl0xERNv8C5PNV0umRodou9lMrQGGwcnh2qR4EK8lj9xSngEgRjg%2FpcizUzbQfnUSvxeuzMjyA%2Bqdm6KWXwreJbx8blySjAkwRyxthUeYbTAc%2F%2BmvwhRvD54W3jonvZnDCGuTde%2Bxp9pKWpcLGfEI0LXwMD3oaeh0tcBnKCT7I%2B7zMMir6tIGOqUBrYBySjOffQZeIkenRhMevv89FOoxVeVMYVhP8lCoQepB%2B1Kfovu2Jzc1IV76jvAboQmUaG9CSSjVwgAlD2lUSb%2F7ANaagsolzkzwD09ErFkcpX4L6URvl6YeS%2BGpPdQmPq1J%2FC0IhaK6Bau5430j%2BgheCMZ5R7sXXuXrw4700vNsCpHo%2Fg7UGogp1l1Ne37AD0H9ApHaK8TiojiptNpzXBL2S8Pg&X-Amz-Signature=a16c44405a2e985a1d4743ed3882a604effa9f5c45bc310ad6c7768aed8a0d89&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
-### 
-		mobile
-		![](https://prod-files-secure.s3.us-west-2.amazonaws.com/3361c9d9-0f49-81d8-a453-000300867bf8/be5737ea-311a-4c26-b3b0-7d9134c5eba0/image.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466TKOHGYXP%2F20260717%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260717T212502Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEJ3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIFUYAduEUa43wv1ZU4gMZdPUs%2Fg8NsO%2B2hRsHv4Alx8yAiEA9O02xFwZOo7meSlLvwJP5rj%2BdKjfMYN4FBbeJSOM%2Fckq%2FwMIZhAAGgw2Mzc0MjMxODM4MDUiDAN%2FbTonw5AHL5eDRyrcA8UW2lQ3QYMfW0pS3UWDJiajiDZFdgUcdabBeSEEOuAooROVUQN7HrfXUQyhbD%2BzftT0pAa40TUaiXCGnTNMDzXHu5dgR6WF4QVja86X%2F7cA8W4SmFx8VKsuZGuzdZfBrbQlcwnGZefH6MiBX%2F01v0PS%2BSe%2FH6Ya%2FXk74PBfzGtFQdSojwIK2JiZxpGVWGjMApl9Ib%2FsPtGxgzaYWkdWEJKefRul3EAsLOFptroqiQo3cGjVRXQMYB%2FVyWQb%2BDphCm490RNi%2B3wvp6jZPu34g4BrYPiTDrxZPECIR0Sk3tluQRD2Lsep0OeH38N6L8KSqKUnXE5Y2F9WbG1CNYqQJ4%2FQ%2F8Qae9EMd69GWpiK8rd7%2Bmwk%2FQ4puIkCFwcBajkDOTHO8o%2B4S0ma3oOBwwdraN%2Ff1W16gK%2FCaeo1eFNO4lMtAGORUn0qf7U%2FYf%2B3HpXYu5taQpdZfGocOINUl0xERNv8C5PNV0umRodou9lMrQGGwcnh2qR4EK8lj9xSngEgRjg%2FpcizUzbQfnUSvxeuzMjyA%2Bqdm6KWXwreJbx8blySjAkwRyxthUeYbTAc%2F%2BmvwhRvD54W3jonvZnDCGuTde%2Bxp9pKWpcLGfEI0LXwMD3oaeh0tcBnKCT7I%2B7zMMir6tIGOqUBrYBySjOffQZeIkenRhMevv89FOoxVeVMYVhP8lCoQepB%2B1Kfovu2Jzc1IV76jvAboQmUaG9CSSjVwgAlD2lUSb%2F7ANaagsolzkzwD09ErFkcpX4L6URvl6YeS%2BGpPdQmPq1J%2FC0IhaK6Bau5430j%2BgheCMZ5R7sXXuXrw4700vNsCpHo%2Fg7UGogp1l1Ne37AD0H9ApHaK8TiojiptNpzXBL2S8Pg&X-Amz-Signature=119387b3e57140142ba65714982aef5ce15f06858bcff473b85d613cee91c8fc&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
-		![](https://prod-files-secure.s3.us-west-2.amazonaws.com/3361c9d9-0f49-81d8-a453-000300867bf8/f476a0c5-14f8-48a3-bc2f-9e3936a6eeee/image.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466TKOHGYXP%2F20260717%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260717T212502Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEJ3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIFUYAduEUa43wv1ZU4gMZdPUs%2Fg8NsO%2B2hRsHv4Alx8yAiEA9O02xFwZOo7meSlLvwJP5rj%2BdKjfMYN4FBbeJSOM%2Fckq%2FwMIZhAAGgw2Mzc0MjMxODM4MDUiDAN%2FbTonw5AHL5eDRyrcA8UW2lQ3QYMfW0pS3UWDJiajiDZFdgUcdabBeSEEOuAooROVUQN7HrfXUQyhbD%2BzftT0pAa40TUaiXCGnTNMDzXHu5dgR6WF4QVja86X%2F7cA8W4SmFx8VKsuZGuzdZfBrbQlcwnGZefH6MiBX%2F01v0PS%2BSe%2FH6Ya%2FXk74PBfzGtFQdSojwIK2JiZxpGVWGjMApl9Ib%2FsPtGxgzaYWkdWEJKefRul3EAsLOFptroqiQo3cGjVRXQMYB%2FVyWQb%2BDphCm490RNi%2B3wvp6jZPu34g4BrYPiTDrxZPECIR0Sk3tluQRD2Lsep0OeH38N6L8KSqKUnXE5Y2F9WbG1CNYqQJ4%2FQ%2F8Qae9EMd69GWpiK8rd7%2Bmwk%2FQ4puIkCFwcBajkDOTHO8o%2B4S0ma3oOBwwdraN%2Ff1W16gK%2FCaeo1eFNO4lMtAGORUn0qf7U%2FYf%2B3HpXYu5taQpdZfGocOINUl0xERNv8C5PNV0umRodou9lMrQGGwcnh2qR4EK8lj9xSngEgRjg%2FpcizUzbQfnUSvxeuzMjyA%2Bqdm6KWXwreJbx8blySjAkwRyxthUeYbTAc%2F%2BmvwhRvD54W3jonvZnDCGuTde%2Bxp9pKWpcLGfEI0LXwMD3oaeh0tcBnKCT7I%2B7zMMir6tIGOqUBrYBySjOffQZeIkenRhMevv89FOoxVeVMYVhP8lCoQepB%2B1Kfovu2Jzc1IV76jvAboQmUaG9CSSjVwgAlD2lUSb%2F7ANaagsolzkzwD09ErFkcpX4L6URvl6YeS%2BGpPdQmPq1J%2FC0IhaK6Bau5430j%2BgheCMZ5R7sXXuXrw4700vNsCpHo%2Fg7UGogp1l1Ne37AD0H9ApHaK8TiojiptNpzXBL2S8Pg&X-Amz-Signature=fc87422b05de4e463b73fd2cbe900372e37ca72a791a5842ecc47bbee53329e0&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+- **주문 확인·출고 업무 83% 단축** | 팀원 2명 × 일 30분 → 5분
+- **월 정산 100% 자동화** | 월 1~2일 수기 → 0일. 정산, 분석 등 데이터 즉시 추출
+- **결제-출고 정책 전환 변수 원천 차단** | 담당자 재량 → 시스템 강제. 미수금·정산 불일치 제거
+- **거래명세서 수기 → 실시간 자동 발송** | 24시간 즉시 발송
+- **메시징 비용 80% 절감** | LMS 3.0P → 알림톡 0.6P
+- **PG 수수료 0원** | 마진 구조 보전을 위한 결제 체계 설계
 ### 정성적 성과
 - 반복 CS 문의 대폭 감소: 조리원 담당자가 시스템에서 직접 정보 확인
 - 수기 업무 휴먼 에러 해결 및 팀원 부담 해소 
