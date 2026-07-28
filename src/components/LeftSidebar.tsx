@@ -90,7 +90,7 @@ export const LeftSidebar = () => {
 
           {/* SKILLSET */}
           <div className="w-full px-4 md:px-2 mb-4">
-            <h3 className="text-[1.3rem] font-bold text-[var(--text-primary)] tracking-tight mb-5 border-l-[3px] border-[var(--text-primary)] pl-4 ml-1.5">
+            <h3 className="text-[1.3rem] font-bold text-[var(--text-primary)] tracking-tight mb-5 border-l-[3px] border-[var(--text-primary)] pl-5 ml-4">
               {isKr ? '핵심 역량' : 'Skillset'}
             </h3>
             {/* flex-wrap 과 whitespace-nowrap 추가로 가로 넘침 방지 및 자동 줄바꿈 */}
@@ -105,7 +105,7 @@ export const LeftSidebar = () => {
 
           {/* CAREER */}
           <div className="w-full px-4 md:px-2">
-            <h3 className="text-[1.3rem] font-bold text-[var(--text-primary)] tracking-tight mb-6 border-l-[3px] border-[var(--text-primary)] pl-4 ml-1.5">
+            <h3 className="text-[1.3rem] font-bold text-[var(--text-primary)] tracking-tight mb-6 border-l-[3px] border-[var(--text-primary)] pl-5 ml-4">
               {isKr ? '경력 사항' : 'Career'}
             </h3>
             
