@@ -6,7 +6,20 @@ import remarkGfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw';
 import { projectsFullMarkdown, blogFullMarkdown, projects, blogList } from '../data/projectsData';
 import { useTheme } from '../context/ThemeContext';
-import { Mermaid } from '../components/Mermaid';
+import mermaid from 'mermaid';
+
+const extractText = (children: any): string => {
+  if (typeof children === 'string' || typeof children === 'number') {
+    return String(children);
+  }
+  if (Array.isArray(children)) {
+    return children.map(extractText).join('');
+  }
+  if (children && children.props && children.props.children) {
+    return extractText(children.props.children);
+  }
+  return '';
+};
 
 const slugify = (text: string) => {
   return text
@@ -46,10 +59,21 @@ export const ProjectDetail = () => {
   const [modalImageSrc, setModalImageSrc] = useState<string | null>(null);
   const [modalSvgContent, setModalSvgContent] = useState<string | null>(null);
 
-  // Mermaid global rendering removed, handled by custom Mermaid component
+  useEffect(() => {
+    mermaid.initialize({
+      startOnLoad: false,
+      theme: theme === 'dark' ? 'dark' : 'default',
+      fontFamily: '"Inter", sans-serif',
+      securityLevel: 'loose'
+    });
+    // Run mermaid whenever markdown content, theme, or modal state changes
+    // This fixes the bug where charts revert to text after closing the modal
+    mermaid.run({ querySelector: '.mermaid' }).catch(e => console.error('Mermaid run error:', e));
+  }, [markdownContent, theme, modalSvgContent, modalImageSrc]);
+
   const handleMermaidClick = (e: React.MouseEvent) => {
     const target = e.target as HTMLElement;
-    const mermaidContainer = target.closest('.mermaid-wrapper');
+    const mermaidContainer = target.closest('.mermaid');
     if (mermaidContainer && mermaidContainer.innerHTML.includes('<svg')) {
       setModalSvgContent(mermaidContainer.innerHTML);
     }
@@ -63,10 +87,10 @@ export const ProjectDetail = () => {
       if (match && match[1] === 'mermaid') {
         return (
           <div 
-            className="mermaid-wrapper" 
-            style={{ margin: '2rem 0', cursor: 'zoom-in', maxWidth: '100%' }}
+            className="mermaid" 
+            style={{ display: 'flex', justifyContent: 'center', margin: '2rem 0', cursor: 'zoom-in', maxWidth: '100%', overflowX: 'auto' }}
           >
-            <Mermaid chart={String(children).replace(/\n$/, '')} />
+            {extractText(children).replace(/\n$/, '')}
           </div>
         );
       }
