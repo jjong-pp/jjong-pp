@@ -3,165 +3,159 @@
 @plugin '@tailwindcss/typography';
 @custom-variant dark (&:where(.dark, .dark *));
 
-:root {
-  --font-sans: "Inter", "Noto Sans KR", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+/*
+ * NOTE: 여기에 `* { margin:0; padding:0 }` 를 두면 안 됩니다.
+ * Tailwind v4 유틸리티는 `@layer utilities` 안에 있고, 레이어 없는 규칙은
+ * 레이어 안의 규칙을 항상 이깁니다(specificity 무관). 즉 그 5줄이 앱 전체의
+ * p-*, m-* 유틸리티를 전부 무효화합니다. 동일한 리셋은 Tailwind preflight가
+ * 이미 base 레이어에서 수행하므로 별도 선언이 필요 없습니다.
+ */
 
-  /* Light Theme Variables */
+@theme {
+  --font-sans: 'Inter', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+:root {
+  /* Light */
   --bg-color-light: #fbfbfd;
   --surface-color-light: #ffffff;
+  --elevated-color-light: #f5f5f7;
   --text-primary-light: #1d1d1f;
-  --text-secondary-light: #86868b;
-  --text-tertiary-light: #a1a1a6;
-  --accent-color-light: #1d1d1f;
-  --border-color-light: rgba(0, 0, 0, 0.08);
+  --text-secondary-light: #55555a;
+  /* AA(4.5:1) 를 넘기기 위해 톤을 낮춤. 기존 #86868b 는 3.56 이었다. */
+  --text-tertiary-light: #6e6e73;
+  --accent-color-light: #0066cc;
+  --border-color-light: rgba(0, 0, 0, 0.09);
+  --border-strong-light: rgba(0, 0, 0, 0.16);
+  --scrollbar-thumb-light: rgba(0, 0, 0, 0.18);
 
-  /* Dark Theme Variables */
+  /* Dark */
   --bg-color-dark: #000000;
   --surface-color-dark: #1c1c1e;
+  --elevated-color-dark: #2c2c2e;
   --text-primary-dark: #f5f5f7;
-  --text-secondary-dark: #a1a1a6;
-  --text-tertiary-dark: #6e6e73;
-  --accent-color-dark: #f5f5f7;
-  --border-color-dark: rgba(255, 255, 255, 0.15);
+  --text-secondary-dark: #aeaeb2;
+  /* AA(4.5:1) 를 넘기기 위해 톤을 올림. 기존 #6e6e73 는 4.14 였다. */
+  --text-tertiary-dark: #7c7c82;
+  --accent-color-dark: #2997ff;
+  --border-color-dark: rgba(255, 255, 255, 0.13);
+  --border-strong-dark: rgba(255, 255, 255, 0.26);
+  --scrollbar-thumb-dark: rgba(255, 255, 255, 0.2);
 }
 
 html.light {
+  color-scheme: light;
   --bg-color: var(--bg-color-light);
   --surface-color: var(--surface-color-light);
+  --elevated-color: var(--elevated-color-light);
   --text-primary: var(--text-primary-light);
   --text-secondary: var(--text-secondary-light);
   --text-tertiary: var(--text-tertiary-light);
   --accent-color: var(--accent-color-light);
+  --primary-color: var(--accent-color-light);
   --border-color: var(--border-color-light);
+  --border-strong: var(--border-strong-light);
+  --scrollbar-thumb: var(--scrollbar-thumb-light);
 }
 
 html.dark {
+  color-scheme: dark;
   --bg-color: var(--bg-color-dark);
   --surface-color: var(--surface-color-dark);
+  --elevated-color: var(--elevated-color-dark);
   --text-primary: var(--text-primary-dark);
   --text-secondary: var(--text-secondary-dark);
   --text-tertiary: var(--text-tertiary-dark);
   --accent-color: var(--accent-color-dark);
+  --primary-color: var(--accent-color-dark);
   --border-color: var(--border-color-dark);
+  --border-strong: var(--border-strong-dark);
+  --scrollbar-thumb: var(--scrollbar-thumb-dark);
 }
 
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    /* fixed 헤더(64px) 아래로 앵커가 파고들지 않도록 */
+    scroll-padding-top: 6rem;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    background-color: var(--bg-color);
+    color: var(--text-primary);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* 한글은 단어 중간에서 끊기면 가독성이 크게 떨어짐 */
+  h1, h2, h3, h4, p, li, td, th, blockquote {
+    word-break: keep-all;
+    overflow-wrap: anywhere;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  ::selection {
+    background-color: var(--accent-color);
+    color: #fff;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--accent-color);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
 }
 
-body {
-  font-family: var(--font-sans);
-  background-color: var(--bg-color);
-  color: var(--text-primary);
-  line-height: 1.6;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  transition: background-color 0.3s ease, color 0.3s ease;
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
-a {
-  color: var(--text-primary);
-  text-decoration: none;
-  transition: color 0.2s ease;
-}
-
-a:hover {
-  color: var(--accent-color);
-}
-
-.no-scrollbar::-webkit-scrollbar { display: none; }
-.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-
-.project-card {
-  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
-  cursor: pointer;
-  border-radius: 16px;
-  overflow: hidden;
-  background-color: var(--surface-color);
-  border: 1px solid var(--border-color);
-  position: relative;
-}
-
-.project-card:hover {
-  transform: scale(0.98);
-}
-
-.project-card img {
-  transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-  width: 100%;
-  height: auto;
-  display: block;
-}
-
-.project-card:hover img {
-  transform: scale(1.05);
-}
-
-.project-card-overlay {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  padding: 2rem;
-  background: linear-gradient(to top, var(--bg-color) 0%, transparent 100%);
-}
+/* ---------- Components ---------- */
 
 .toggle-btn {
   background: transparent;
   border: 1px solid var(--border-color);
   color: var(--text-primary);
-  padding: 0.5rem 1rem;
   border-radius: 999px;
   font-family: var(--font-sans);
-  font-size: 0.85rem;
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.2s ease;
-  backdrop-filter: blur(10px);
+  transition: background-color 0.2s ease, border-color 0.2s ease;
 }
 
 .toggle-btn:hover {
-  background-color: var(--surface-color);
-}
-
-/* 4:6 Layout Split Styles */
-.prose-left table,
-.prose-left img,
-.prose-left .mermaid-wrapper {
-  display: none !important;
-}
-
-.prose-right > h1,
-.prose-right > h2,
-.prose-right > h3,
-.prose-right > h4,
-.prose-right > p,
-.prose-right > ul,
-.prose-right > ol,
-.prose-right > blockquote {
-  display: none !important;
-}
-
-/* Scroll Reveal Animations */
-.reveal {
-  opacity: 0;
-  transform: translateY(30px);
-  transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.reveal.is-revealed {
-  opacity: 1;
-  transform: translateY(0);
+  background-color: var(--elevated-color);
+  border-color: var(--border-strong);
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(15px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-/* Custom Scrollbar */
+/* ---------- Scrollbar (theme-aware) ---------- */
+
 .custom-scrollbar::-webkit-scrollbar {
   width: 8px;
   height: 8px;
@@ -170,9 +164,10 @@ a:hover {
   background: transparent;
 }
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background-color: rgba(255, 255, 255, 0.15);
+  background-color: var(--scrollbar-thumb);
   border-radius: 4px;
 }
-.custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background-color: rgba(255, 255, 255, 0.25);
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb) transparent;
 }

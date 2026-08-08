@@ -31,3 +31,6 @@ dist-ssr
 # AI Agents specific
 .agents
 RULES.md
+
+# Build artifacts
+.content-collections
