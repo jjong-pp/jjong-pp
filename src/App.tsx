@@ -6,10 +6,11 @@ import { LanguageProvider } from './context/LanguageContext';
 import { PageShell } from './layouts/PageShell';
 
 /**
- * 상세 페이지는 react-markdown + mermaid(+cytoscape, katex)를 끌고 오기 때문에
- * 초기 번들에 넣으면 홈 첫 로딩이 그만큼 느려진다. 라우트 단위로 분리한다.
+ * 상세 페이지는 react-markdown + mermaid 를 끌고 오므로 초기 번들에서 분리한다.
  */
-const Detail = lazy(() => import('./pages/Detail').then(m => ({ default: m.Detail })));
+const ProjectDetail = lazy(() =>
+  import('./pages/ProjectDetail').then(m => ({ default: m.ProjectDetail }))
+);
 
 const Loading = () => (
   <div className="flex flex-col gap-4 py-16" aria-hidden>
@@ -28,9 +29,8 @@ function App() {
             <Suspense fallback={<Loading />}>
               <Routes>
                 <Route path="/" element={<Home />} />
-                <Route path="/projects/:id" element={<Detail kind="project" />} />
-                <Route path="/notes/:id" element={<Detail kind="note" />} />
-                <Route path="*" element={<Detail kind="project" />} />
+                <Route path="/projects/:id" element={<ProjectDetail />} />
+                <Route path="*" element={<ProjectDetail />} />
               </Routes>
             </Suspense>
           </PageShell>

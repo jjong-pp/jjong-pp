@@ -15,9 +15,6 @@
     "moduleDetection": "force",
     "noEmit": true,
     "jsx": "react-jsx",
-    "paths": {
-      "content-collections": ["./.content-collections/generated"]
-    },
 
     /* Linting */
     "noUnusedLocals": true,
@@ -25,5 +22,5 @@
     "erasableSyntaxOnly": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src", ".content-collections/generated"]
+  "include": ["src", "vite.config.ts"]
 }

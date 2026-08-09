@@ -7,10 +7,8 @@ import { profile } from '../data/profile';
 import { Logo } from './Logo';
 
 const SECTIONS = [
-  { id: 'work', label: { KR: '일하는 방식', EN: 'Approach' } },
-  { id: 'projects', label: { KR: '프로젝트', EN: 'Projects' } },
-  { id: 'studying', label: { KR: '공부하는 것', EN: 'Studying' } },
   { id: 'career', label: { KR: '이력', EN: 'Career' } },
+  { id: 'projects', label: { KR: '프로젝트', EN: 'Projects' } },
 ];
 
 export const SiteNav = () => {
@@ -20,9 +18,8 @@ export const SiteNav = () => {
   const navigate = useNavigate();
   const isKr = language === 'KR';
   const isHome = pathname === '/';
-  const [active, setActive] = useState<string>('');
+  const [active, setActive] = useState('');
 
-  // 홈에서만 현재 보고 있는 섹션을 표시
   useEffect(() => {
     if (!isHome) {
       setActive('');
@@ -77,6 +74,14 @@ export const SiteNav = () => {
               {isKr ? s.label.KR : s.label.EN}
             </button>
           ))}
+          <a
+            href={profile.contact.blog}
+            target="_blank"
+            rel="noreferrer"
+            className="rounded-full px-3 py-1.5 text-[0.85rem] text-[var(--text-secondary)] transition-colors hover:text-[var(--text-primary)]"
+          >
+            {isKr ? '블로그' : 'Blog'}
+          </a>
         </div>
 
         <div className="flex shrink-0 items-center gap-2">

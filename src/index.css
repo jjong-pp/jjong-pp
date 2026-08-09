@@ -1,7 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
 @import 'tailwindcss';
-@plugin '@tailwindcss/typography';
 @custom-variant dark (&:where(.dark, .dark *));
+
+/* NOTE: @tailwindcss/typography(prose) 는 제거했다. 마크다운 스타일은
+   Markdown.tsx 가 태그별로 직접 지정하므로 prose 와 겹쳐 충돌만 났다. */
 
 /*
  * NOTE: 여기에 `* { margin:0; padding:0 }` 를 두면 안 됩니다.

@@ -2,8 +2,9 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw';
-import { X } from 'lucide-react';
+import { X, ExternalLink } from 'lucide-react';
 import { MermaidDiagram } from './MermaidDiagram';
+import { LinkTag } from './LinkTag';
 import { useTheme } from '../context/ThemeContext';
 import { extractText, uniqueSlug, type Heading } from '../lib/slug';
 import { normalizeMarkdown } from '../lib/markdown';
@@ -88,9 +89,24 @@ export const Markdown = ({ content, onHeadings }: Props) => {
     h3: heading(3),
     h4: heading(4),
 
-    p: ({ children }: any) => (
-      <p className="text-[1.02rem] leading-[1.85] text-[var(--text-secondary)] my-5">{children}</p>
-    ),
+    // 문단 전체가 링크 하나뿐이면(예: 시연 영상 참고자료) 사이트 공통 멘션태그로 띄운다.
+    // 문장 속에 섞인 링크는 아래 `a` 컴포넌트가 인라인으로 처리한다.
+    p: ({ node, children }: any) => {
+      const kids = (node?.children ?? []).filter(
+        (c: any) => !(c.type === 'text' && !c.value.trim())
+      );
+      if (kids.length === 1 && kids[0].type === 'element' && kids[0].tagName === 'a') {
+        const href = kids[0].properties?.href ?? '';
+        return (
+          <span className="my-6 block">
+            <LinkTag href={href} icon={ExternalLink}>
+              {extractText(children)}
+            </LinkTag>
+          </span>
+        );
+      }
+      return <p className="text-[1.02rem] leading-[1.85] text-[var(--text-secondary)] my-5">{children}</p>;
+    },
     ul: ({ children }: any) => (
       <ul className="my-5 pl-5 flex flex-col gap-2 list-disc marker:text-[var(--text-tertiary)] text-[1.02rem] leading-[1.8] text-[var(--text-secondary)]">
         {children}

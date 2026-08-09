@@ -1,5 +1,5 @@
 {
-  "name": "web_portfolio",
+  "name": "brandpage",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -10,28 +10,17 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@content-collections/core": "^0.15.2",
-    "@content-collections/vite": "^0.3.0",
-    "@mdx-js/react": "^3.1.1",
-    "@mdx-js/rollup": "^3.1.1",
     "lucide-react": "^1.25.0",
     "mermaid": "^11.16.0",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "react-markdown": "^10.1.0",
     "react-router-dom": "^7.18.1",
-    "rehype-pretty-code": "^0.14.4",
     "rehype-raw": "^7.0.0",
-    "remark-frontmatter": "^5.0.0",
-    "remark-gfm": "^4.0.1",
-    "remark-mdx-frontmatter": "^5.2.0",
-    "shiki": "^4.3.1",
-    "zod": "^4.4.3"
+    "remark-gfm": "^4.0.1"
   },
   "devDependencies": {
-    "@content-collections/cli": "^0.1.9",
     "@tailwindcss/postcss": "^4.3.3",
-    "@tailwindcss/typography": "^0.5.20",
     "@tailwindcss/vite": "^4.3.3",
     "@types/node": "^24.13.2",
     "@types/react": "^19.2.17",
