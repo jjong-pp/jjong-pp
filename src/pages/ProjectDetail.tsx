@@ -2,6 +2,7 @@ import { useCallback, useMemo, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import { Markdown } from '../components/Markdown';
+import { NotFound } from './NotFound';
 import { useLanguage } from '../context/LanguageContext';
 import { projects } from '../data/profile';
 import { projectsFullMarkdown } from '../data/projectsData';
@@ -23,27 +24,7 @@ export const ProjectDetail = () => {
   const onHeadings = useCallback((h: Heading[]) => setAllHeadings(h), []);
   const headings = useMemo(() => allHeadings.filter(h => h.level === 2), [allHeadings]);
 
-  if (!project || !markdown) {
-    return (
-      <div className="flex flex-col items-start gap-6 py-24">
-        <h1 className="text-[2rem] font-bold tracking-[-0.03em] text-[var(--text-primary)]">
-          {isKr ? '찾을 수 없는 페이지입니다' : 'Not found'}
-        </h1>
-        <p className="text-[var(--text-secondary)]">
-          {isKr
-            ? '주소가 바뀌었거나 삭제된 페이지일 수 있습니다.'
-            : 'The address may have changed or the page was removed.'}
-        </p>
-        <Link
-          to="/"
-          className="inline-flex items-center gap-2 rounded-full border border-[var(--border-color)] px-4 py-2 text-[0.9rem] text-[var(--text-secondary)] transition-colors hover:border-[var(--border-strong)] hover:text-[var(--text-primary)]"
-        >
-          <ArrowLeft size={15} />
-          {isKr ? '홈으로' : 'Back home'}
-        </Link>
-      </div>
-    );
-  }
+  if (!project || !markdown) return <NotFound />;
 
   return (
     <article className="pb-10">

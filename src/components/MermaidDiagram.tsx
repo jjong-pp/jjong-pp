@@ -1,5 +1,13 @@
-import { useEffect, useId, useState } from 'react';
+import { useEffect, useId, useMemo, useState } from 'react';
 import mermaid from 'mermaid';
+
+/** 다이어그램 선언부(첫 토큰)로 스크린리더용 이름을 만든다. 본문은 국문만 있다. */
+const DIAGRAM_NAMES: Record<string, string> = {
+  sequenceDiagram: '시퀀스 다이어그램',
+  flowchart: '흐름도',
+  graph: '구성도',
+  erDiagram: 'ER 다이어그램',
+};
 
 /**
  * Mermaid 다이어그램.
@@ -21,6 +29,10 @@ export const MermaidDiagram = ({
   const [svg, setSvg] = useState('');
   const [failed, setFailed] = useState(false);
   const reactId = useId();
+  const label = useMemo(
+    () => DIAGRAM_NAMES[source.trim().split(/\s+/)[0] ?? ''] ?? '다이어그램',
+    [source]
+  );
 
   useEffect(() => {
     let alive = true;
@@ -67,10 +79,20 @@ export const MermaidDiagram = ({
     );
   }
 
+  // role="img" 는 접근 가능한 이름이 없으면 스크린리더에서 정체불명의 노드가 된다.
+  // 확대는 마우스 전용이 되지 않도록 키보드로도 열 수 있게 둔다.
   return (
     <div
       role="img"
+      aria-label={label}
+      tabIndex={0}
       onClick={() => onZoom(svg)}
+      onKeyDown={e => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          onZoom(svg);
+        }
+      }}
       className="custom-scrollbar my-10 flex cursor-zoom-in justify-center overflow-x-auto rounded-2xl border border-[var(--border-color)] bg-[var(--surface-color)] p-6"
       dangerouslySetInnerHTML={{ __html: svg }}
     />

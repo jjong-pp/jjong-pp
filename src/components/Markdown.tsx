@@ -164,11 +164,20 @@ export const Markdown = ({ content, onHeadings }: Props) => {
       );
     },
 
-    pre: ({ children }: any) => (
-      <pre className="my-6 overflow-x-auto rounded-2xl border border-[var(--border-color)] bg-[var(--surface-color)] p-5 text-[var(--text-primary)] custom-scrollbar">
-        {children}
-      </pre>
-    ),
+    // ```mermaid 블록은 MermaidDiagram 이 테두리·배경·패딩을 가진 자기 컨테이너를
+    // 직접 그린다. 여기서 <pre> 로 한 번 더 감싸면 테두리와 배경이 이중으로 겹치고,
+    // <pre> 안에 <div> 가 들어가 HTML 도 깨진다. 그래서 mermaid 만 래퍼를 벗긴다.
+    pre: ({ node, children }: any) => {
+      const child = (node?.children ?? []).find((c: any) => c.type === 'element');
+      const cls = child?.properties?.className;
+      if (Array.isArray(cls) && cls.includes('language-mermaid')) return <>{children}</>;
+
+      return (
+        <pre className="my-6 overflow-x-auto rounded-2xl border border-[var(--border-color)] bg-[var(--surface-color)] p-5 text-[var(--text-primary)] custom-scrollbar">
+          {children}
+        </pre>
+      );
+    },
 
     table: ({ children }: any) => (
       <div className="my-8 overflow-x-auto rounded-2xl border border-[var(--border-color)] custom-scrollbar">

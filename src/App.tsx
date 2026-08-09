@@ -1,6 +1,7 @@
 import { lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Home } from './pages/Home';
+import { NotFound } from './pages/NotFound';
 import { ThemeProvider } from './context/ThemeContext';
 import { LanguageProvider } from './context/LanguageContext';
 import { PageShell } from './layouts/PageShell';
@@ -30,7 +31,7 @@ function App() {
               <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/projects/:id" element={<ProjectDetail />} />
-                <Route path="*" element={<ProjectDetail />} />
+                <Route path="*" element={<NotFound />} />
               </Routes>
             </Suspense>
           </PageShell>

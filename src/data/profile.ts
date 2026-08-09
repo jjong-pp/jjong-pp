@@ -32,16 +32,18 @@ export const profile: Profile = {
     KR: [
       '수기로 굴러가던 업무에서 병목을 찾아 요건으로 정의하고, 외부 개발사와 유관 부서를 조율해 현업이 실제로 쓰는 시스템까지 안착시키는 일을 해 왔습니다.',
       '지시를 기다리기보다 개선 과제를 먼저 찾아 제안해 왔습니다. 관세법 개정처럼 외부에서 들어오는 규제 역시 고시 단계에서 확인해 대응 프로젝트를 수립하고 시행일 전에 완료했습니다.',
-      '컴퓨터공학 전공을 살려 개발사와 기능 단위로 이야기하고, 필요하면 직접 프로토타입을 만들어 요건을 검증합니다.',
+      '컴퓨터공학 전공을 살려 개발사와 기능 단위로 이야기합니다. 문서로 합의가 어려운 요건은 AI 코딩 도구를 써서 직접 프로토타입으로 만들어 검증하고, 수요예측 대시보드처럼 사내에서 쓰는 도구는 설계부터 운영까지 직접 맡았습니다.',
+      '지금은 AI·데이터과학을 전공하며, 사람이 판단하던 재고·수요 영역을 어디까지 데이터로 옮길 수 있는지를 다음 과제로 보고 있습니다.',
     ],
     EN: [
       'I find bottlenecks in manual workflows, translate them into requirements, and coordinate vendors and stakeholders until the system is actually used in the field.',
       'I prefer to surface improvements rather than wait for them. When a customs law amendment was announced, I read it at the notice stage, proposed the response project, and closed it before the enforcement date.',
-      'My computer science background lets me discuss scope with vendors feature by feature, and build prototypes myself when requirements need validating.',
+      'My computer science background lets me discuss scope with vendors feature by feature. When a requirement is hard to settle on paper, I build the prototype myself with AI coding tools; the demand forecasting dashboard is one I designed and ran end to end.',
+      'I am currently studying AI and data science, and my next question is how far the inventory and demand calls people still make by hand can be moved onto data.',
     ],
   },
 
-  tags: ['IT기획', '프로젝트관리', '요구사항정의', 'API연동', '규제대응', '업무자동화'],
+  tags: ['IT기획', '프로젝트관리', '요구사항정의', 'API연동', '규제대응', '업무자동화', 'AI활용'],
 
   contact: {
     email: 'jonghp1357@gmail.com',
@@ -83,30 +85,6 @@ export const experience: Experience[] = [
       {
         KR: '수발주·수입 통관·3PL·재고 정합성 등 SCM 운영을 직접 담당했고, 기획의 문제 정의는 대부분 여기서 나왔습니다.',
         EN: 'Owned day-to-day SCM operations — ordering, import clearance, 3PL and inventory accuracy — which is where most of my problem definitions originated.',
-      },
-    ],
-  },
-  {
-    company: { KR: '택화로지스틱스코리아㈜', EN: 'Taekhwa Logistics Korea' },
-    role: { KR: '물류 운영', EN: 'Logistics Operations' },
-    period: '2024.02 — 2025.08',
-    duration: { KR: '1년 7개월', EN: '1 yr 7 mo' },
-    points: [
-      {
-        KR: 'End-to-End 서비스 물류(고객 컨택, 엔지니어 연계, 배송·회수)를 운영했습니다.',
-        EN: 'Ran end-to-end service logistics: customer contact, engineer dispatch, delivery and recovery.',
-      },
-      {
-        KR: '고객사 SLA에 기반한 23개 핵심성과지표(KPI)를 정기 리포팅했습니다.',
-        EN: 'Reported 23 SLA-based KPIs to the client on a regular cadence.',
-      },
-      {
-        KR: 'TMS 도입 시 현장 가이드라인을 수립하고 운송 기사 온보딩을 담당했습니다.',
-        EN: 'Established field guidelines and onboarded drivers during the TMS rollout.',
-      },
-      {
-        KR: '엔지니어사·배송사·관세사·해외 포워더 등 파트너사와 협업했습니다.',
-        EN: 'Coordinated with engineering, delivery, customs and overseas forwarding partners.',
       },
     ],
   },
