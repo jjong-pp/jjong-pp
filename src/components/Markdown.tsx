@@ -74,7 +74,7 @@ export const Markdown = ({ content, onHeadings }: Props) => {
       1: 'text-[1.9rem] md:text-[2.2rem] font-bold tracking-[-0.03em] mt-16 mb-6 first:mt-0',
       2: 'text-[1.4rem] md:text-[1.6rem] font-semibold tracking-[-0.02em] mt-14 mb-5 pb-3 border-b border-[var(--border-color)]',
       3: 'text-[1.15rem] md:text-[1.25rem] font-semibold tracking-[-0.01em] mt-10 mb-3',
-      4: 'text-[1.02rem] font-semibold mt-8 mb-2',
+      4: 'text-[1.08rem] font-semibold mt-8 mb-2',
     }[level];
     return (
       <Tag id={id} className={`scroll-mt-28 text-[var(--text-primary)] ${cls}`}>

@@ -72,29 +72,56 @@ export const stripLeadingH1 = (md: string): string => {
 };
 
 /**
- * 문서마다 제각각인 heading 레벨을 맞춘다.
+ * 문서마다 제각각인 heading 레벨을 h2 부터 '빈틈 없이' 다시 매긴다.
  *
- * 어떤 문서는 대제목이 `#`, 어떤 문서는 `##` 라서 목차(h2 기준)가 문서에 따라
- * 섹션을 통째로 놓쳤다. 각 문서에서 가장 얕은 레벨이 h2 가 되도록 전체를 옮겨,
- * 페이지 h1(제목) 아래로 위계가 일관되게 만든다.
+ * 단순히 최소 레벨만큼 밀면 문서가 쓰지 않은 레벨이 그대로 구멍으로 남는다.
+ * 실제로 `#` 와 `###` 만 쓰는 문서들이 h2 + h4 로 렌더돼, 소제목(h4, 16px)이
+ * 본문 글씨와 같은 크기가 되면서 위계가 보이지 않았다.
+ * 사용된 레벨의 '순위'로 매핑해 h2, h3, h4… 가 연속되게 만든다.
  */
 export const normalizeHeadingLevels = (md: string): string => {
   const lines = md.split('\n');
-  const levels: number[] = [];
-  eachHeading(lines, level => levels.push(level));
-  if (!levels.length) return md;
+  const used = new Set<number>();
+  eachHeading(lines, level => used.add(level));
+  if (!used.size) return md;
 
-  const shift = 2 - Math.min(...levels);
-  if (shift === 0) return md;
+  const ranks = [...used].sort((a, b) => a - b);
+  const mapped = new Map(ranks.map((level, rank) => [level, Math.min(6, 2 + rank)]));
 
   eachHeading(lines, (level, i, m) => {
-    const next = Math.min(6, Math.max(2, level + shift));
-    lines[i] = '#'.repeat(next) + m[2] + m[3];
+    lines[i] = '#'.repeat(mapped.get(level) ?? 2) + m[2] + m[3];
   });
 
   return lines.join('\n');
 };
 
+/**
+ * heading 바로 아래에 붙은 수평선을 지운다.
+ *
+ * 본문이 `# Reference` 다음 줄에 `---` 를 쓰는 스타일인데, h2 는 이미 아래쪽
+ * 테두리를 갖고 있어서 제목 밑에 줄이 두 개(테두리 + hr) 겹쳐 보였다.
+ * 사이에 빈 줄이 몇 개 있어도 heading 직후면 같은 문제라 함께 처리한다.
+ */
+export const dropRuleAfterHeading = (md: string): string => {
+  const lines = md.split('\n');
+  const drop = new Set<number>();
+  let inFence = false;
+
+  lines.forEach((line, i) => {
+    if (FENCE.test(line)) {
+      inFence = !inFence;
+      return;
+    }
+    if (inFence || !HEADING.test(line)) return;
+
+    let j = i + 1;
+    while (lines[j] !== undefined && lines[j].trim() === '') j += 1;
+    if (lines[j] !== undefined && /^\s*(-{3,}|={3,}|_{3,})\s*$/.test(lines[j])) drop.add(j);
+  });
+
+  return lines.filter((_, i) => !drop.has(i)).join('\n');
+};
+
 /** 상세 페이지 본문 전처리 파이프라인. */
 export const prepareBody = (md: string): string =>
-  normalizeHeadingLevels(stripLeadingH1(normalizeMarkdown(md)));
+  dropRuleAfterHeading(normalizeHeadingLevels(stripLeadingH1(normalizeMarkdown(md))));

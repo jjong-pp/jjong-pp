@@ -9,10 +9,10 @@ export const SiteFooter = () => {
 
   return (
     <footer className="mt-32 border-t border-[var(--border-color)]">
-      <div className="mx-auto flex max-w-[1080px] flex-col gap-6 px-6 py-14 md:flex-row md:items-center md:justify-between md:px-10">
+      <div className="mx-auto flex max-w-[1280px] flex-col gap-6 px-6 py-14 md:flex-row md:items-center md:justify-between md:px-10">
         <div>
           <p className="text-[1.05rem] font-semibold text-[var(--text-primary)]">
-            {isKr ? '함께 풀어볼 문제가 있다면 연락 주세요.' : 'Got a problem worth solving?'}
+            {isKr ? profile.role.KR : profile.role.EN}
           </p>
           <p className="mt-1 text-[0.85rem] text-[var(--text-tertiary)]">
             © 2026 {isKr ? profile.name.KR : profile.name.EN}
@@ -24,7 +24,7 @@ export const SiteFooter = () => {
             {profile.contact.email}
           </LinkTag>
           <LinkTag href={profile.contact.blog} icon={BookOpen}>
-            {isKr ? '기술 블로그' : 'Blog'}
+            Blog
           </LinkTag>
         </div>
       </div>

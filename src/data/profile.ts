@@ -21,29 +21,42 @@ type Profile = {
 
 export const profile: Profile = {
   name: { KR: '박종혁', EN: 'JongHyeok Park' },
-  role: { KR: 'IT · 서비스 기획자 / PM', EN: 'IT & Service Planner / PM' },
+  role: { KR: '프로젝트 기획자', EN: 'Project Planner' },
 
   headline: {
-    KR: '비효율을 발견하면,\n프로젝트로 만듭니다.',
-    EN: 'When I find friction,\nI turn it into a project.',
+    KR: '복잡한 현장을,\n단순한 시스템으로.',
+    EN: 'Messy operations,\nsimple systems.',
   },
 
   intro: {
     KR: [
-      '수기로 굴러가던 업무에서 병목을 찾아 요건으로 정의하고, 외부 개발사와 유관 부서를 조율해 현업이 실제로 쓰는 시스템까지 안착시키는 일을 해 왔습니다.',
-      '지시를 기다리기보다 개선 과제를 먼저 찾아 제안해 왔습니다. 관세법 개정처럼 외부에서 들어오는 규제 역시 고시 단계에서 확인해 대응 프로젝트를 수립하고 시행일 전에 완료했습니다.',
-      '컴퓨터공학 전공을 살려 개발사와 기능 단위로 이야기합니다. 문서로 합의가 어려운 요건은 AI 코딩 도구를 써서 직접 프로토타입으로 만들어 검증하고, 수요예측 대시보드처럼 사내에서 쓰는 도구는 설계부터 운영까지 직접 맡았습니다.',
-      '지금은 AI·데이터과학을 전공하며, 사람이 판단하던 재고·수요 영역을 어디까지 데이터로 옮길 수 있는지를 다음 과제로 보고 있습니다.',
+      'SCM 현장에서 수발주·수입 통관·재고 운영을 직접 담당하며, 반복되는 수기 업무와 병목을 자동화 과제로 정의해 왔습니다.',
+      '엑셀과 구글 폼으로 흩어져 있던 주문·발주·정산 데이터를 단일 기준으로 통합하고, 판매·재고 데이터를 분석해 발주 의사결정을 감이 아닌 수치 위에 올렸습니다.',
+      '정책서·기능정의서·과업지시서를 기준으로 외부 개발사와 현업의 요구사항을 조율하는 것이 제 경험의 핵심입니다. 관세법 개정 대응에서는 관계사 다섯 곳의 인터페이스를 맞춰 시행일 전에 오픈했고, AI는 코드와 문서의 초안을 만드는 도구로 쓰되 최종 검증은 언제나 현업 데이터로 합니다.',
+      '실무자로 문제를 겪고 직접 풀어 본 경험을 토대로, 앞으로는 프로젝트 기획자로서 문제 정의와 실행 설계에 집중하려 합니다.',
     ],
     EN: [
-      'I find bottlenecks in manual workflows, translate them into requirements, and coordinate vendors and stakeholders until the system is actually used in the field.',
-      'I prefer to surface improvements rather than wait for them. When a customs law amendment was announced, I read it at the notice stage, proposed the response project, and closed it before the enforcement date.',
-      'My computer science background lets me discuss scope with vendors feature by feature. When a requirement is hard to settle on paper, I build the prototype myself with AI coding tools; the demand forecasting dashboard is one I designed and ran end to end.',
-      'I am currently studying AI and data science, and my next question is how far the inventory and demand calls people still make by hand can be moved onto data.',
+      'Working hands-on in SCM — purchasing, import clearance and inventory operations — I learned to frame recurring manual work and bottlenecks as automation projects.',
+      'I consolidated order, purchasing and settlement data scattered across spreadsheets and web forms onto a single source, and used sales and inventory analysis to move purchasing decisions from intuition onto numbers.',
+      'The core of my experience is aligning requirements between vendors and the people doing the work, using policy documents, PRDs and SOWs. For the customs law amendment I aligned interfaces across five parties and launched before the enforcement date. I use AI to draft code and documents, but the final check is always against real operating data.',
+      'Having hit these problems as a practitioner and solved them myself, I am moving into project planning to focus on problem definition and delivery design.',
     ],
   },
 
-  tags: ['IT기획', '프로젝트관리', '요구사항정의', 'API연동', '규제대응', '업무자동화', 'AI활용'],
+  tags: [
+    '요구사항정의',
+    '기능정의서(PRD)',
+    '과업지시서(SOW)',
+    '프로세스 설계',
+    'SCM · 물류',
+    'B2B 커머스',
+    '수요예측',
+    '규제대응',
+    'API 연동',
+    '업무자동화',
+    '데이터 분석',
+    'Python · SQL',
+  ],
 
   contact: {
     email: 'jonghp1357@gmail.com',
@@ -152,27 +165,27 @@ export const projects: Project[] = [
   {
     id: 'scm-dashboard',
     title: {
-      KR: '24주 수요예측 대시보드',
-      EN: '24-Week Demand Forecast Dashboard',
+      KR: '수요예측 대시보드',
+      EN: 'Demand Forecast Dashboard',
     },
     summary: {
-      KR: '감에 의존하던 발주를 데이터로 옮기고, 현업이 쓰지 않던 두 달을 거쳐 전사 기준으로 정착시켰습니다.',
-      EN: 'Moved ordering from intuition to data, and through two unused months made it the company standard.',
+      KR: '감에 의존하던 발주를 데이터로 옮기고, 현업이 쓰지 않던 시기를 거쳐 팀 기준으로 정착시켰습니다.',
+      EN: 'Moved ordering from intuition to data, and after a stretch where nobody used it, made it the team standard.',
     },
     friction: {
       KR: '리드타임이 6개월인 수입 상품의 발주 수량을 담당자 감과 수기 엑셀로 결정하고 있었습니다. 품절과 과재고가 번갈아 발생했고, 마케팅과 물류가 서로 다른 숫자를 근거로 회의에 들어왔습니다.',
       EN: 'Order quantities for imports with a six-month lead time were decided by intuition in spreadsheets. Stockouts and overstock alternated, and marketing and logistics brought different numbers to the same meeting.',
     },
     outcome: {
-      KR: '마케팅과 물류가 같은 화면의 커버일수를 근거로 발주 수량을 합의하게 됐고, 발주 기준(SLA)이 이 대시보드로 정리됐습니다. 초기 두 달간 현업이 사용하지 않았는데, 담당자가 매일 보던 엑셀과 구조가 달랐던 것이 원인이었습니다. 이후 현업과 화면을 함께 수정하는 방식으로 바꿔 안착시켰습니다.',
-      EN: 'Marketing and logistics now agree on order quantities from the same days-of-cover view, and the ordering SLA is defined on this dashboard. It went unused for two months because it did not match the spreadsheet the team read daily; I then reworked the screens together with them until it stuck.',
+      KR: '마케팅과 물류가 같은 화면의 커버일수를 근거로 발주 수량을 합의하게 됐고, 발주 기준이 이 대시보드로 정리됐습니다. 배포 직후에는 현업이 쓰지 않았는데, 담당자가 매일 보던 엑셀과 구조가 달랐던 것이 원인이었습니다. 이후 현업과 화면을 함께 수정하는 방식으로 바꿔 안착시켰습니다.',
+      EN: 'Marketing and logistics now agree on order quantities from the same days-of-cover view, and the ordering baseline is defined on this dashboard. Right after release nobody used it — it did not match the spreadsheet the team read daily; I then reworked the screens together with them until it stuck.',
     },
     measure: {
       KR: '주간 발주 회의에서 대시보드 수치를 근거로 결정된 SKU 비율',
       EN: 'Share of SKUs whose order decision cited dashboard figures in the weekly review',
     },
-    role: { KR: '기획 · 데이터 설계', EN: 'Planning · Data Design' },
-    period: '2025.10 — 2026.03',
+    role: { KR: '기획 · 구현', EN: 'Planning · Implementation' },
+    period: '2026.06 — 2026.07',
     tags: ['업무자동화', '데이터파이프라인', '현업안착'],
     thumbnail: '/assets/scm_dashboard_thumbnail.png',
   },
@@ -199,7 +212,7 @@ export const projects: Project[] = [
       EN: 'Month-end delta between total deposits and total orders, plus unmatched count',
     },
     role: { KR: 'PM · 서비스 기획', EN: 'PM · Service Planning' },
-    period: '2025.03 — 2025.09',
+    period: '2026.07 — 2026.08',
     tags: ['서비스기획', '정산자동화', '정책설계'],
     thumbnail: '/assets/b2b_mall_thumbnail.png',
   },

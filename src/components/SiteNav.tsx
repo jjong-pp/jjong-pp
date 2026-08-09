@@ -8,7 +8,7 @@ import { Logo } from './Logo';
 
 const SECTIONS = [
   { id: 'career', label: { KR: '이력', EN: 'Career' } },
-  { id: 'projects', label: { KR: '프로젝트', EN: 'Projects' } },
+  { id: 'projects', label: { KR: '포트폴리오', EN: 'Portfolio' } },
 ];
 
 export const SiteNav = () => {
@@ -52,7 +52,7 @@ export const SiteNav = () => {
 
   return (
     <header className="fixed inset-x-0 top-0 z-50 h-16 border-b border-[var(--border-color)] bg-[var(--bg-color)]/75 backdrop-blur-xl backdrop-saturate-150">
-      <nav className="mx-auto flex h-full max-w-[1080px] items-center justify-between gap-4 px-6 md:px-10">
+      <nav className="mx-auto flex h-full max-w-[1280px] items-center justify-between gap-4 px-6 md:px-10">
         <Link to="/" className="flex shrink-0 items-center gap-2.5">
           <Logo theme={theme} width={26} height={26} />
           <span className="text-[0.95rem] font-semibold tracking-[-0.01em] text-[var(--text-primary)]">
@@ -80,7 +80,7 @@ export const SiteNav = () => {
             rel="noreferrer"
             className="rounded-full px-3 py-1.5 text-[0.85rem] text-[var(--text-secondary)] transition-colors hover:text-[var(--text-primary)]"
           >
-            {isKr ? '블로그' : 'Blog'}
+            Blog
           </a>
         </div>
 

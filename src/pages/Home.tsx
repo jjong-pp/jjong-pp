@@ -7,20 +7,15 @@ import { profile, experience, education, projects } from '../data/profile';
 
 const Section = ({
   id,
-  eyebrow,
   title,
   children,
 }: {
   id: string;
-  eyebrow: string;
   title: string;
   children: ReactNode;
 }) => (
   <section id={id} className="scroll-mt-24 border-t border-[var(--border-color)] pt-14 md:pt-20">
-    <p className="text-[0.78rem] font-semibold uppercase tracking-[0.16em] text-[var(--text-tertiary)]">
-      {eyebrow}
-    </p>
-    <h2 className="mt-3 text-[1.7rem] font-bold tracking-[-0.03em] text-[var(--text-primary)] md:text-[2.1rem]">
+    <h2 className="text-[1.7rem] font-bold tracking-[-0.03em] text-[var(--text-primary)] md:text-[2.1rem]">
       {title}
     </h2>
     <div className="mt-10 md:mt-14">{children}</div>
@@ -36,18 +31,20 @@ export const Home = () => {
     <div className="flex flex-col gap-20 pb-10 md:gap-28">
       {/* ---------- 소개 ---------- */}
       <section className="flex flex-col">
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-5 md:gap-6">
           <img
             src="/assets/profile_picture.jpg"
             alt=""
-            className="h-14 w-14 rounded-full border border-[var(--border-color)] object-cover md:h-16 md:w-16"
+            className="h-24 w-24 shrink-0 rounded-full border border-[var(--border-color)] object-cover md:h-32 md:w-32"
             onError={e => {
               e.currentTarget.style.display = 'none';
             }}
           />
           <div>
-            <p className="text-[0.95rem] font-semibold text-[var(--text-primary)]">{t(profile.name)}</p>
-            <p className="text-[0.85rem] text-[var(--text-tertiary)]">{t(profile.role)}</p>
+            <p className="text-[1.15rem] font-semibold text-[var(--text-primary)] md:text-[1.3rem]">
+              {t(profile.name)}
+            </p>
+            <p className="mt-0.5 text-[0.95rem] text-[var(--text-tertiary)]">{t(profile.role)}</p>
           </div>
         </div>
 
@@ -74,17 +71,13 @@ export const Home = () => {
             {profile.contact.email}
           </LinkTag>
           <LinkTag href={profile.contact.blog} icon={BookOpen}>
-            {isKr ? '기술 블로그' : 'Blog'}
+            Blog
           </LinkTag>
         </div>
       </section>
 
       {/* ---------- 이력 ---------- */}
-      <Section
-        id="career"
-        eyebrow={isKr ? '이력' : 'Career'}
-        title={isKr ? '어디서 이 문제들을 만났나' : 'Where I met these problems'}
-      >
+      <Section id="career" title={isKr ? '이력' : 'Career'}>
         <div className="flex flex-col gap-14">
           {experience.map(e => (
             <article
@@ -134,11 +127,7 @@ export const Home = () => {
       </Section>
 
       {/* ---------- 프로젝트 ---------- */}
-      <Section
-        id="projects"
-        eyebrow={isKr ? '프로젝트' : 'Projects'}
-        title={isKr ? '발견한 비효율, 그리고 만든 것' : 'Frictions found, and what I built'}
-      >
+      <Section id="projects" title={isKr ? '포트폴리오' : 'Portfolio'}>
         <div className="flex flex-col">
           {projects.map((p, i) => (
             <Link

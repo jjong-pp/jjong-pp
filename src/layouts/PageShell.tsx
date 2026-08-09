@@ -41,7 +41,7 @@ export const PageShell = ({ children }: { children: ReactNode }) => {
   return (
     <div className="min-h-screen bg-[var(--bg-color)]">
       <SiteNav />
-      <main className="mx-auto w-full max-w-[1080px] px-6 pt-28 md:px-10 md:pt-36">{children}</main>
+      <main className="mx-auto w-full max-w-[1280px] px-6 pt-28 md:px-10 md:pt-36">{children}</main>
       <SiteFooter />
     </div>
   );
