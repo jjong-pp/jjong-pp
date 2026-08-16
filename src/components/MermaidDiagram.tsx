@@ -93,7 +93,7 @@ export const MermaidDiagram = ({
           onZoom(svg);
         }
       }}
-      className="custom-scrollbar my-10 flex cursor-zoom-in justify-center overflow-x-auto rounded-2xl border border-[var(--border-color)] bg-[var(--surface-color)] p-6"
+      className="custom-scrollbar my-8 flex cursor-zoom-in justify-center overflow-x-auto rounded-2xl border border-[var(--border-color)] bg-[var(--surface-color)] p-3 md:my-10 md:p-6"
       dangerouslySetInnerHTML={{ __html: svg }}
     />
   );

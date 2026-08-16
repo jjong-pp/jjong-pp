@@ -48,6 +48,8 @@ type Props = {
 export const Markdown = ({ content, onHeadings }: Props) => {
   const { theme } = useTheme();
   const rootRef = useRef<HTMLDivElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const previousFocusRef = useRef<HTMLElement | null>(null);
   const [zoom, setZoom] = useState<{ kind: 'img'; src: string } | { kind: 'svg'; html: string } | null>(null);
 
   const source = normalizeMarkdown(content);
@@ -62,9 +64,20 @@ export const Markdown = ({ content, onHeadings }: Props) => {
 
   useEffect(() => {
     if (!zoom) return;
-    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && setZoom(null);
+    previousFocusRef.current = document.activeElement as HTMLElement | null;
+    closeButtonRef.current?.focus();
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setZoom(null);
+      if (e.key === 'Tab') {
+        e.preventDefault();
+        closeButtonRef.current?.focus();
+      }
+    };
     document.addEventListener('keydown', onKey);
-    return () => document.removeEventListener('keydown', onKey);
+    return () => {
+      document.removeEventListener('keydown', onKey);
+      previousFocusRef.current?.focus();
+    };
   }, [zoom]);
 
   // id 는 rehypeHeadingIds 가 이미 확정해 props 로 내려준다.
@@ -105,15 +118,15 @@ export const Markdown = ({ content, onHeadings }: Props) => {
           </span>
         );
       }
-      return <p className="text-[1.02rem] leading-[1.85] text-[var(--text-secondary)] my-5">{children}</p>;
+      return <p className="my-5 max-w-[54rem] text-[1rem] leading-[1.8] text-[var(--text-secondary)] md:text-[1.02rem]">{children}</p>;
     },
     ul: ({ children }: any) => (
-      <ul className="my-5 pl-5 flex flex-col gap-2 list-disc marker:text-[var(--text-tertiary)] text-[1.02rem] leading-[1.8] text-[var(--text-secondary)]">
+      <ul className="my-5 flex max-w-[56rem] list-disc flex-col gap-2 pl-5 text-[1rem] leading-[1.78] text-[var(--text-secondary)] marker:text-[var(--text-tertiary)] md:text-[1.02rem]">
         {children}
       </ul>
     ),
     ol: ({ children }: any) => (
-      <ol className="my-5 pl-5 flex flex-col gap-2 list-decimal marker:text-[var(--text-tertiary)] text-[1.02rem] leading-[1.8] text-[var(--text-secondary)]">
+      <ol className="my-5 flex max-w-[56rem] list-decimal flex-col gap-2 pl-5 text-[1rem] leading-[1.78] text-[var(--text-secondary)] marker:text-[var(--text-tertiary)] md:text-[1.02rem]">
         {children}
       </ol>
     ),
@@ -125,7 +138,7 @@ export const Markdown = ({ content, onHeadings }: Props) => {
     hr: () => <hr className="my-12 border-0 border-t border-[var(--border-color)]" />,
 
     blockquote: ({ children }: any) => (
-      <blockquote className="my-6 pl-5 border-l-2 border-[var(--accent-color)] text-[var(--text-secondary)] [&>p]:my-2">
+      <blockquote className="my-6 max-w-[56rem] border-l-2 border-[var(--accent-color)] pl-5 text-[var(--text-secondary)] [&>p]:my-2">
         {children}
       </blockquote>
     ),
@@ -185,7 +198,7 @@ export const Markdown = ({ content, onHeadings }: Props) => {
       </div>
     ),
     th: ({ children }: any) => (
-      <th className="whitespace-nowrap bg-[var(--elevated-color)] px-4 py-3 text-[0.8rem] font-semibold uppercase tracking-wide text-[var(--text-tertiary)] border-b border-[var(--border-color)]">
+      <th className="whitespace-nowrap border-b border-[var(--border-color)] bg-[var(--elevated-color)] px-4 py-3 text-[0.8rem] font-semibold tracking-[0.04em] text-[var(--text-tertiary)]">
         {children}
       </th>
     ),
@@ -199,13 +212,19 @@ export const Markdown = ({ content, onHeadings }: Props) => {
     // <p> 의 자손이 될 수 없어(HTML 위반 + React 경고) span 기반으로 감싼다.
     img: ({ src, alt }: any) => (
       <span className="my-10 block">
-        <img
-          src={src}
-          alt={alt || ''}
-          loading="lazy"
+        <button
+          type="button"
           onClick={() => setZoom({ kind: 'img', src })}
-          className="mx-auto block max-h-[70vh] w-auto max-w-full cursor-zoom-in rounded-2xl border border-[var(--border-color)] object-contain"
-        />
+          aria-label={alt ? `${alt} 크게 보기` : '이미지 크게 보기'}
+          className="mx-auto block max-w-full cursor-zoom-in rounded-2xl"
+        >
+          <img
+            src={src}
+            alt={alt || ''}
+            loading="lazy"
+            className="block max-h-[70vh] w-auto max-w-full rounded-2xl border border-[var(--border-color)] object-contain"
+          />
+        </button>
         {alt ? (
           <span className="mt-3 block text-center text-[0.85rem] text-[var(--text-tertiary)]">{alt}</span>
         ) : null}
@@ -227,12 +246,15 @@ export const Markdown = ({ content, onHeadings }: Props) => {
         <div
           role="dialog"
           aria-modal="true"
+          aria-label="확대 이미지"
           onClick={() => setZoom(null)}
           className="fixed inset-0 z-[100] flex items-center justify-center bg-black/85 p-6 backdrop-blur-sm"
         >
           <button
+            ref={closeButtonRef}
+            type="button"
             onClick={() => setZoom(null)}
-            aria-label="Close"
+            aria-label="확대 화면 닫기"
             className="absolute right-6 top-6 rounded-full p-2 text-white/80 hover:bg-white/10 hover:text-white transition-colors"
           >
             <X size={26} />

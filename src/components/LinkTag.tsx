@@ -31,7 +31,7 @@ export const LinkTag = ({
 
 /** 읽기 전용 키워드 태그. 링크가 아니다. */
 export const Tag = ({ children }: { children: ReactNode }) => (
-  <span className="rounded-full border border-[var(--border-color)] px-3.5 py-1.5 text-[0.82rem] font-medium text-[var(--text-secondary)]">
+  <span className="inline-flex shrink-0 whitespace-nowrap rounded-full border border-[var(--border-color)] px-3.5 py-1.5 text-[0.82rem] font-medium text-[var(--text-secondary)]">
     {children}
   </span>
 );

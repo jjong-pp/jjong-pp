@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Moon, Sun, Languages } from 'lucide-react';
+import { Moon, Sun } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 import { useLanguage } from '../context/LanguageContext';
 import { profile } from '../data/profile';
@@ -13,7 +13,7 @@ const SECTIONS = [
 
 export const SiteNav = () => {
   const { theme, toggleTheme } = useTheme();
-  const { language, toggleLanguage } = useLanguage();
+  const { language } = useLanguage();
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const isKr = language === 'KR';
@@ -52,7 +52,7 @@ export const SiteNav = () => {
 
   return (
     <header className="fixed inset-x-0 top-0 z-50 h-16 border-b border-[var(--border-color)] bg-[var(--bg-color)]/75 backdrop-blur-xl backdrop-saturate-150">
-      <nav className="mx-auto flex h-full max-w-[1280px] items-center justify-between gap-4 px-6 md:px-10">
+      <nav className="mx-auto flex h-full max-w-[1440px] items-center justify-between gap-4 px-6 md:px-8 xl:px-10">
         <Link to="/" className="flex shrink-0 items-center gap-2.5">
           <Logo theme={theme} width={26} height={26} />
           <span className="text-[0.95rem] font-semibold tracking-[-0.01em] text-[var(--text-primary)]">
@@ -60,14 +60,15 @@ export const SiteNav = () => {
           </span>
         </Link>
 
-        <div className="hidden items-center gap-1 md:flex">
+        <div className="flex items-center gap-0.5 md:gap-1">
           {SECTIONS.map(s => (
             <button
               key={s.id}
               onClick={() => goToSection(s.id)}
-              className={`rounded-full px-3 py-1.5 text-[0.85rem] transition-colors ${
+              aria-current={active === s.id ? 'location' : undefined}
+              className={`rounded-full px-2 py-1.5 text-[0.78rem] transition-colors md:px-3 md:text-[0.85rem] ${
                 active === s.id
-                  ? 'text-[var(--text-primary)]'
+                  ? 'bg-[var(--elevated-color)] text-[var(--text-primary)]'
                   : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
               }`}
             >
@@ -78,25 +79,25 @@ export const SiteNav = () => {
             href={profile.contact.blog}
             target="_blank"
             rel="noreferrer"
-            className="rounded-full px-3 py-1.5 text-[0.85rem] text-[var(--text-secondary)] transition-colors hover:text-[var(--text-primary)]"
+            className="hidden rounded-full px-3 py-1.5 text-[0.85rem] text-[var(--text-secondary)] transition-colors hover:text-[var(--text-primary)] md:block"
           >
-            Blog
+            {isKr ? '블로그' : 'Blog'}
           </a>
         </div>
 
         <div className="flex shrink-0 items-center gap-2">
           <button
-            onClick={toggleLanguage}
-            className="toggle-btn flex items-center gap-1.5 px-3 py-1.5 text-[0.8rem]"
-            aria-label={isKr ? 'Switch to English' : '한국어로 전환'}
-          >
-            <Languages size={15} />
-            {isKr ? 'EN' : 'KO'}
-          </button>
-          <button
             onClick={toggleTheme}
             className="toggle-btn flex h-8 w-8 items-center justify-center"
-            aria-label={theme === 'dark' ? 'Light mode' : 'Dark mode'}
+            aria-label={
+              isKr
+                ? theme === 'dark'
+                  ? '라이트 모드로 변경'
+                  : '다크 모드로 변경'
+                : theme === 'dark'
+                  ? 'Switch to light mode'
+                  : 'Switch to dark mode'
+            }
           >
             {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
           </button>

@@ -18,7 +18,7 @@ const Section = ({
     <h2 className="text-[1.7rem] font-bold tracking-[-0.03em] text-[var(--text-primary)] md:text-[2.1rem]">
       {title}
     </h2>
-    <div className="mt-10 md:mt-14">{children}</div>
+    <div className="mt-8 md:mt-11">{children}</div>
   </section>
 );
 
@@ -28,18 +28,24 @@ export const Home = () => {
   const t = <T,>(v: { KR: T; EN: T }) => (isKr ? v.KR : v.EN);
 
   return (
-    <div className="flex flex-col gap-20 pb-10 md:gap-28">
+    <div className="flex flex-col gap-20 pb-10 md:gap-24">
       {/* ---------- 소개 ---------- */}
       <section className="flex flex-col">
-        <div className="flex items-center gap-5 md:gap-6">
-          <img
-            src="/assets/profile_picture.jpg"
-            alt=""
-            className="h-24 w-24 shrink-0 rounded-full border border-[var(--border-color)] object-cover md:h-32 md:w-32"
-            onError={e => {
-              e.currentTarget.style.display = 'none';
-            }}
-          />
+        <div className="flex items-center gap-6 md:gap-9">
+          <div className="h-36 w-36 shrink-0 overflow-hidden rounded-full border border-[var(--border-color)] bg-[var(--surface-color)] md:h-56 md:w-56">
+            <img
+              src="/assets/사진.jpg?v=20260816"
+              alt="박종혁 프로필 사진"
+              width={1553}
+              height={1997}
+              fetchPriority="high"
+              decoding="sync"
+              className="h-full w-full object-cover object-[50%_18%]"
+              onError={e => {
+                e.currentTarget.parentElement?.remove();
+              }}
+            />
+          </div>
           <div>
             <p className="text-[1.15rem] font-semibold text-[var(--text-primary)] md:text-[1.3rem]">
               {t(profile.name)}
@@ -48,31 +54,36 @@ export const Home = () => {
           </div>
         </div>
 
-        <h1 className="mt-10 whitespace-pre-line text-[2.4rem] font-bold leading-[1.15] tracking-[-0.04em] text-[var(--text-primary)] md:mt-14 md:text-[4rem]">
+        <h1 className="mt-9 max-w-[64rem] whitespace-pre-line text-[2.15rem] font-bold leading-[1.18] tracking-[-0.04em] text-[var(--text-primary)] md:mt-11 md:text-[3.25rem] xl:text-[3.7rem]">
           {t(profile.headline)}
         </h1>
 
-        <div className="mt-8 flex max-w-[42rem] flex-col gap-4">
+        <div className="mt-7 flex max-w-[59rem] flex-col gap-4">
           {t(profile.intro).map((line, i) => (
-            <p key={i} className="text-[1.02rem] leading-[1.85] text-[var(--text-secondary)] md:text-[1.08rem]">
+            <p key={i} className="whitespace-pre-line text-[1rem] leading-[1.82] text-[var(--text-secondary)] md:text-[1.06rem]">
               {line}
             </p>
           ))}
         </div>
 
-        <div className="mt-10 flex flex-wrap gap-2">
+        <div className="mt-8 flex w-full flex-nowrap gap-2 overflow-x-auto pb-1">
           {profile.tags.map(tag => (
             <Tag key={tag}>{tag}</Tag>
           ))}
         </div>
 
-        <div className="mt-8 flex flex-wrap gap-2">
-          <LinkTag href={`mailto:${profile.contact.email}`} icon={Mail}>
-            {profile.contact.email}
-          </LinkTag>
-          <LinkTag href={profile.contact.blog} icon={BookOpen}>
-            Blog
-          </LinkTag>
+        <div className="mt-7">
+          <p className="text-[0.76rem] font-semibold tracking-[0.04em] text-[var(--text-tertiary)]">
+            {isKr ? '연락하기' : 'Contact'}
+          </p>
+          <div className="mt-3 flex flex-wrap gap-2">
+            <LinkTag href={`mailto:${profile.contact.email}`} icon={Mail}>
+              {profile.contact.email}
+            </LinkTag>
+            <LinkTag href={profile.contact.blog} icon={BookOpen}>
+              {isKr ? '블로그' : 'Blog'}
+            </LinkTag>
+          </div>
         </div>
       </section>
 
@@ -97,7 +108,18 @@ export const Home = () => {
                 {e.points.map((pt, i) => (
                   <li key={i} className="flex gap-3 text-[0.96rem] leading-[1.75] text-[var(--text-secondary)]">
                     <span className="mt-[0.7em] h-1 w-1 shrink-0 rounded-full bg-[var(--text-tertiary)]" />
-                    <span>{t(pt)}</span>
+                    <span>
+                      {t(pt).includes(':') ? (
+                        <>
+                          <strong className="font-semibold text-[var(--text-primary)]">
+                            {t(pt).split(':', 1)[0]}:
+                          </strong>{' '}
+                          {t(pt).slice(t(pt).indexOf(':') + 1).trim()}
+                        </>
+                      ) : (
+                        t(pt)
+                      )}
+                    </span>
                   </li>
                 ))}
               </ul>
@@ -133,9 +155,9 @@ export const Home = () => {
             <Link
               key={p.id}
               to={`/projects/${p.id}`}
-              className="group grid gap-7 border-t border-[var(--border-color)] py-10 first:border-t-0 first:pt-0 md:grid-cols-[13rem_1fr] md:gap-10 md:py-14"
+              className="group grid gap-7 border-t border-[var(--border-color)] py-10 first:border-t-0 first:pt-0 md:grid-cols-[11rem_1fr] md:gap-9 md:py-12"
             >
-              <div className="flex flex-col gap-4">
+              <div className="grid grid-cols-[6.75rem_minmax(0,1fr)] items-start gap-4 md:flex md:flex-col">
                 <div className="overflow-hidden rounded-xl border border-[var(--border-color)] bg-[var(--surface-color)]">
                   {/* 원본이 정사각형이라 비율을 그대로 유지한다 (강제 크롭 금지) */}
                   <img
@@ -159,24 +181,32 @@ export const Home = () => {
                   {t(p.title)}
                 </h3>
                 <p className="mt-3 text-[1rem] leading-[1.75] text-[var(--text-secondary)]">{t(p.summary)}</p>
+                {p.projectScale && (
+                  <p className="mt-3 text-[0.86rem] leading-relaxed text-[var(--text-secondary)]">
+                    <span className="font-semibold text-[var(--text-primary)]">
+                      {isKr ? '프로젝트 규모' : 'Project scale'}
+                    </span>{' '}
+                    · {t(p.projectScale)}
+                  </p>
+                )}
 
-                <dl className="mt-6 flex flex-col gap-4 border-l-2 border-[var(--border-color)] pl-5">
+                <dl className="mt-6 grid gap-4 border-l-2 border-[var(--border-color)] pl-5 xl:grid-cols-2 xl:gap-7">
                   <div>
-                    <dt className="text-[0.75rem] font-semibold uppercase tracking-[0.12em] text-[var(--text-tertiary)]">
-                      {isKr ? '발견한 비효율' : 'Friction'}
+                    <dt className="text-[0.76rem] font-semibold tracking-[0.04em] text-[var(--text-tertiary)]">
+                      {isKr ? '문제' : 'Friction'}
                     </dt>
                     <dd className="mt-1.5 text-[0.94rem] leading-[1.75] text-[var(--text-secondary)]">
                       {t(p.friction)}
                     </dd>
                   </div>
                   <div>
-                    <dt className="text-[0.75rem] font-semibold uppercase tracking-[0.12em] text-[var(--text-tertiary)]">
-                      {isKr ? '결과' : 'Outcome'}
+                    <dt className="text-[0.76rem] font-semibold tracking-[0.04em] text-[var(--text-tertiary)]">
+                      {t(p.outcomeLabel)}
                     </dt>
                     <dd className="mt-1.5 text-[0.94rem] leading-[1.75] text-[var(--text-secondary)]">
                       {t(p.outcome)}
                       <span className="mt-1.5 block text-[0.85rem] text-[var(--text-tertiary)]">
-                        {isKr ? '측정' : 'Measured by'} — {t(p.measure)}
+                        {t(p.measureLabel)} — {t(p.measure)}
                       </span>
                     </dd>
                   </div>
@@ -194,7 +224,7 @@ export const Home = () => {
                 </div>
 
                 <span className="mt-6 inline-flex items-center gap-1.5 text-[0.9rem] font-medium text-[var(--accent-color)]">
-                  {isKr ? '기획 문서 보기' : 'Read the write-up'}
+                  {isKr ? '의사결정 과정 보기' : 'Read the decision process'}
                   <ArrowRight
                     size={16}
                     className="transition-transform duration-300 group-hover:translate-x-1"

@@ -34,3 +34,6 @@ RULES.md
 
 # Build artifacts
 .content-collections
+
+# Public portfolio에서 제외한 원본 화면 자료
+.private/

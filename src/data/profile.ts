@@ -3,8 +3,9 @@
  *
  * 원칙
  * - 이력서다. 담백한 '~습니다' 체를 쓰고 과장·수식어를 넣지 않는다.
- * - 대외비 금지: 협력사·솔루션·브랜드의 실명, 계약 단가, 예산 금액은 쓰지 않는다.
+ * - 대외비 금지: 협력사·솔루션·브랜드의 실명과 계약 단가는 쓰지 않는다.
  *   필요하면 '본인인증 기관', '통관 파트너사', '자사 브랜드몰' 처럼 역할명으로 적는다.
+ * - 사용자가 공개를 승인한 프로젝트 규모는 정확한 계약 조건 대신 약식 금액으로만 적는다.
  * - 정량 성과 옆에는 무엇을 세어 확인했는지(measure)를 함께 적는다.
  */
 
@@ -21,41 +22,31 @@ type Profile = {
 
 export const profile: Profile = {
   name: { KR: '박종혁', EN: 'JongHyeok Park' },
-  role: { KR: '프로젝트 기획자', EN: 'Project Planner' },
+  role: { KR: '서비스 · 프로젝트 PM', EN: 'Service & Project PM' },
 
   headline: {
-    KR: '복잡한 현장을,\n단순한 시스템으로.',
-    EN: 'Messy operations,\nsimple systems.',
+    KR: '낯선 일은 빠르게 배우고,\n복잡한 일은 명확하게 풉니다.',
+    EN: 'Learn the unfamiliar quickly.\nMake the complex clear.',
   },
 
   intro: {
     KR: [
-      'SCM 현장에서 수발주·수입 통관·재고 운영을 직접 담당하며, 반복되는 수기 업무와 병목을 자동화 과제로 정의해 왔습니다.',
-      '엑셀과 구글 폼으로 흩어져 있던 주문·발주·정산 데이터를 단일 기준으로 통합하고, 판매·재고 데이터를 분석해 발주 의사결정을 감이 아닌 수치 위에 올렸습니다.',
-      '정책서·기능정의서·과업지시서를 기준으로 외부 개발사와 현업의 요구사항을 조율하는 것이 제 경험의 핵심입니다. 관세법 개정 대응에서는 관계사 다섯 곳의 인터페이스를 맞춰 시행일 전에 오픈했고, AI는 코드와 문서의 초안을 만드는 도구로 쓰되 최종 검증은 언제나 현업 데이터로 합니다.',
-      '실무자로 문제를 겪고 직접 풀어 본 경험을 토대로, 앞으로는 프로젝트 기획자로서 문제 정의와 실행 설계에 집중하려 합니다.',
+      '새로운 업무는 현장 담당자에게 묻고 데이터 흐름을 따라가며 빠르게 익힙니다.\n반복되는 불편은 요청 그대로 옮기지 않고, 원인과 예외를 확인해 해결할 문제로 정리합니다.',
+      '모르는 것은 확인하고, 확인한 사실은 작은 실행으로 검증합니다.\n문서는 서로 다른 해석을 하나의 기준으로 맞추기 위해 쓰며, 결과가 실제 운영에 자리 잡을 때까지 책임집니다.',
     ],
     EN: [
-      'Working hands-on in SCM — purchasing, import clearance and inventory operations — I learned to frame recurring manual work and bottlenecks as automation projects.',
-      'I consolidated order, purchasing and settlement data scattered across spreadsheets and web forms onto a single source, and used sales and inventory analysis to move purchasing decisions from intuition onto numbers.',
-      'The core of my experience is aligning requirements between vendors and the people doing the work, using policy documents, PRDs and SOWs. For the customs law amendment I aligned interfaces across five parties and launched before the enforcement date. I use AI to draft code and documents, but the final check is always against real operating data.',
-      'Having hit these problems as a practitioner and solved them myself, I am moving into project planning to focus on problem definition and delivery design.',
+      'I learn unfamiliar work by following frontline conversations and data flows, then define recurring friction as a problem worth solving. Rather than translating requests directly into features, I separate causes, exceptions, constraints, and stakeholders and turn them into shared policies, processes, and requirements.',
+      'I believe a good PM is not someone who knows every answer at the start, but someone who verifies unknowns, tests assumptions through small executions, and owns the result. Documents create alignment; operational data and actual user change validate the decision.',
     ],
   },
 
   tags: [
-    '요구사항정의',
-    '기능정의서(PRD)',
-    '과업지시서(SOW)',
-    '프로세스 설계',
-    'SCM · 물류',
-    'B2B 커머스',
-    '수요예측',
-    '규제대응',
-    'API 연동',
-    '업무자동화',
+    '서비스 기획',
+    '프로젝트 관리',
+    '요구사항 분석',
     '데이터 분석',
-    'Python · SQL',
+    '문제 해결',
+    '커뮤니케이션',
   ],
 
   contact: {
@@ -76,28 +67,32 @@ export const experience: Experience[] = [
   {
     company: { KR: '아이베 (EIBE)', EN: 'EIBE' },
     role: { KR: 'SCM팀 · 사원 (물류기획 및 IT 프로세스)', EN: 'SCM Team (Logistics Planning & IT Process)' },
-    period: '2025.09 — 재직중',
+    period: '2025.09 — 재직 중',
     duration: { KR: '11개월', EN: '11 mo' },
     points: [
       {
-        KR: '현장 업무 흐름을 분석해 정책서·기능정의서(PRD)를 작성하고 운영 이슈를 트래킹했습니다.',
-        EN: 'Analyzed field workflows to write policy documents and PRDs, and tracked operational issues.',
+        KR: 'SCM 운영: 수발주·수입 통관·국내외 3PL·재고 정합성·사업자 주문 및 정산 운영',
+        EN: 'SCM operations: ordering, import customs, 3PL, inventory accuracy, and business-account settlement',
       },
       {
-        KR: '외주 개발사 과업지시서(SOW)를 작성하고 기능 단위 공수(M/M)를 검토해 개발 중 추가 과금을 방지했습니다.',
-        EN: 'Wrote vendor SOWs and reviewed effort estimates per feature to prevent mid-build change-order costs.',
+        KR: '운영 분석: 주문·재고·출고·정산 데이터 대사와 운영 기준·마스터데이터 정합성 관리',
+        EN: 'Operational analysis: reconciliation and accuracy controls across orders, inventory, fulfillment, and settlement',
       },
       {
-        KR: '대외 기관 연동 프로젝트를 PM으로 총괄해 요구사항 정의부터 5개사 인터페이스 조율, 오픈까지 진행했습니다.',
-        EN: 'Led an external-agency integration as PM, from requirements through five-party interface alignment to launch.',
+        KR: '문제 정의: 현장 인터뷰·업무 관찰·데이터 흐름 분석 기반 업무 불편·예외 조건·AS-IS·TO-BE 정의',
+        EN: 'Problem definition: pain-point analysis and AS-IS/TO-BE design through interviews, observation, and data flows',
       },
       {
-        KR: '수요예측 대시보드와 B2B 커머스 주문·정산 통합 등 백오피스 자동화를 기획했습니다.',
-        EN: 'Planned back-office automation including a demand forecasting dashboard and B2B order/settlement integration.',
+        KR: '요구사항 관리: 정책서·기능정의서(PRD)·과업지시서(SOW) 작성과 요구사항·우선순위·완료 기준 관리',
+        EN: 'Requirements management: policy, PRD, and SOW authoring with requirements and priority control',
       },
       {
-        KR: '수발주·수입 통관·3PL·재고 정합성 등 SCM 운영을 직접 담당했고, 기획의 문제 정의는 대부분 여기서 나왔습니다.',
-        EN: 'Owned day-to-day SCM operations — ordering, import clearance, 3PL and inventory accuracy — which is where most of my problem definitions originated.',
+        KR: '개발사 협업: 질의 대응, 기능별 예상 공수 검토와 범위·비용·일정·변경사항 조율',
+        EN: 'Vendor collaboration: Q&A, feature-level effort review, and scope, cost, schedule, and change management',
+      },
+      {
+        KR: '검증·조율: 화면·정책·예외 시나리오 QA/UAT 및 영업·물류·재무·외부 파트너 조율',
+        EN: 'Validation and coordination: UI, policy, and exception-scenario QA/UAT with cross-functional stakeholders',
       },
     ],
   },
@@ -107,7 +102,7 @@ export const education = [
   {
     school: { KR: '고려사이버대학교', EN: 'Korea Cyber University' },
     major: { KR: 'AI·데이터과학부', EN: 'AI & Data Science' },
-    period: '2025.02 — 재학중',
+    period: '2025.02 — 재학 중',
     note: { KR: '편입 · 학점 4.1 / 4.5', EN: 'Transfer · GPA 4.1 / 4.5' },
   },
   {
@@ -126,8 +121,16 @@ export type Project = {
   friction: Bilingual;
   /** 결과 */
   outcome: Bilingual;
+  /** 프로젝트 상태에 맞는 결과 영역 라벨 */
+  outcomeLabel: Bilingual;
   /** 결과를 무엇을 세어 확인했는지 */
   measure: Bilingual;
+  /** 측정값 또는 검증 산출물의 성격 */
+  measureLabel: Bilingual;
+  /** PM으로서 내린 핵심 판단 */
+  decisions: Bilingual[];
+  /** 공개 승인된 약식 프로젝트 비용 규모 */
+  projectScale?: Bilingual;
   role: Bilingual;
   period: string;
   tags: string[];
@@ -136,85 +139,141 @@ export type Project = {
 
 export const projects: Project[] = [
   {
+    id: 'b2b-mall',
+    title: {
+      KR: '사업자 전용 회원제 커머스',
+      EN: 'Member Commerce for Business Accounts',
+    },
+    summary: {
+      KR: '일반 쇼핑몰의 구매 경험에 사업자 회원별 등급·카테고리·결제·선출고 정책을 결합한 서비스입니다.',
+      EN: 'Combined a B2C-style shopping experience with account-specific tier, category, payment, and ship-first policies.',
+    },
+    friction: {
+      KR: '130여 개 회원 계정의 주문이 구글 폼과 엑셀에 흩어져 있었고, 상품군과 회원 등급에 따라 결제·선출고 정책이 달라 일반 쇼핑몰의 단일 결제 흐름으로는 운영을 담기 어려웠습니다.',
+      EN: 'Orders from more than 130 business accounts were split across forms and spreadsheets, while payment and ship-first rules varied by product category and member tier.',
+    },
+    outcome: {
+      KR: '등급별 결제 분기, 간편 주문, 선출고 발주, 거래명세서와 포인트 정리 기능을 운영에 반영했습니다. 외부 서비스 활성화가 필요한 기능은 개발 완료와 운영 가능 상태를 구분해 관리했습니다.',
+      EN: 'Released tier-based payment routing, simplified ordering, ship-first purchase orders, transaction statements, and point controls. Validated 11 follow-up and QA items with real order scenarios and separated external-service prerequisites.',
+    },
+    measure: {
+      KR: '추가 요청 3건·1차 QA 5건·후속 요청 3건의 처리 결과와 PC·모바일 실제 주문 시나리오',
+      EN: 'Completion of 3 follow-ups, 5 first-round QA items, and 3 subsequent requests, plus live order-scenario verification',
+    },
+    outcomeLabel: { KR: '운영 반영', EN: 'Operational release' },
+    measureLabel: { KR: '검증 근거', EN: 'Evidence' },
+    decisions: [
+      {
+        KR: '고객 유형보다 실제 구매 행동을 기준으로 B2C형 회원제 커머스로 포지셔닝',
+        EN: 'Positioned the service by buying behavior rather than customer type',
+      },
+      {
+        KR: '회원 등급 × 상품 카테고리 조합을 결제 정책표로 분리해 서버 검증 기준으로 정의',
+        EN: 'Defined tier-by-category payment rules as a server-validated policy table',
+      },
+      {
+        KR: '개발 결함·운영 배포 누락·외부 서비스 미신청·추가 개발 범위를 서로 다른 상태로 관리',
+        EN: 'Separated defects, deployment gaps, external prerequisites, and new scope',
+      },
+    ],
+    projectScale: {
+      KR: '개발비 약 750만 원',
+      EN: 'Approx. KRW 7.5M development budget',
+    },
+    role: { KR: 'PM · 서비스 기획', EN: 'PM · Service Planning' },
+    period: '2026.07 — 2026.08',
+    tags: ['서비스 기획', '커머스 정책', '외주 개발 관리', 'QA'],
+    thumbnail: '/assets/b2b_mall_thumbnail.png',
+  },
+  {
     id: 'customs-api',
     title: {
       KR: '관세법 개정 대응 통관 API 연동',
       EN: 'Customs Clearance API Integration',
     },
     summary: {
-      KR: '고시 단계에서 규제를 먼저 읽고, 5개사를 묶어 시행일 전에 대응 시스템을 오픈했습니다.',
-      EN: 'Read the regulation at the notice stage and launched a five-party integration before the enforcement date.',
+      KR: '기존 ERP·WMS 흐름을 새 사전신고 E2E에 편입하고, 주문·본인확인·물류·통관 사이의 식별자와 상태 계약을 설계했습니다.',
+      EN: 'Integrated the existing ERP and WMS flow into a new customs pre-declaration E2E and defined identifiers and state contracts across systems.',
     },
     friction: {
-      KR: '전자상거래 물품의 거래정보를 세관에 사전 제출하도록 관세법이 개정됐습니다. 미이행 시 스마트통관에서 제외되어 통관이 지연되고 과태료 대상이 되는 사안이었습니다. 고시 단계에서 이를 확인하고 대응 프로젝트를 먼저 제안했습니다.',
-      EN: 'A customs law amendment required pre-submission of e-commerce transaction data. Non-compliance meant losing expedited clearance, delaying shipments and incurring fines. I identified this at the notice stage and proposed the response project.',
+      KR: '같은 주문을 시스템마다 다른 번호·상품·포장 단위와 생성 시점으로 다뤘습니다. 오류 주문 회수와 고객 수정·취소, 창고 출고 마감도 하나의 흐름에서 맞춰야 했습니다.',
+      EN: 'Each system represented the same order with different identifiers, units, and timing, while error recovery and fulfillment cutoffs had to remain aligned.',
     },
     outcome: {
-      KR: '시행일 전에 오픈했고, 개정 사유로 인한 통관 보류는 발생하지 않았습니다.',
-      EN: 'Launched before the enforcement date, with no clearance holds attributable to the amendment.',
+      KR: '본인확인부터 TRA 제출·오류조회, 출고 회수, 통관 파트너사의 분리 API 병합까지 E2E 계약을 정리하고 시범운영을 준비하고 있습니다.',
+      EN: 'Defined the E2E contract from identity verification through TRA submission, error recovery, shipment rollback, and broker-side API merging, and prepared the pilot operation.',
     },
+    outcomeLabel: { KR: '현재 상태', EN: 'Current status' },
     measure: {
-      KR: '오픈 후 통관 보류·반려 건수를 사유 코드별로 집계',
-      EN: 'Post-launch clearance holds and rejections, counted by reason code',
+      KR: '시스템별 필드 소유권, 식별자 매핑, 정상·오류 E2E 시나리오와 우선순위별 잔여 리스크',
+      EN: 'Field ownership, identifier mappings, normal/error E2E scenarios, and prioritized residual risks',
+    },
+    measureLabel: { KR: '검증 근거', EN: 'Evidence' },
+    decisions: [
+      {
+        KR: '기존 ERP·WMS 연동은 유지하고 사전신고에 필요한 상태·식별자 계약만 확장',
+        EN: 'Scoped the work as integration of existing ERP/WMS assets rather than rebuilding them',
+      },
+      {
+        KR: '원주문번호·분할주문번호·HBL·제출번호의 역할을 분리하고 추적 관계 정의',
+        EN: 'Separated and traced original order, split order, HBL, and submission identifiers',
+      },
+      {
+        KR: '개인정보와 물류 스냅샷을 소스별로 저장한 뒤 양측 도착 시 병합하는 계약 설계',
+        EN: 'Designed source-owned snapshots that merge only after both sides arrive',
+      },
+    ],
+    projectScale: {
+      KR: '개발비 약 4,000만 원 · 본인확인 서비스 운영비 약 400만 원 예정',
+      EN: 'Approx. KRW 40M development budget · KRW 4M identity-service operating cost planned',
     },
     role: { KR: 'PM · 요구사항 정의', EN: 'PM · Requirements' },
-    period: '2026.04 — 2026.08',
-    tags: ['규제대응', 'API연동', '다자조율'],
+    period: '2026.04 — 진행 중',
+    tags: ['규제 대응', 'API 연동', 'ERP·WMS', '다자간 조율'],
     thumbnail: '/assets/customs_api_thumbnail.png',
   },
   {
     id: 'scm-dashboard',
     title: {
-      KR: '수요예측 대시보드',
-      EN: 'Demand Forecast Dashboard',
+      KR: '재고·발주 의사결정 대시보드',
+      EN: 'Inventory & Ordering Decision Dashboard',
     },
     summary: {
-      KR: '감에 의존하던 발주를 데이터로 옮기고, 현업이 쓰지 않던 시기를 거쳐 팀 기준으로 정착시켰습니다.',
-      EN: 'Moved ordering from intuition to data, and after a stretch where nobody used it, made it the team standard.',
+      KR: '분산된 엑셀과 경험 중심 발주를 단일 데이터 기준으로 통합하고, 현업 피드백을 반영해 팀 운영 도구로 안착시켰습니다.',
+      EN: 'Unified fragmented spreadsheets and intuition-led ordering into one data standard, then improved adoption through frontline feedback.',
     },
     friction: {
-      KR: '리드타임이 6개월인 수입 상품의 발주 수량을 담당자 감과 수기 엑셀로 결정하고 있었습니다. 품절과 과재고가 번갈아 발생했고, 마케팅과 물류가 서로 다른 숫자를 근거로 회의에 들어왔습니다.',
-      EN: 'Order quantities for imports with a six-month lead time were decided by intuition in spreadsheets. Stockouts and overstock alternated, and marketing and logistics brought different numbers to the same meeting.',
+      KR: '6개월 리드타임 상품의 재고·판매·입고 데이터가 여러 엑셀에 흩어져 매일 같은 계산을 반복했고, 마케팅과 물류가 서로 다른 수치로 발주를 논의했습니다.',
+      EN: 'Inventory, sales, and inbound data for six-month lead-time products was split across spreadsheets, creating repeated calculations and conflicting numbers.',
     },
     outcome: {
-      KR: '마케팅과 물류가 같은 화면의 커버일수를 근거로 발주 수량을 합의하게 됐고, 발주 기준이 이 대시보드로 정리됐습니다. 배포 직후에는 현업이 쓰지 않았는데, 담당자가 매일 보던 엑셀과 구조가 달랐던 것이 원인이었습니다. 이후 현업과 화면을 함께 수정하는 방식으로 바꿔 안착시켰습니다.',
-      EN: 'Marketing and logistics now agree on order quantities from the same days-of-cover view, and the ordering baseline is defined on this dashboard. Right after release nobody used it — it did not match the spreadsheet the team read daily; I then reworked the screens together with them until it stuck.',
+      KR: '재고 확인·회전율 계산을 일 1시간에서 약 5분으로 줄이고, 월 8~9시간의 데이터 취합·양식 작성 작업을 자동화했습니다. 초기 미사용 원인을 화면 구조에서 찾아 현업과 함께 수정했습니다.',
+      EN: 'Reduced daily inventory and turnover checks from one hour to about five minutes and automated 8–9 hours of monthly data preparation, then corrected early adoption issues with users.',
     },
+    outcomeLabel: { KR: '운영 결과', EN: 'Operational result' },
     measure: {
-      KR: '주간 발주 회의에서 대시보드 수치를 근거로 결정된 SKU 비율',
-      EN: 'Share of SKUs whose order decision cited dashboard figures in the weekly review',
+      KR: '도입 전 수기 작업시간과 대시보드 조회시간 비교, 월간 데이터 취합 업무 기록, 품절 위험 SKU 탐지 사례',
+      EN: 'Pre/post task time, monthly data-preparation records, and detected stockout-risk cases',
     },
-    role: { KR: '기획 · 구현', EN: 'Planning · Implementation' },
+    measureLabel: { KR: '측정 기준', EN: 'Measured by' },
+    decisions: [
+      {
+        KR: '직전 12주 평균과 실무자 조정 계수를 결합해 계산 근거를 확인할 수 있는 발주 시뮬레이션 구성',
+        EN: 'Used a transparent 12-week average plus operator adjustment rather than overstating forecasting sophistication',
+      },
+      {
+        KR: '서버 도입이 어려운 제약에서 로컬 실행·파일 DB·NAS 백업 구조 선택',
+        EN: 'Selected local execution, file database, and NAS backup under infrastructure constraints',
+      },
+      {
+        KR: '초기 미사용 원인을 기존 엑셀과 달라진 정보 구조에서 확인하고 화면 구성 재설계',
+        EN: 'Reframed non-adoption as an information-architecture problem rather than user resistance',
+      },
+    ],
+    role: { KR: 'PM · 프로토타입 구현', EN: 'PM · Prototype Implementation' },
     period: '2026.06 — 2026.07',
-    tags: ['업무자동화', '데이터파이프라인', '현업안착'],
+    tags: ['업무 자동화', '데이터 분석', '프로토타이핑', '현업 안착'],
     thumbnail: '/assets/scm_dashboard_thumbnail.png',
-  },
-  {
-    id: 'b2b-mall',
-    title: {
-      KR: 'B2B 폐쇄몰 주문·정산 통합',
-      EN: 'B2B Closed Mall: Orders & Settlement',
-    },
-    summary: {
-      KR: '원가 구조상 PG를 쓸 수 없는 조건에서 결제·출고·정산을 하나의 정책으로 묶었습니다.',
-      EN: 'With margins that could not absorb PG fees, unified payment, fulfillment and settlement under a single policy.',
-    },
-    friction: {
-      KR: '140여 개 거래처의 주문이 구글 폼과 수기 엑셀로 들어왔습니다. 팀원 두 명이 매일 주문 확인에 시간을 썼고, 월 정산 대사에 1~2일이 소요됐습니다. 담당자 재량으로 선출고 후입금 같은 예외가 잦아 미수금과 정산 불일치가 누적됐습니다.',
-      EN: 'Orders from about 140 accounts arrived through Google Forms and spreadsheets. Two teammates spent time daily confirming orders, and monthly reconciliation took one to two days. Discretionary exceptions such as shipping before payment accumulated receivables and mismatches.',
-    },
-    outcome: {
-      KR: '수기 접수와 수기 거래명세서를 없앴고, 월 마감 시 입금액과 주문액의 차액이 남지 않게 됐습니다.',
-      EN: 'Manual intake and hand-written invoices were eliminated, and month-end now closes with no gap between deposits and orders.',
-    },
-    measure: {
-      KR: '월 마감 시 입금 합계 대비 주문 합계의 차액과 미매칭 건수',
-      EN: 'Month-end delta between total deposits and total orders, plus unmatched count',
-    },
-    role: { KR: 'PM · 서비스 기획', EN: 'PM · Service Planning' },
-    period: '2026.07 — 2026.08',
-    tags: ['서비스기획', '정산자동화', '정책설계'],
-    thumbnail: '/assets/b2b_mall_thumbnail.png',
   },
   {
     id: 'tms',
@@ -223,24 +282,40 @@ export const projects: Project[] = [
       EN: 'TMS Auto-Dispatch System',
     },
     summary: {
-      KR: '지도 API 호출 한도를 경로 캐싱으로 해결하고, 현장 반발을 겪고서 안착의 조건을 배웠습니다.',
+      KR: '수기 배차를 시스템화하고, 현장 피드백을 반영해 단계적으로 적용한 프로젝트입니다.',
       EN: 'Solved map API quota limits with route caching, and learned what adoption requires after pushback from the field.',
     },
     friction: {
-      KR: '배차를 수기로 편성하면서 오배송 위험이 상시로 있었고, 경로 계산에 사용하는 지도 API가 일일 호출 한도에 걸려 과금과 실패가 반복됐습니다.',
+      KR: '수기 배차와 교대 인수인계로 정보가 파편화됐고, 경로 계산 때마다 지도 API를 호출해 일일 한도와 과금 위험이 반복됐습니다.',
       EN: 'Manual dispatch carried constant misdelivery risk, and the map API used for routing repeatedly hit daily quota limits, causing charges and failures.',
     },
     outcome: {
-      KR: '배차 생산성 14% 향상, 외주 운송비 6% 절감을 확인했습니다. 초기에는 로직이 맞으면 된다고 판단해 현장에 그대로 적용했다가 기사분들의 반발을 겪었고, 이후 현장 피드백대로 UI를 다시 설계해 단계적으로 배포했습니다.',
-      EN: '14% higher dispatch productivity and 6% lower outsourced transport cost. I initially rolled it out assuming correct logic would suffice and met pushback from drivers; I then redesigned the UI around their feedback and released it incrementally.',
+      KR: '도입 전후 동일 기간 비교에서 기사 1인당 일 배송 건수가 14% 늘었습니다. 감소한 작업시간을 기준으로 외주 운송비 약 6%의 절감 가능성을 산출했습니다.',
+      EN: 'Deliveries per driver per day improved by 14% across comparable periods. Reduced work hours indicated roughly 6% potential outsourced transport savings; this is an estimate, not realized savings.',
     },
+    outcomeLabel: { KR: '운영 결과', EN: 'Operational result' },
     measure: {
-      KR: '기사 1인당 일 배송 건수를 도입 전후 동일 기간으로 비교',
-      EN: 'Deliveries per driver per day, compared across equal pre- and post-rollout periods',
+      KR: '도입 전후 동일 기간의 기사 1인당 일 배송 건수와 감소 작업시간 기반 비용 시뮬레이션',
+      EN: 'Deliveries per driver per day across comparable periods and a work-hour-based cost simulation',
     },
-    role: { KR: 'PM · 시스템 기획', EN: 'PM · Systems Planning' },
+    measureLabel: { KR: '측정 기준', EN: 'Measured by' },
+    decisions: [
+      {
+        KR: '도착지 우편번호별 경로를 캐싱해 지도 API 재호출과 일일 한도 위험 축소',
+        EN: 'Cached routes by destination postal code to reduce repeat API calls and quota risk',
+      },
+      {
+        KR: '동시 수정 충돌을 막기 위해 수정 진입 시 잠금과 5분 자동 해제 적용',
+        EN: 'Applied edit locking with a five-minute timeout to prevent concurrent conflicts',
+      },
+      {
+        KR: '초기 일괄 적용 뒤 현장 반발을 확인하고 다중 배차·클릭 동선 개선 후 단계 배포로 전환',
+        EN: 'Moved from an initial broad rollout to staged releases after improving workflows from driver feedback',
+      },
+    ],
+    role: { KR: 'PM · 시스템 기획·개발', EN: 'PM · Systems Planning & Development' },
     period: '2024.10 — 2025.02',
-    tags: ['시스템기획', '현장안착', 'API최적화'],
+    tags: ['시스템 기획', '운영 개선', 'API 최적화', '변화 관리'],
     thumbnail: '/assets/tms_thumbnail.png',
   },
 ];

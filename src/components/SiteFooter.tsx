@@ -9,7 +9,7 @@ export const SiteFooter = () => {
 
   return (
     <footer className="mt-32 border-t border-[var(--border-color)]">
-      <div className="mx-auto flex max-w-[1280px] flex-col gap-6 px-6 py-14 md:flex-row md:items-center md:justify-between md:px-10">
+      <div className="mx-auto flex max-w-[1440px] flex-col gap-6 px-6 py-14 md:flex-row md:items-center md:justify-between md:px-8 xl:px-10">
         <div>
           <p className="text-[1.05rem] font-semibold text-[var(--text-primary)]">
             {isKr ? profile.role.KR : profile.role.EN}
@@ -24,7 +24,7 @@ export const SiteFooter = () => {
             {profile.contact.email}
           </LinkTag>
           <LinkTag href={profile.contact.blog} icon={BookOpen}>
-            Blog
+            {isKr ? '블로그' : 'Blog'}
           </LinkTag>
         </div>
       </div>
