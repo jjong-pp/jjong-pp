@@ -272,6 +272,11 @@ def add_hyperlink(paragraph, label: str, url: str) -> None:
         wrun.append(rpr)
         wt = OxmlElement("w:t")
         wt.text = text
+        # Word collapses leading/trailing whitespace in hand-built hyperlink
+        # runs unless xml:space is explicit. Preserve the space between the
+        # author/year segment and an italicized title.
+        if text.startswith(" ") or text.endswith(" "):
+            wt.set("{http://www.w3.org/XML/1998/namespace}space", "preserve")
         wrun.append(wt)
         hyperlink.append(wrun)
 
@@ -316,10 +321,11 @@ def add_inline(paragraph, text: str, *, size: float | None = None,
 
 
 def add_paragraph(doc: Document, text: str, style: str = "Normal", *,
-                  keep_with_next=False, page_break_before=False):
+                  keep_with_next=None, page_break_before=False):
     p = doc.add_paragraph(style=style)
     add_inline(p, text)
-    p.paragraph_format.keep_with_next = keep_with_next
+    if keep_with_next is not None:
+        p.paragraph_format.keep_with_next = keep_with_next
     p.paragraph_format.page_break_before = page_break_before
     p.paragraph_format.widow_control = True
     return p
