@@ -47,12 +47,16 @@ def inline_markup(text: str) -> str:
 
     text = re.sub(r"\[([^\]]+)\]\((https?://[^)]+)\)", save_link, text)
     text = html.escape(text)
-    text = re.sub(r"\*\*([^*]+)\*\*", r"<b>\1</b>", text)
+    text = re.sub(
+        r"\*\*([^*]+)\*\*",
+        r'<font color="#C00000"><b>\1</b></font>',
+        text,
+    )
 
     for index, (label, url) in enumerate(links):
         token = html.escape(f"@@LINK{index}@@")
         link = (
-            f'<a href="{html.escape(url, quote=True)}" color="#2457A6">'
+            f'<a href="{html.escape(url, quote=True)}" color="#000000">'
             f"{html.escape(label)}</a>"
         )
         text = text.replace(token, link)
@@ -69,7 +73,7 @@ def make_styles() -> dict[str, ParagraphStyle]:
             fontSize=19,
             leading=27,
             alignment=TA_CENTER,
-            textColor=colors.HexColor("#17233C"),
+            textColor=colors.black,
             spaceAfter=9 * mm,
         ),
         "meta": ParagraphStyle(
@@ -79,7 +83,7 @@ def make_styles() -> dict[str, ParagraphStyle]:
             fontSize=9.2,
             leading=14,
             alignment=TA_CENTER,
-            textColor=colors.HexColor("#526078"),
+            textColor=colors.black,
             spaceAfter=2 * mm,
         ),
         "h2": ParagraphStyle(
@@ -88,7 +92,7 @@ def make_styles() -> dict[str, ParagraphStyle]:
             fontName="MalgunBold",
             fontSize=14,
             leading=20,
-            textColor=colors.HexColor("#17233C"),
+            textColor=colors.black,
             spaceBefore=5 * mm,
             spaceAfter=3 * mm,
             keepWithNext=True,
@@ -99,7 +103,7 @@ def make_styles() -> dict[str, ParagraphStyle]:
             fontName="MalgunBold",
             fontSize=11.5,
             leading=17,
-            textColor=colors.HexColor("#233A65"),
+            textColor=colors.black,
             spaceBefore=4 * mm,
             spaceAfter=2 * mm,
             keepWithNext=True,
@@ -110,7 +114,7 @@ def make_styles() -> dict[str, ParagraphStyle]:
             fontName="MalgunBold",
             fontSize=10.2,
             leading=15,
-            textColor=colors.HexColor("#2D4F7F"),
+            textColor=colors.black,
             spaceBefore=3 * mm,
             spaceAfter=1.5 * mm,
             keepWithNext=True,
@@ -122,7 +126,7 @@ def make_styles() -> dict[str, ParagraphStyle]:
             fontSize=9.2,
             leading=15.1,
             alignment=TA_LEFT,
-            textColor=colors.HexColor("#202630"),
+            textColor=colors.black,
             wordWrap="CJK",
             spaceAfter=2.5 * mm,
         ),
@@ -134,7 +138,7 @@ def make_styles() -> dict[str, ParagraphStyle]:
             leading=14.4,
             leftIndent=5 * mm,
             firstLineIndent=-3 * mm,
-            textColor=colors.HexColor("#202630"),
+            textColor=colors.black,
             wordWrap="CJK",
             spaceAfter=1.4 * mm,
         ),
@@ -146,7 +150,7 @@ def make_styles() -> dict[str, ParagraphStyle]:
             leading=14.5,
             leftIndent=6 * mm,
             firstLineIndent=-4 * mm,
-            textColor=colors.HexColor("#202630"),
+            textColor=colors.black,
             wordWrap="CJK",
             spaceAfter=1.4 * mm,
         ),
@@ -154,19 +158,19 @@ def make_styles() -> dict[str, ParagraphStyle]:
             "KTableHeader",
             parent=base["BodyText"],
             fontName="MalgunBold",
-            fontSize=7.5,
-            leading=10.8,
+            fontSize=8.1,
+            leading=11.7,
             alignment=TA_CENTER,
-            textColor=colors.white,
+            textColor=colors.black,
             wordWrap="CJK",
         ),
         "table_cell": ParagraphStyle(
             "KTableCell",
             parent=base["BodyText"],
             fontName="Malgun",
-            fontSize=7.35,
-            leading=11.2,
-            textColor=colors.HexColor("#202630"),
+            fontSize=8,
+            leading=11.7,
+            textColor=colors.black,
             wordWrap="CJK",
         ),
         "reference": ParagraphStyle(
@@ -177,7 +181,7 @@ def make_styles() -> dict[str, ParagraphStyle]:
             leading=12.5,
             leftIndent=5 * mm,
             firstLineIndent=-4 * mm,
-            textColor=colors.HexColor("#364154"),
+            textColor=colors.black,
             wordWrap="CJK",
             spaceAfter=1.2 * mm,
         ),
@@ -186,8 +190,8 @@ def make_styles() -> dict[str, ParagraphStyle]:
 
 def table_widths(column_count: int, available_width: float) -> list[float]:
     ratios = {
-        3: [0.22, 0.37, 0.41],
-        5: [0.16, 0.28, 0.13, 0.28, 0.15],
+        3: [0.24, 0.36, 0.40],
+        5: [0.18, 0.25, 0.13, 0.26, 0.18],
     }.get(column_count)
     if ratios is None:
         return [available_width / column_count] * column_count
@@ -217,10 +221,10 @@ def parse_table(lines: list[str], styles: dict[str, ParagraphStyle], width: floa
     table.setStyle(
         TableStyle(
             [
-                ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#334E78")),
+                ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#E6E6E6")),
                 ("VALIGN", (0, 0), (-1, -1), "TOP"),
-                ("GRID", (0, 0), (-1, -1), 0.35, colors.HexColor("#BCC6D5")),
-                ("ROWBACKGROUNDS", (0, 1), (-1, -1), [colors.white, colors.HexColor("#F5F7FA")]),
+                ("GRID", (0, 0), (-1, -1), 0.45, colors.HexColor("#A6A6A6")),
+                ("ROWBACKGROUNDS", (0, 1), (-1, -1), [colors.white, colors.HexColor("#F2F2F2")]),
                 ("LEFTPADDING", (0, 0), (-1, -1), 4),
                 ("RIGHTPADDING", (0, 0), (-1, -1), 4),
                 ("TOPPADDING", (0, 0), (-1, -1), 4),
@@ -303,7 +307,7 @@ def page_chrome(canvas, document) -> None:
     canvas.setLineWidth(0.5)
     canvas.line(18 * mm, 13 * mm, page_width - 18 * mm, 13 * mm)
     canvas.setFont("Malgun", 7.5)
-    canvas.setFillColor(colors.HexColor("#6B7484"))
+    canvas.setFillColor(colors.black)
     canvas.drawString(18 * mm, 8.5 * mm, "스퀘어스 서비스기획 PM 과제 | 박종혁")
     canvas.drawRightString(page_width - 18 * mm, 8.5 * mm, str(document.page))
     canvas.restoreState()
@@ -321,8 +325,8 @@ def main() -> None:
         pagesize=A4,
         rightMargin=17 * mm,
         leftMargin=17 * mm,
-        topMargin=16 * mm,
-        bottomMargin=18 * mm,
+        topMargin=15 * mm,
+        bottomMargin=15 * mm,
         title="스퀘어스 서비스기획 PM 과제 V7",
         author="박종혁",
         subject="GEO 기준 및 B2B SaaS 브랜드 노출 진단 PRD",

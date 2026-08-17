@@ -135,6 +135,26 @@ export type Project = {
   period: string;
   tags: string[];
   thumbnail: string;
+  /** 실제로 확인 가능한 결과 화면과 외부 결과물만 연결한다. */
+  artifacts?: ProjectArtifacts;
+};
+
+export type ProjectArtifactLink = {
+  kind: 'github' | 'video' | 'reference';
+  href: string;
+  label: Bilingual;
+};
+
+export type ProjectArtifactImage = {
+  src: string;
+  alt: Bilingual;
+  caption: Bilingual;
+  display?: 'featured' | 'portrait';
+};
+
+export type ProjectArtifacts = {
+  links?: ProjectArtifactLink[];
+  images?: ProjectArtifactImage[];
 };
 
 export const projects: Project[] = [
@@ -184,6 +204,46 @@ export const projects: Project[] = [
     period: '2026.07 — 2026.08',
     tags: ['서비스 기획', '커머스 정책', '외주 개발 관리', 'QA'],
     thumbnail: '/assets/b2b_mall_thumbnail.png',
+    artifacts: {
+      images: [
+        {
+          src: '/assets/b2b-pc-1.png',
+          alt: {
+            KR: '사업자 전용 회원제 커머스 PC 메인과 상품 목록 화면',
+            EN: 'Desktop storefront and product listing for the business member commerce service',
+          },
+          caption: { KR: 'PC · 메인과 상품 목록', EN: 'Desktop · Storefront and product listing' },
+          display: 'featured',
+        },
+        {
+          src: '/assets/b2b-pc-2.png',
+          alt: {
+            KR: '사업자 전용 회원제 커머스 PC 주문 목록과 배송 조회 화면',
+            EN: 'Desktop order history and delivery tracking for the business member commerce service',
+          },
+          caption: { KR: 'PC · 주문 목록과 배송 조회', EN: 'Desktop · Orders and delivery tracking' },
+          display: 'featured',
+        },
+        {
+          src: '/assets/b2b-mobile-1.png',
+          alt: {
+            KR: '사업자 전용 회원제 커머스 모바일 메인과 상품 목록 화면',
+            EN: 'Mobile storefront and product listing for the business member commerce service',
+          },
+          caption: { KR: '모바일 · 메인과 상품 목록', EN: 'Mobile · Storefront and product listing' },
+          display: 'portrait',
+        },
+        {
+          src: '/assets/b2b-mobile-2.png',
+          alt: {
+            KR: '사업자 전용 회원제 커머스 모바일 주문 목록과 배송 조회 화면',
+            EN: 'Mobile order history and delivery tracking for the business member commerce service',
+          },
+          caption: { KR: '모바일 · 주문 목록과 배송 조회', EN: 'Mobile · Orders and delivery tracking' },
+          display: 'portrait',
+        },
+      ],
+    },
   },
   {
     id: 'customs-api',
@@ -274,6 +334,60 @@ export const projects: Project[] = [
     period: '2026.06 — 2026.07',
     tags: ['업무 자동화', '데이터 분석', '프로토타이핑', '현업 안착'],
     thumbnail: '/assets/scm_dashboard_thumbnail.png',
+    artifacts: {
+      images: [
+        {
+          src: '/assets/SCM-dashboard02_dashboard.png',
+          alt: {
+            KR: '재고 자산과 품절·폐기 위험을 요약한 SCM 대시보드 화면',
+            EN: 'SCM dashboard summarizing inventory value, stockout risk, and expiry risk',
+          },
+          caption: { KR: '운영 요약 대시보드', EN: 'Operations overview dashboard' },
+          display: 'featured',
+        },
+        {
+          src: '/assets/SCM-dashboard03_inventory.png',
+          alt: {
+            KR: '창고별 현재고를 조회하고 엑셀로 등록하는 화면',
+            EN: 'Inventory view for warehouse-level stock lookup and spreadsheet upload',
+          },
+          caption: { KR: '창고별 현재고', EN: 'Warehouse inventory' },
+        },
+        {
+          src: '/assets/SCM-dashboard04_expiry.png',
+          alt: {
+            KR: 'FEFO 기준 유통기한 임박 재고와 폐기 예상 금액 화면',
+            EN: 'FEFO expiry-risk inventory and estimated disposal value view',
+          },
+          caption: { KR: '유통기한·폐기 위험', EN: 'Expiry and disposal risk' },
+        },
+        {
+          src: '/assets/SCM-dashboard05_order_plan.png',
+          alt: {
+            KR: '품목별 발주 제안과 미래 재고 시뮬레이션 화면',
+            EN: 'Item-level order recommendations and future inventory simulation',
+          },
+          caption: { KR: '발주 제안과 재고 시뮬레이션', EN: 'Order planning and inventory simulation' },
+          display: 'featured',
+        },
+        {
+          src: '/assets/SCM-dashboard06_matching.png',
+          alt: {
+            KR: '인보이스별 입고 내역과 결제 금액을 관리하는 화면',
+            EN: 'Inbound records and invoice payment management view',
+          },
+          caption: { KR: '입고·인보이스 관리', EN: 'Inbound and invoice management' },
+        },
+        {
+          src: '/assets/SCM-dashboard07_settings.png',
+          alt: {
+            KR: '품목·창고·입고·현재고 데이터 양식을 관리하는 설정 화면',
+            EN: 'Settings for product, warehouse, inbound, and inventory data templates',
+          },
+          caption: { KR: '데이터 양식 관리', EN: 'Data template management' },
+        },
+      ],
+    },
   },
   {
     id: 'tms',
@@ -317,5 +431,19 @@ export const projects: Project[] = [
     period: '2024.10 — 2025.02',
     tags: ['시스템 기획', '운영 개선', 'API 최적화', '변화 관리'],
     thumbnail: '/assets/tms_thumbnail.png',
+    artifacts: {
+      links: [
+        {
+          kind: 'github',
+          href: 'https://github.com/park-jjong/TWLKRTMS-releaseRepository',
+          label: { KR: 'GitHub 저장소', EN: 'GitHub repository' },
+        },
+        {
+          kind: 'video',
+          href: 'https://www.youtube.com/watch?v=uegOVSqd4lU',
+          label: { KR: '시스템 시연 영상', EN: 'System demo video' },
+        },
+      ],
+    },
   },
 ];

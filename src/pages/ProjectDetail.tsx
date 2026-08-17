@@ -2,6 +2,7 @@ import { useCallback, useMemo, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { ArrowLeft, ChevronDown } from 'lucide-react';
 import { Markdown } from '../components/Markdown';
+import { ProjectArtifacts } from '../components/ProjectArtifacts';
 import { NotFound } from './NotFound';
 import { useLanguage } from '../context/LanguageContext';
 import { projects } from '../data/profile';
@@ -114,6 +115,8 @@ export const ProjectDetail = () => {
           </div>
         </div>
       </section>
+
+      {project.artifacts && <ProjectArtifacts artifacts={project.artifacts} isKr={isKr} />}
 
       <details className="group mt-10 border-t border-[var(--border-color)] pt-8 md:mt-12 md:pt-10">
         <summary className="flex cursor-pointer list-none items-center justify-between gap-5 rounded-2xl border border-[var(--border-color)] bg-[var(--surface-color)] px-5 py-4 transition-colors hover:bg-[var(--elevated-color)] [&::-webkit-details-marker]:hidden">

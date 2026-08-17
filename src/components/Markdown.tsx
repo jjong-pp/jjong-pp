@@ -50,7 +50,9 @@ export const Markdown = ({ content, onHeadings }: Props) => {
   const rootRef = useRef<HTMLDivElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const previousFocusRef = useRef<HTMLElement | null>(null);
-  const [zoom, setZoom] = useState<{ kind: 'img'; src: string } | { kind: 'svg'; html: string } | null>(null);
+  const [zoom, setZoom] = useState<
+    { kind: 'img'; src: string; alt: string } | { kind: 'svg'; html: string } | null
+  >(null);
 
   const source = normalizeMarkdown(content);
   const headingsRef = useRef<Heading[]>([]);
@@ -214,7 +216,7 @@ export const Markdown = ({ content, onHeadings }: Props) => {
       <span className="my-10 block">
         <button
           type="button"
-          onClick={() => setZoom({ kind: 'img', src })}
+          onClick={() => setZoom({ kind: 'img', src, alt: alt || '' })}
           aria-label={alt ? `${alt} 크게 보기` : '이미지 크게 보기'}
           className="mx-auto block max-w-full cursor-zoom-in rounded-2xl"
         >
@@ -246,7 +248,7 @@ export const Markdown = ({ content, onHeadings }: Props) => {
         <div
           role="dialog"
           aria-modal="true"
-          aria-label="확대 이미지"
+          aria-label={zoom.kind === 'img' && zoom.alt ? `${zoom.alt} 확대 이미지` : '확대 이미지'}
           onClick={() => setZoom(null)}
           className="fixed inset-0 z-[100] flex items-center justify-center bg-black/85 p-6 backdrop-blur-sm"
         >
@@ -261,7 +263,7 @@ export const Markdown = ({ content, onHeadings }: Props) => {
           </button>
           <div className="max-h-[90vh] max-w-[95vw] overflow-auto custom-scrollbar" onClick={e => e.stopPropagation()}>
             {zoom.kind === 'img' ? (
-              <img src={zoom.src} alt="" className="max-h-[88vh] max-w-full object-contain" />
+              <img src={zoom.src} alt={zoom.alt} className="max-h-[88vh] max-w-full object-contain" />
             ) : (
               <div
                 className="rounded-2xl bg-[var(--surface-color)] p-8 [&_svg]:max-w-none"

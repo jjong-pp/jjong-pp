@@ -159,12 +159,12 @@ export const Home = () => {
             >
               <div className="grid grid-cols-[6.75rem_minmax(0,1fr)] items-start gap-4 md:flex md:flex-col">
                 <div className="overflow-hidden rounded-xl border border-[var(--border-color)] bg-[var(--surface-color)]">
-                  {/* 원본이 정사각형이라 비율을 그대로 유지한다 (강제 크롭 금지) */}
+                  {/* 프로젝트별 원본 비율이 달라 전체가 보이도록 contain 처리한다. */}
                   <img
                     src={p.thumbnail}
                     alt=""
                     loading={i > 1 ? 'lazy' : undefined}
-                    className="aspect-square w-full object-cover transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.03]"
+                    className="aspect-square w-full object-contain transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.03]"
                     onError={e => {
                       e.currentTarget.parentElement!.style.display = 'none';
                     }}
@@ -222,6 +222,25 @@ export const Home = () => {
                     </span>
                   ))}
                 </div>
+
+                {p.artifacts && (
+                  <div className="mt-4 flex flex-wrap items-center gap-x-2 gap-y-1 text-[0.8rem] text-[var(--text-tertiary)]">
+                    <span className="font-semibold text-[var(--text-secondary)]">
+                      {isKr ? '첨부' : 'Artifacts'}
+                    </span>
+                    {(p.artifacts.images?.length ?? 0) > 0 && (
+                      <span>
+                        {isKr
+                          ? `결과 화면 ${p.artifacts.images!.length}장`
+                          : `${p.artifacts.images!.length} result images`}
+                      </span>
+                    )}
+                    {p.artifacts.links?.some(link => link.kind === 'github') && <span>GitHub</span>}
+                    {p.artifacts.links?.some(link => link.kind === 'video') && (
+                      <span>{isKr ? '시연 영상' : 'Demo video'}</span>
+                    )}
+                  </div>
+                )}
 
                 <span className="mt-6 inline-flex items-center gap-1.5 text-[0.9rem] font-medium text-[var(--accent-color)]">
                   {isKr ? '의사결정 과정 보기' : 'Read the decision process'}
